@@ -1,7 +1,7 @@
 /* TrackDex : catalogue Spotify (Supabase). Ajouté au jeu au lancement, mis à jour en arrière-plan. */
 (function(){
   var URL='https://ptoncebyqakclxqnmlzk.supabase.co',KEY='sb_publishable_6-9wecVefsCjpqMPnh9Afg_-x-PIjhv',CK='td-catalog-v1';
-  window.CATIMG={a:{},b:{}};
+  window.CATIMG={a:{},b:{},s:{}};
   function h(s){var x=2166136261;for(var i=0;i<s.length;i++){x^=s.charCodeAt(i);x=Math.imul(x,16777619)}return (x>>>0)/4294967296}
   function key(s){return s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'')}
   var G={'rap-fr':'FR','rap-us':'US','rap-uk':'UK','global':'Monde'};
@@ -14,6 +14,7 @@
       if(!x||!x.n)return;
       if(x.i)CATIMG.a[x.n]=x.i;
       (x.al||[]).forEach(function(b){if(b.c)CATIMG.b[x.n+'|'+b.t]=b.c});
+      (x.sg||[]).forEach(function(b){if(b.c)CATIMG.s[x.n+'|'+b.t]=b.c});
       if(have[key(x.n)])return; // artiste déjà présent : on ne touche pas aux cartes existantes
       var al=(x.al||[]).filter(function(b){return b.tr&&b.tr.length}).map(function(b){return{t:b.t,y:+b.y||2020,b:40,tr:b.tr.map(function(t){return[t,streams(x.n+'|'+t)]})}});
       var sg=(x.sg||[]).map(function(b){return[b.t,streams(x.n+'|'+b.t),+b.y||2020]});
