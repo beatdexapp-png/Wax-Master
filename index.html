@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>BeatDex</title>
+<title>TrackDex</title>
 <meta name="description" content="Ouvre des maxis, collectionne les sons de tes artistes préférés, complète les albums.">
 <meta name="theme-color" content="#0e0f12">
 <link rel="manifest" href="/manifest.webmanifest">
@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="BeatDex">
+<meta name="apple-mobile-web-app-title" content="TrackDex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500;600&display=swap">
@@ -698,7 +698,7 @@ body.lite .tk{animation:none}
 <body>
 
 <div id="app">
-  <header class="hd"><div class="wm"><i></i>BeatDex</div><button class="jet glass" id="coins" data-act="gojet" aria-label="Jetons, ouvrir le shop"></button></header>
+  <header class="hd"><div class="wm"><i></i>TrackDex</div><button class="jet glass" id="coins" data-act="gojet" aria-label="Jetons, ouvrir le shop"></button></header>
   <main id="main"></main>
   <nav class="tabs glass" id="tabs">
     <button data-tab="ouvrir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="13" height="16" rx="2"/><circle cx="15.5" cy="12" r="5.5"/><circle cx="15.5" cy="12" r="1.3"/></svg>Ouvrir</button>
@@ -833,7 +833,7 @@ const EVENTS=[
 const SKINS=[['auto','Auto'],['graphite','Graphite'],['encre','Encre'],['aube','Aube'],['foret','Forêt'],['or','Or'],['brume','Brume'],['sable','Sable'],['lilas','Lilas'],['minuit','Minuit',1],['nacre','Nacre',1]];
 const SKPV={auto:'linear-gradient(135deg,#e8ebf1 50%,#0e0f12 50%)',graphite:'radial-gradient(circle at 20% 20%,rgba(90,110,190,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(40,130,115,.7),transparent 60%),#0e0f12',encre:'radial-gradient(circle at 20% 20%,rgba(70,90,230,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(40,170,220,.7),transparent 60%),#0a0e1c',aube:'radial-gradient(circle at 20% 20%,rgba(230,90,110,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(240,160,80,.7),transparent 60%),#160d10',foret:'radial-gradient(circle at 20% 20%,rgba(60,170,120,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(150,190,80,.6),transparent 60%),#0b120f',or:'radial-gradient(circle at 20% 20%,rgba(210,160,60,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(160,110,40,.7),transparent 60%),#12100a',brume:'radial-gradient(circle at 20% 20%,rgba(150,170,255,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,190,160,.9),transparent 60%),#e8ebf1',sable:'radial-gradient(circle at 20% 20%,rgba(230,150,110,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(150,180,140,.8),transparent 60%),#efe7db',lilas:'radial-gradient(circle at 20% 20%,rgba(170,140,255,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,170,210,.85),transparent 60%),#ebe7f4',minuit:'radial-gradient(circle at 20% 20%,rgba(140,80,255,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,60,140,.6),transparent 60%),#05040a',nacre:'radial-gradient(circle at 20% 20%,rgba(255,220,240,.95),transparent 60%),radial-gradient(circle at 90% 80%,rgba(200,240,255,.95),transparent 60%),#f6f4f1'};
 const COST=100,ALB_BONUS=250,ART_BONUS=500,GOLD_COST=400,DROP_COST=250,DROP_LIMIT=500;
-const CODES={UNDERGROUND:500,BEATDEX:300,ZARMA:200};
+const CODES={UNDERGROUND:500,TRACKDEX:300,ZARMA:200};
 const SHOP=[{k:'c500',n:500,p:'1,99 €'},{k:'c1200',n:1200,p:'4,99 €',tag:'+20 %'},{k:'c2600',n:2600,p:'9,99 €',tag:'+30 %'},{k:'c6500',n:6500,p:'19,99 €',tag:'+60 %'}];
 const PK={gold:{n:'Maxi Or',p:GOLD_COST,min:1,last:2,b:{},g:'Ultra rare garanti'},nacre:{n:'Maxi Nacre',p:900,min:1,last:3,b:{3:2,4:2,5:2},g:'Légendaire garanti'},diamant:{n:'Maxi Diamant',p:2000,min:2,last:4,b:{4:2,5:2},g:'Mythique garanti'}};
 const PASS_PRICE='4,99 € / mois';
@@ -985,7 +985,7 @@ function vOuvrir(){
   const e=liveEv(),nx=nextEv(),cst=cost(),free=canFree(),can=free||S.coins>=cst;const dp=curDrop();const left=Math.max(0,DROP_LIMIT-(S.drop[dp.w]||0)-((hash('ds'+dp.w)%120)+Math.floor((now()-(dp.w*48*3600e3))/(48*3600e3)*260)));
   const evp=e?`<button class="evp glass" data-act="menu" data-p="events"><i class="ldot"></i><b>${e.n}</b><span data-until="${e.e}">${dur(new Date(e.e)-now())}</span></button>`:nx?`<button class="evp glass" data-act="menu" data-p="events"><b>${nx.n}</b><span>${fdate(nx.s)}</span></button>`:'';
   return `<div class="view v-open">${evp}
-   <div class="mbox" data-act="open" data-m="${free?'free':'pay'}" role="button" tabindex="0" aria-label="Ouvrir un maxi"><div class="maxi"><div class="mv" style="--lc:${e?'#ff5f86':'#c9c3b5'}"></div><div class="ms glass"><b>Beat<br>Dex</b><span>Vol. 01</span><em>5 sons</em></div></div></div>
+   <div class="mbox" data-act="open" data-m="${free?'free':'pay'}" role="button" tabindex="0" aria-label="Ouvrir un maxi"><div class="maxi"><div class="mv" style="--lc:${e?'#ff5f86':'#c9c3b5'}"></div><div class="ms glass"><b>Track<br>Dex</b><span>Vol. 01</span><em>5 sons</em></div></div></div>
    <div class="obar"><button class="pbtn" data-act="open" data-m="${free?'free':'pay'}" ${can?'':'disabled'}>${free?(S.bonus>0?`Ouvrir · ${S.bonus} offert${S.bonus>1?'s':''}`:'Ouvrir · Gratuit'):`Ouvrir · ${cst} ${coinI}`}</button><button class="gbtn sq" data-act="openall" aria-label="Ouverture express" ${can?'':'disabled'}>${ICON.bolt}</button></div>
    <p class="cap" id="freecap">${freeReady()?'Maxi gratuit prêt':`Gratuit dans <b data-clock="${S.freeAt}">${clock(S.freeAt-now())}</b>`}</p>
    <div class="orow">
@@ -1025,8 +1025,8 @@ function vShop(){
     head=subHead('La Bourse',`<span class="wix sm${ix>0?' gn':ix===0?' z':''}">CAC Son ${ix>0?'▲':ix<0?'▼':'='} ${fr(Math.abs(ix))} %</span>`);
     body=`${tickHTML()}<div class="chips">${[['live','Marché'],['mine',`Mes ventes ${mine}/${mkMax()}`],['sell',`Vendre · ${dups}`]].map(([k,n])=>`<button class="chip" data-act="mks" data-v="${k}" aria-pressed="${mkSub===k}">${n}</button>`).join('')}</div><div class="pgr" id="pgr"></div>`}
   else if(shopSub==='echanges'){head=subHead('Échanges');body=`<p class="cnt2">Tes doubles contre ceux de tes amis · démo</p><div class="pgr" id="pgr"></div>`}
-  else if(shopSub==='pass'){const on=hasPass();head=subHead('BeatDex Pass');
-    body=`<div class="passc glass"><div class="ph2"><span class="pico">${ICON.star}</span><div><b>BeatDex Pass</b><small>${on?'Actif':PASS_PRICE}</small></div></div>
+  else if(shopSub==='pass'){const on=hasPass();head=subHead('TrackDex Pass');
+    body=`<div class="passc glass"><div class="ph2"><span class="pico">${ICON.star}</span><div><b>TrackDex Pass</b><small>${on?'Actif':PASS_PRICE}</small></div></div>
      <ul class="perks">${['Maxi gratuit toutes les 5 min','+1 maxi offert chaque jour','1 Maxi Or chaque lundi','Pass de saison premium','Thèmes Minuit et Nacre'].map(t=>`<li>${ICON.check}${t}</li>`).join('')}</ul>
      ${on?`<div class="row">${S.passDay!==today()?'<button class="pbtn" data-act="claim">Maxi du jour</button>':'<button class="pbtn" disabled>Récupéré</button>'}<button class="gbtn" data-act="passoff">Résilier</button></div>`:`<button class="pbtn wide" data-act="buy" data-k="pass">S’abonner · ${PASS_PRICE}</button>`}</div><p class="cap">Paiement simulé dans cette démo</p>`}
   else{head=subHead('Packs');body=`<div class="pgr" id="pgr"></div><p class="cap">L’achat de jetons arrive bientôt</p>`}
@@ -1221,8 +1221,8 @@ function showOpening(){
     <div class="L blk"></div><div class="L glow"></div><div class="L speed"></div><div class="L grays"><i></i></div><div class="L beam"></div>
     <div class="optop"><div class="lvl" id="lvl">${lvlHTML(0)}</div><button class="skip" data-act="skipall">Passer</button></div>
     <div class="opmid"><div class="stage" id="stage">
-      <div class="pl"><div class="bv"><div class="bvx"><div class="bvr">${[0,1,2,3,4,5].map(i=>`<i class="l${i}"></i>`).join('')}<div class="bvl"><b>BEATDEX</b></div></div></div><div class="bvs"></div></div></div>
-      <div class="slv"><b>Beat<br>Dex</b><span>${sl}</span></div>
+      <div class="pl"><div class="bv"><div class="bvx"><div class="bvr">${[0,1,2,3,4,5].map(i=>`<i class="l${i}"></i>`).join('')}<div class="bvl"><b>TRACKDEX</b></div></div></div><div class="bvs"></div></div></div>
+      <div class="slv"><b>Track<br>Dex</b><span>${sl}</span></div>
       <div class="stamp" id="stamp"></div><div class="rvc" id="rvc"></div><div class="acw" id="acw"></div><div class="fxl" id="fxl"></div>
     </div></div>
     <div class="eq">${Array.from({length:14},(_,i)=>`<i style="animation-delay:${(-i*.13).toFixed(2)}s;animation-duration:${(.4+(i*37%10)/25).toFixed(2)}s"></i>`).join('')}</div>
@@ -1423,13 +1423,13 @@ function seeAl(k){const B=RW[k];if(!B)return;
    <p class="cap">${B.single?'Singles':S.ul[k]?'Complété':`+${ALB_BONUS} jetons à la clé`}</p>`)}
 function seePl(k){const A=RW[k];if(!A)return;
   dd.innerHTML=popHTML(`<div class="big">${plaqueHTML(A)}</div><div class="info glass"><span>${A.ids.filter(own).length}/${A.ids.length} sons</span><span>${S.ul[k]?'Obtenu':`+${ART_BONUS} jetons`}</span></div>`)}
-function share(){const R=reveal;if(!R)return;const b=R.res.slice().sort((a,b)=>b.c.r-a.c.r)[0].c;const cap=`J'ai tiré ${b.t} de ${b.a} (${RAR[b.r].n}) sur BeatDex #beatdex #rap`;
-  dd.innerHTML=popHTML(`<div class="story" style="--rc:${RAR[b.r].c}"><p>BeatDex</p><div class="sc">${tileHTML(b,{nocount:1,lock:false})}</div><div><h3>${RAR[b.r].n}</h3><p style="margin-top:4px">${esc(b.a)}</p></div></div><div class="row"><button class="pbtn" data-act="copycap" data-cap="${esc(cap)}">Copier la légende</button></div>`)}
+function share(){const R=reveal;if(!R)return;const b=R.res.slice().sort((a,b)=>b.c.r-a.c.r)[0].c;const cap=`J'ai tiré ${b.t} de ${b.a} (${RAR[b.r].n}) sur TrackDex #trackdex #rap`;
+  dd.innerHTML=popHTML(`<div class="story" style="--rc:${RAR[b.r].c}"><p>TrackDex</p><div class="sc">${tileHTML(b,{nocount:1,lock:false})}</div><div><h3>${RAR[b.r].n}</h3><p style="margin-top:4px">${esc(b.a)}</p></div></div><div class="row"><button class="pbtn" data-act="copycap" data-cap="${esc(cap)}">Copier la légende</button></div>`)}
 function buyFlow(k){
-  const item=k==='pass'?{n:'BeatDex Pass',p:PASS_PRICE}:k==='starter'?{n:'Pack Starter',p:'2,99 €'}:(()=>{const s=SHOP.find(x=>x.k===k);return{n:`${s.n.toLocaleString('fr-FR')} jetons`,p:s.p}})();
+  const item=k==='pass'?{n:'TrackDex Pass',p:PASS_PRICE}:k==='starter'?{n:'Pack Starter',p:'2,99 €'}:(()=>{const s=SHOP.find(x=>x.k===k);return{n:`${s.n.toLocaleString('fr-FR')} jetons`,p:s.p}})();
   dd.innerHTML=popHTML(`<div class="card2 glass"><span class="lbl">Paiement · démo</span><h2>${item.n}</h2><p class="price2">${item.p}</p><p class="cap">Aucun paiement réel ici. Dans l’app, le paiement passera par l’App Store, Google Play ou Stripe.</p><div class="row"><button class="gbtn" data-act="ddclose">Annuler</button><button class="pbtn" data-act="buyok" data-k="${k}">Confirmer</button></div></div>`)}
 function buyOk(k){
-  if(k==='pass'){S.pass={on:true,since:today()};toast('BeatDex Pass activé')}
+  if(k==='pass'){S.pass={on:true,since:today()};toast('TrackDex Pass activé')}
   else if(k==='starter'){if(S.codes._starter){toast('Déjà acheté');closeDD();return}S.codes._starter=1;S.bonus+=3;S.gold+=1;S.coins+=300;toast('Starter ajouté')}
   else{const s=SHOP.find(x=>x.k===k);if(s){S.coins+=s.n;toast(`+${s.n.toLocaleString('fr-FR')} jetons`)}}
   save();closeDD();render()}
@@ -1521,7 +1521,7 @@ document.addEventListener('click',e=>{
     case 'buyok':buyOk(t.dataset.k);break;
     case 'buyc':buyCoins(t.dataset.k);break;
     case 'passoff':S.pass=null;applySkin();save();toast('Pass résilié');render();break;
-    case 'gopass':case 'needpass':closeMenu();tab='shop';shopSub='pass';render();if(a==='needpass')toast('Réservé au BeatDex Pass');break;
+    case 'gopass':case 'needpass':closeMenu();tab='shop';shopSub='pass';render();if(a==='needpass')toast('Réservé au TrackDex Pass');break;
     case 'prs':profSub=t.dataset.v;render();break;
     case 'mclaim':mClaim(t.dataset.k);break;
     case 'sclaim':sClaim(t.dataset.i,t.dataset.t);break;
@@ -1574,12 +1574,12 @@ mkInit();mkTick();render();
 #inst ol{text-align:left;display:flex;flex-direction:column;gap:10px;font-size:15px;color:#d8dbe3;padding-left:22px}
 #inst ol b{color:#fff}
 </style>
-<div id="inst" hidden role="dialog" aria-label="Installer BeatDex">
+<div id="inst" hidden role="dialog" aria-label="Installer TrackDex">
   <div class="ivn" aria-hidden="true"></div>
-  <h1>BeatDex</h1>
+  <h1>TrackDex</h1>
   <p id="itx">Installe l’app sur ton écran d’accueil pour ouvrir tes maxis en plein écran.</p>
-  <button class="ib" id="ibtn" hidden>Installer BeatDex</button>
-  <ol id="iios" hidden><li>Touche <b>Partager</b> en bas de Safari</li><li>Choisis <b>Sur l’écran d’accueil</b></li><li>Ouvre <b>BeatDex</b> depuis ton écran</li></ol>
+  <button class="ib" id="ibtn" hidden>Installer TrackDex</button>
+  <ol id="iios" hidden><li>Touche <b>Partager</b> en bas de Safari</li><li>Choisis <b>Sur l’écran d’accueil</b></li><li>Ouvre <b>TrackDex</b> depuis ton écran</li></ol>
   <button class="il" id="iskip">Continuer dans le navigateur</button>
 </div>
 <script>

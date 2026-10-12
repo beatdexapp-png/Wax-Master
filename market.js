@@ -1,4 +1,4 @@
-/* BeatDex : la Bourse entre vrais joueurs (Supabase) */
+/* TrackDex : la Bourse entre vrais joueurs (Supabase) */
 (function(){
   if(!window.CL||!CL.sb)return;
   var sb=CL.sb,busy=false,lastSig='',n=0;

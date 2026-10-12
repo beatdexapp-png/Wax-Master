@@ -1,6 +1,6 @@
 {
-  "name": "BeatDex",
-  "short_name": "BeatDex",
+  "name": "TrackDex",
+  "short_name": "TrackDex",
   "description": "Ouvre des maxis, collectionne les sons, complète les albums.",
   "lang": "fr",
   "start_url": "/",
