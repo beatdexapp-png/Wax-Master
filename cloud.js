@@ -2,7 +2,7 @@
 (function(){
   var SB_URL='https://ptoncebyqakclxqnmlzk.supabase.co';
   var SB_KEY='sb_publishable_6-9wecVefsCjpqMPnh9Afg_-x-PIjhv';
-  var CL=window.CL={user:null,pseudo:null,top:null,msg:'',busy:false,ready:false,page:function(){return pageHTML()},board:function(){return boardRows()}};
+  var CL=window.CL={user:null,pseudo:null,avatar:null,top:null,msg:'',busy:false,ready:false,page:function(){return pageHTML()},board:function(){return boardRows()}};
   var sb=null;
   var loaded=false,pushT=0,recovery=false;
   function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
@@ -21,9 +21,9 @@
     if(!r.error)lsSet('bd-uid',CL.user.id);
   }
   async function pull(){
-    var r=await sb.from('profiles').select('pseudo,state').eq('id',CL.user.id).single();
-    if(r.error){CL.pseudo=lsGet('bd-pseudo')||'…';return}
-    CL.pseudo=r.data.pseudo;if(CL.pseudo)lsSet('bd-pseudo',CL.pseudo);
+    var r=await sb.from('profiles').select('pseudo,state,avatar_url').eq('id',CL.user.id).single();
+    if(r.error){CL.pseudo=lsGet('bd-pseudo')||'…';CL.avatar=lsGet('bd-avatar');return}
+    CL.pseudo=r.data.pseudo;if(CL.pseudo)lsSet('bd-pseudo',CL.pseudo);CL.avatar=r.data.avatar_url||null;
     var cloud=r.data.state||{};
     var sameUser=lsGet('bd-uid')===CL.user.id;
     var cloudHas=cloud&&cloud.owned&&Object.keys(cloud.owned).length>0;
@@ -39,13 +39,13 @@
     }
   }
   async function loadTop(){
-    var r=await sb.rpc('leaderboard',{lim:50});
+    var r=await sb.rpc('leaderboard2',{lim:50});
     if(!r.error){CL.top=r.data||[];if(typeof tab!=='undefined'&&tab==='profil'&&profSub==='top'&&!reveal)render()}
   }
   function boardRows(){
-    var me=score(),L=(CL.top||[]).map(function(x){return{n:x.pseudo,s:x.score,me:!!(CL.pseudo&&x.pseudo===CL.pseudo)}});
+    var me=score(),L=(CL.top||[]).map(function(x){return{n:x.pseudo,s:x.score,av:x.avatar_url,me:!!(CL.pseudo&&x.pseudo===CL.pseudo)}});
     if(!L.some(function(x){return x.me}))L.push({n:CL.pseudo||'Toi',s:me,me:true});
-    L.forEach(function(x){if(x.me)x.s=me});
+    L.forEach(function(x){if(x.me){x.s=me;x.av=CL.avatar}});
     L.sort(function(a,b){return b.s-a.s});
     return L.map(function(x,i){return Object.assign({},x,{r:i+1})});
   }
@@ -145,8 +145,8 @@
     if(evt==='PASSWORD_RECOVERY')recovery=true;
     var u=session?session.user:null,changed=(u&&u.id)!==(CL.user&&CL.user.id);
     CL.user=u;
-    if(!u){loaded=false;CL.pseudo=null;CL.ready=true;showGate(mode==='up'?'up':'in');rerender();return}
-    if(changed)setTimeout(function(){pull().then(function(){CL.ready=true;afterLogin();rerender();if(window.MK)MK.kick()})},0);
+    if(!u){loaded=false;CL.pseudo=null;CL.avatar=null;CL.ready=true;showGate(mode==='up'?'up':'in');rerender();return}
+    if(changed)setTimeout(function(){pull().then(function(){CL.ready=true;afterLogin();rerender();if(window.MK)MK.kick();if(window.SOC)SOC.kick();if(!reveal)render()})},0);
     else if(recovery)showGate('newpass');
     else rerender();
   });

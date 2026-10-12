@@ -1,5 +1,5 @@
-const CACHE='trackdex-v5';
-const SHELL=['/','/index.html','/manifest.webmanifest','/icons/icon-192.png','/icons/icon-512.png','/cloud.js','/market.js','/vendor/supabase.js'];
+const CACHE='trackdex-v6';
+const SHELL=['/','/index.html','/manifest.webmanifest','/icons/icon-192.png','/icons/icon-512.png','/cloud.js','/market.js','/social.js','/vendor/supabase.js'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 // Pages : réseau d'abord (les mises à jour arrivent tout de suite), cache si hors ligne
