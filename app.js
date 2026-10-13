@@ -10,7 +10,7 @@ const FRIENDS=['soso.lune','mvp_sinna','oz.92i','wave.95','mel_zer'];
 const DUST_GET=[5,10,25,60,150,400],DUST_COST=[40,80,200,500,1200,3000];
 const WCOL=['rgba(255,255,255,.78)','#7cc0ff','#d4a3ff','#ffd36b','#ff8fab','#8a6420'];
 const SEASON_END='2026-11-30T23:59',SEASON_START='2026-10-01T00:00',TIERS=30,TIER_XP=100;
-const MISS=[{k:'open',n:3,t:'Ouvre 3 maxis',c:80,x:60},{k:'newT',n:5,t:'Trouve 5 nouveaux sons',c:100,x:80},{k:'bid',n:1,t:'Enchéris sur un son',c:50,x:40},{k:'recycle',n:1,t:'Recycle un double',c:50,x:40},{k:'trade',n:1,t:'Propose un échange',c:60,x:40},{k:'sell',n:1,t:'Mets un son en vente',c:60,x:40}];
+const MISS=[{k:'open',n:3,t:'Ouvre 3 maxis',c:80,x:60},{k:'newT',n:5,t:'Trouve 5 nouveaux sons',c:100,x:80},{k:'buy',n:1,t:'Achète un son à la Bourse',c:50,x:40},{k:'recycle',n:1,t:'Recycle un double',c:50,x:40},{k:'trade',n:1,t:'Propose un échange',c:60,x:40},{k:'sell',n:1,t:'Vends un son à la Bourse',c:60,x:40}];
 
 function hash(s){let h=1779033703^s.length;for(let i=0;i<s.length;i++){h=Math.imul(h^s.charCodeAt(i),3432918353);h=h<<13|h>>>19}return h>>>0}
 function rng(s){let a=hash(s);return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -115,7 +115,7 @@ const missReady0=()=>{const d=day();return todayMissions().some(m=>!d.cl[m.k]&&d
 const seasonReady0=()=>{const t=tierNow();for(let i=1;i<=t;i++){if(!S.sfree.includes(i))return true;if(hasPass()&&!S.sprem.includes(i))return true}return false};
 function toast(t){document.querySelectorAll('.toast').forEach(x=>x.remove());const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2400)}
 const I=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
-const ICON={pen:I('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'),plus:I('<path d="M12 5v14M5 12h14"/>'),cam:I('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),bolt:I('<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'),sp:I('<circle cx="12" cy="12" r="9"/><path d="M7.5 9.5c3-.9 6.3-.6 9 .9M8 12.6c2.4-.6 4.9-.4 7 .7M8.6 15.5c1.8-.4 3.6-.3 5.2.5"/>'),gift:I('<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18M12 8v13M12 8c-1.5-3.5-5-4-5-1.5S12 8 12 8zm0 0c1.5-3.5 5-4 5-1.5S12 8 12 8z"/>'),search:I('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/>'),back:I('<path d="m15 5-7 7 7 7"/>'),x:I('<path d="M6 6l12 12M18 6 6 18"/>'),share:I('<path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>'),cal:I('<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>'),theme:I('<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>'),gem:I('<path d="M12 3 20 12 12 21 4 12z"/>'),gear:I('<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.6M12 18.6v2.6M4.4 4.4l1.9 1.9M17.7 17.7l1.9 1.9M2.8 12h2.6M18.6 12h2.6M4.4 19.6l1.9-1.9M17.7 6.3l1.9-1.9"/>'),help:I('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17.2v.3"/>'),star:I('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'),check:I('<path d="m5 12 5 5 9-10"/>'),grid:I('<rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/>'),bub:I('<circle cx="8.5" cy="9" r="4.5"/><circle cx="17" cy="15" r="3.5"/><circle cx="9.5" cy="18.5" r="2"/>'),recycle:I('<path d="M7 19H4.5a1.5 1.5 0 0 1-1.3-2.2L5 13.5M14 4.3l-1.3-2.2a1.5 1.5 0 0 0-2.6 0L8.3 5.4M17 13.5l1.8 3.3a1.5 1.5 0 0 1-1.3 2.2H11"/><path d="m11 16-2 3 2 3M3 9.5l2.9 1 1-2.9M20.2 7.5l-1 3-3-.9"/>'),play:I('<path d="M7 5v14l11-7z"/>'),pin:I('<path d="M12 17v5M8 3h8l-1 6 3 4H6l3-4z"/>'),swap:I('<path d="M7 7h12l-3-3M17 17H5l3 3"/>'),lock:I('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')};
+const ICON={list:I('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01" stroke-width="2.6"/>'),users:I('<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3 3 0 0 1 0 5.6M17.5 14.2A5 5 0 0 1 21 19"/>'),pen:I('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'),plus:I('<path d="M12 5v14M5 12h14"/>'),cam:I('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),bolt:I('<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'),sp:I('<circle cx="12" cy="12" r="9"/><path d="M7.5 9.5c3-.9 6.3-.6 9 .9M8 12.6c2.4-.6 4.9-.4 7 .7M8.6 15.5c1.8-.4 3.6-.3 5.2.5"/>'),gift:I('<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18M12 8v13M12 8c-1.5-3.5-5-4-5-1.5S12 8 12 8zm0 0c1.5-3.5 5-4 5-1.5S12 8 12 8z"/>'),search:I('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/>'),back:I('<path d="m15 5-7 7 7 7"/>'),x:I('<path d="M6 6l12 12M18 6 6 18"/>'),share:I('<path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>'),cal:I('<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>'),theme:I('<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>'),gem:I('<path d="M12 3 20 12 12 21 4 12z"/>'),gear:I('<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.6M12 18.6v2.6M4.4 4.4l1.9 1.9M17.7 17.7l1.9 1.9M2.8 12h2.6M18.6 12h2.6M4.4 19.6l1.9-1.9M17.7 6.3l1.9-1.9"/>'),help:I('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17.2v.3"/>'),star:I('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'),check:I('<path d="m5 12 5 5 9-10"/>'),grid:I('<rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/>'),bub:I('<circle cx="8.5" cy="9" r="4.5"/><circle cx="17" cy="15" r="3.5"/><circle cx="9.5" cy="18.5" r="2"/>'),recycle:I('<path d="M7 19H4.5a1.5 1.5 0 0 1-1.3-2.2L5 13.5M14 4.3l-1.3-2.2a1.5 1.5 0 0 0-2.6 0L8.3 5.4M17 13.5l1.8 3.3a1.5 1.5 0 0 1-1.3 2.2H11"/><path d="m11 16-2 3 2 3M3 9.5l2.9 1 1-2.9M20.2 7.5l-1 3-3-.9"/>'),play:I('<path d="M7 5v14l11-7z"/>'),pin:I('<path d="M12 17v5M8 3h8l-1 6 3 4H6l3-4z"/>'),swap:I('<path d="M7 7h12l-3-3M17 17H5l3 3"/>'),lock:I('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')};
 
 /* ================= RENDUS D'OBJETS ================= */
 function waveSVG(c){if(!c.wv){const R=rng('wv'+c.id);let d='';for(let k=0;k<24;k++){const v=.16+.84*Math.abs(Math.sin(k*.45+R()*2.2))*(.45+.55*R());const h=v*40;d+=`M${k*4.4+2} ${(24-h/2).toFixed(1)}v${h.toFixed(1)}`}c.wv=d}
@@ -123,11 +123,12 @@ function waveSVG(c){if(!c.wv){const R=rng('wv'+c.id);let d='';for(let k=0;k<24;k
 function tileHTML(c,o={}){const n=S.owned[c.id]||0;const lock=o.lock!==undefined?o.lock:!n;const R=RAR[c.r];const ser=S.ser[c.id];
   return `<div class="wc${lock?' lk':''}${c.r===5?' dv':''}${c.img?' im':''}" style="--bg:${c.bg};${c.img?`--im:url(&quot;${c.img}&quot;);`:''}--wc:${WCOL[c.r]};--rc:${R.c}"><i class="rd"></i>${ser?`<em class="sn">#${String(ser).padStart(3,'0')}</em>`:n>1&&!o.nocount?`<em class="tc">×${n}</em>`:''}${TREND.has(c.id)?'<i class="up" title="En hausse">↑</i>':''}${waveSVG(c)}<div class="tx"><b>${esc(c.t)}</b><span>${esc(c.a)}</span></div></div>`}
 function albumHTML(A){const ok=A.single?A.ids.every(own):S.ul[A.key];const n=A.ids.filter(own).length;
-  return `<div class="alb${ok?' ok':''}${n?'':' none'}"><div class="alv" style="--lab:${A.lab}"></div><div class="alc${A.img?' im':''}" style="background:${A.art}"><span>${esc(A.t)}</span><i>${esc(A.a)}</i></div>${ok?'':`<em class="badge">${n}/${A.ids.length}</em>`}</div>`}
+  return `<div class="alb${ok?' ok':''}${n?'':' none'}"><div class="alv" style="--lab:${A.lab}"></div><div class="alc${A.img?' im':''}" style="background:${esc(A.art)}"><span>${esc(A.t)}</span><i>${esc(A.a)}</i></div>${ok?'':`<em class="badge">${n}/${A.ids.length}</em>`}</div>`}
 function plaqueHTML(A){const ok=S.ul[A.key];
-  return `<div class="plq${ok?' ok':''}"><div class="pfm"><div class="pdk"><i style="background:${A.avg}"></i></div><div class="ppl"><b>${esc(A.n)}</b><span>Disque de platine</span></div></div>${ok?'':`<em class="badge">${pct(A.ids)}%</em>`}</div>`}
+  return `<div class="plq${ok?' ok':''}"><div class="pfm"><div class="pdk"><i style="background:${esc(A.avg)}"></i></div><div class="ppl"><b>${esc(A.n)}</b><span>Disque de platine</span></div></div>${ok?'':`<em class="badge">${pct(A.ids)}%</em>`}</div>`}
 const rewardHTML=x=>x.type==='album'?albumHTML(x):plaqueHTML(x);
-function artistCell(A){const p=pct(A.ids);return `<button class="acell" data-act="artist" data-k="${A.key}" aria-label="${esc(A.n)}"><span class="ar" style="--p:${p}"><span class="av" style="--avg:${A.avg}">${esc(A.ini)}</span></span><b>${esc(A.n)}</b><small>${p}%</small></button>`}
+function artistRow(A,i){const p=pct(A.ids),n=A.ids.filter(own).length;return `<button class="arow" style="--i:${i%14}" data-act="artist" data-k="${A.key}" aria-label="${esc(A.n)}"><span class="av" style="--avg:${esc(A.avg)}">${esc(A.ini)}</span><span class="art"><b>${esc(A.n)}</b><small>${GEN[A.g]||A.g} · ${n}/${A.ids.length} sons</small><span class="abar"><i style="width:${p}%"></i></span></span><em>${p}%</em></button>`}
+function artistCell(A){const p=pct(A.ids);return `<button class="acell" data-act="artist" data-k="${A.key}" aria-label="${esc(A.n)}"><span class="ar" style="--p:${p}"><span class="av" style="--avg:${esc(A.avg)}">${esc(A.ini)}</span></span><b>${esc(A.n)}</b><small>${p}%</small></button>`}
 const tileBtn=c=>`<button class="it" data-act="see" data-id="${c.id}" aria-label="${esc(c.t)}, ${esc(c.a)}">${tileHTML(c)}</button>`;
 const albBtn=A=>`<button class="it" data-act="album" data-k="${A.key}" aria-label="${esc(A.t)}">${albumHTML(A)}</button>`;
 
@@ -154,11 +155,13 @@ function vOuvrir(){
   const e=liveEv(),nx=nextEv(),cst=cost(),free=canFree(),can=free||S.coins>=cst;const dp=curDrop();const left=Math.max(0,DROP_LIMIT-(S.drop[dp.w]||0)-((hash('ds'+dp.w)%120)+Math.floor((now()-(dp.w*48*3600e3))/(48*3600e3)*260)));
   const evp=e?`<button class="evp glass" data-act="menu" data-p="events"><i class="ldot"></i><b>${e.n}</b><span data-until="${e.e}">${dur(new Date(e.e)-now())}</span></button>`:nx?`<button class="evp glass" data-act="menu" data-p="events"><b>${nx.n}</b><span>${fdate(nx.s)}</span></button>`:'';
   return `<div class="view v-open">${evp}
+   <div class="ofx" aria-hidden="true"><i class="n1">♪</i><i class="n2">♫</i><i class="n3">♪</i><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>
    <div class="mbox" data-act="open" data-m="${free?'free':'pay'}" role="button" tabindex="0" aria-label="Ouvrir un maxi"><div class="maxi"><div class="mv" style="--lc:${e?'#ff5f86':'#c9c3b5'}"></div><div class="ms glass"><b>Track<br>Dex</b><span>Vol. 01</span><em>5 sons</em></div></div></div>
    <div class="obar"><button class="pbtn" data-act="open" data-m="${free?'free':'pay'}" ${can?'':'disabled'}>${free?(S.bonus>0?`Ouvrir · ${S.bonus} offert${S.bonus>1?'s':''}`:'Ouvrir · Gratuit'):`Ouvrir · ${cst} ${coinI}`}</button><button class="gbtn sq" data-act="openall" aria-label="Ouverture express" ${can?'':'disabled'}>${ICON.bolt}</button></div>
+   <div class="odeco" aria-hidden="true">${Array.from({length:23},(_,i)=>`<i style="--d:${(i*.137%1).toFixed(2)};--h:${(.25+((i*7)%10)/14).toFixed(2)}"></i>`).join('')}</div>
    <p class="cap" id="freecap">${freeReady()?'Maxi gratuit prêt':`Gratuit dans <b data-clock="${S.freeAt}">${clock(S.freeAt-now())}</b>`}</p>
    <div class="orow">
-     <button class="dropc glass" data-act="opendrop" ${S.coins>=DROP_COST&&left>0?'':'disabled'}><span class="dcv" style="background:${dp.A.art}"></span><span class="dct"><b>Drop · ${esc(dp.A.t)}</b><small>${esc(dp.A.a)} · numéroté · ${left}/${DROP_LIMIT}</small><small data-clock="${dp.e}">${clock(dp.e-now())}</small></span><span class="dcp">${DROP_COST} ${coinI}</span></button>
+     <button class="dropc glass" data-act="opendrop" ${S.coins>=DROP_COST&&left>0?'':'disabled'}><span class="dcv" style="background:${esc(dp.A.art)}"></span><span class="dct"><b>Drop numéroté</b><small><i class="ldot"></i><span data-clock="${dp.e}">${clock(dp.e-now())}</span></small></span><span class="dcp">${DROP_COST} ${coinI}</span></button>
      ${S.gold>0?`<button class="goldp" data-act="opengold" aria-label="Ouvrir un Maxi Or">Or ×${S.gold}</button>`:''}
    </div>
   </div>`;
@@ -166,7 +169,7 @@ function vOuvrir(){
 function colList(){return ownedArtists().filter(A=>colG==='Tous'||A.g===colG).sort((a,b)=>pct(b.ids)-pct(a.ids)||a.n.localeCompare(b.n))}
 function vCollection(){
   const L=colList(),tot=ownedArtists().length;
-  return `<div class="view v-col"><div class="vh"><button class="gbtn sq" data-act="colv" data-v="${colView==='bulles'?'liste':'bulles'}" aria-label="${colView==='bulles'?'Voir en liste':'Voir en bulles'}">${colView==='bulles'?ICON.grid:ICON.bub}</button>
+  return `<div class="view v-col"><div class="vh"><button class="gbtn sq" data-act="colv" data-v="${colView==='bulles'?'liste':'bulles'}" aria-label="${colView==='bulles'?'Voir en liste':'Voir en bulles'}">${colView==='bulles'?ICON.list:ICON.bub}</button>
     <div class="seg glass sm">${['Tous','FR','US','UK','Monde'].map(g=>`<button data-act="colg" data-v="${g}" aria-pressed="${colG===g}">${g}</button>`).join('')}</div>
     <button class="gbtn sq" data-act="recy" aria-label="Recycler les doubles" style="margin-left:auto">${ICON.recycle}</button><button class="gbtn sq" data-act="cat" aria-label="Tout le catalogue">${ICON.search}</button></div>
     <p class="cnt2">${tot} rappeur${tot>1?'s':''} · ${CARDS.filter(c=>own(c.id)).length}/${N} sons · ${dustI}${S.dust}</p>
@@ -180,11 +183,12 @@ function bigChart(){const R=rng('ws'+Math.floor(now()/3600e3));let v=50,p=[];for
   return `<svg class="bch" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,100 ${p.join(' ')} 100,100"/><polyline points="${p.join(' ')}"/></svg>`}
 const subHead=(t,x)=>`<div class="vh shd2"><button class="gbtn sq" data-act="shs" data-v="hub" aria-label="Retour">${ICON.back}</button><h2>${t}</h2>${x||''}</div>`;
 function vShop(){
+  if(shopSub==='encheres')shopSub='cours';
   if(shopSub==='hub'){mkTick();const live=S.mk.list.filter(l=>!l.mine).length,mine=S.mk.list.filter(l=>l.mine).length,ix=window.ECO?ECO.ix:wsIndex(),on=hasPass();
     return `<div class="view v-shop v-hub"><div class="hgrid">
-     <button class="hb hb-ws" data-act="shs" data-v="cours">${bigChart()}${tickHTML()}<span class="hbt"><span class="hbk">Achète et vends tes sons</span><b>La Bourse</b><small><i class="ldot"></i>Cours en direct · ${live} enchère${live>1?'s':''}</small></span><span class="wix${ix>0?' gn':ix===0?' z':''}">CAC Son ${ix>0?'▲':ix<0?'▼':'='} ${fr(Math.abs(ix))} %</span></button>
+     <button class="hb hb-ws" data-act="shs" data-v="cours">${bigChart()}${tickHTML()}<span class="hbt"><span class="hbk">Achète et vends tes sons</span><b>La Bourse</b><small><i class="ldot"></i>Cours en direct</small></span><span class="wix${ix>0?' gn':ix===0?' z':''}">CAC Son ${ix>0?'▲':ix<0?'▼':'='} ${fr(Math.abs(ix))} %</span></button>
      <div class="hrow">
-      <button class="hb hb-tr" data-act="shs" data-v="echanges"><span class="hbi">${ICON.swap}</span><span class="hbt"><b>Échanges</b><small>${window.SOC&&SOC.pending()?`${SOC.pending()} proposition${SOC.pending()>1?'s':''} reçue${SOC.pending()>1?'s':''}`:'Entre joueurs'}</small></span></button>
+      <button class="hb hb-tr" data-act="shs" data-v="echanges"><span class="hbi">${ICON.users}</span><span class="hbt"><b>Amis</b><small>${window.SOC&&SOC.pending()?`${SOC.pending()} nouveauté${SOC.pending()>1?'s':''}`:'Échange avec tes amis'}</small></span></button>
       <button class="hb hb-ps" data-act="passinfo"><span class="hbi">${ICON.star}</span><span class="hbt"><b>Pass</b><small>Saison 1 · bientôt</small></span></button>
      </div>
      <button class="hb hb-jt" data-act="shs" data-v="jetons"><span class="fan"><i class="mini"></i><i class="mini gold"></i><i class="mini nacre"></i><i class="mini diam"></i></span><span class="hbt"><b>Packs & jetons</b><small>Maxi Diamant · Mythique garanti</small></span></button>
@@ -193,7 +197,7 @@ function vShop(){
   if(shopSub==='encheres'){mkTick();const mine=S.mk.list.filter(l=>l.mine).length;const dups=CARDS.filter(c=>(S.owned[c.id]||0)>1).length;const ix=wsIndex();
     head=subHead('Enchères');
     body=`${tickHTML()}<div class="chips">${[['live','Marché'],['mine',`Mes ventes ${mine}/${mkMax()}`],['sell',`Vendre · ${dups}`]].map(([k,n])=>`<button class="chip" data-act="mks" data-v="${k}" aria-pressed="${mkSub===k}">${n}</button>`).join('')}</div><div class="pgr" id="pgr"></div>`}
-  else if(shopSub==='echanges'){head=subHead('Échanges');body=window.SOC?SOC.body():'<p class="cap">Connexion requise</p>'}
+  else if(shopSub==='echanges'){head=subHead('Amis');body=window.SOC?SOC.body():'<p class="cap">Connexion requise</p>'}
   else if(shopSub==='pass'){const on=hasPass();head=subHead('TrackDex Pass');
     body=`<div class="passc glass"><div class="ph2"><span class="pico">${ICON.star}</span><div><b>TrackDex Pass</b><small>${on?'Actif':PASS_PRICE}</small></div></div>
      <ul class="perks">${['Maxi gratuit toutes les 5 min','+1 maxi offert chaque jour','1 Maxi Or chaque lundi','Pass de saison premium','Thèmes Minuit et Nacre'].map(t=>`<li>${ICON.check}${t}</li>`).join('')}</ul>
@@ -203,14 +207,14 @@ function vShop(){
 }
 function avHTML(cls){const ph=window.CL&&CL.avatar;const nm=(window.CL&&CL.pseudo)||'Moi';return `<span class="av me ${cls||''}" style="${ph?`--avg:url('${esc(ph)}') center/cover no-repeat,#333`:''}">${ph?'':esc(nm.slice(0,2).toUpperCase())}</span>`}
 function vProfil(){
-  const t=tierNow();const nm=(window.CL&&CL.pseudo)||'Ton profil';
-  return `<div class="view v-prof"><div class="vh"><button class="avb" data-act="pedit" aria-label="Modifier le profil">${avHTML('tbig')}<i class="ped">${ICON.pen}</i></button><div class="pn"><b>${esc(nm)}</b><span>Palier ${t} · ${score().toLocaleString('fr-FR')} pts</span></div><button class="gbtn sq" data-act="pedit" aria-label="Modifier le profil" style="margin-left:auto">${ICON.pen}</button><button class="gbtn sq" data-act="menu" aria-label="Réglages">${ICON.gear}</button></div>
-   <div class="seg glass">${[['vitrine','Vitrines'],['top','Classement']].map(([k,n])=>`<button data-act="prs" data-v="${k}" aria-pressed="${profSub===k}">${n}</button>`).join('')}</div>
+  const t=tierNow();const nm=(window.CL&&CL.pseudo)||'Ton profil';const nf=window.SOC?SOC.friends().length:0,pend=window.SOC?SOC.pending():0;const x=(S.xp||0)%TIER_XP;
+  return `<div class="view v-prof"><div class="phero"><button class="avb" data-act="pedit" aria-label="Modifier le profil">${avHTML('tbig')}<i class="ped">${ICON.pen}</i></button><div class="pn"><b>${esc(nm)}</b><span>Palier ${t} · ${score().toLocaleString('fr-FR')} pts</span><span class="plv" style="--p:${t>=TIERS?100:x}%"><i></i></span></div><button class="gbtn sq ghost" data-act="menu" aria-label="Réglages">${ICON.gear}</button></div>
+   <div class="pq"><button class="pqa pq-fr" data-act="gofriends"><span class="pqi">${ICON.users}</span><b>Amis</b><small>${nf?nf+' ami'+(nf>1?'s':''):'Aucun'}${pend?' · '+pend+' nouveau'+(pend>1?'x':''):''}</small></button><button class="pqa pq-inv" data-act="invite"><span class="pqi">${ICON.share}</span><b>Inviter</b><small>Partage ton lien</small></button><button class="pqa pq-top" data-act="prs" data-v="${profSub==='top'?'vitrine':'top'}" aria-pressed="${profSub==='top'}"><span class="pqi">${profSub==='top'?ICON.grid:ICON.star}</span><b>${profSub==='top'?'Vitrines':'Classement'}</b><small>${profSub==='top'?'Retour':'Top joueurs'}</small></button></div>
    ${profSub==='top'?`<div class="pgr" id="pgr"></div>`:vVitrine()}</div>`;
 }
 function vitInit(){if(!Array.isArray(S.vits)||!S.vits.length)S.vits=[{n:'Ma vitrine',ids:(S.fav||[]).slice(0,6)}];S.vits.forEach(v=>{v.ids=(v.ids||[]).filter(id=>C[id]&&own(id)).slice(0,6)});S.vi=Math.min(S.vi|0,S.vits.length-1);S.fav=S.vits[S.vi].ids}
 function vVitrine(){vitInit();const pl=ARTISTS.filter(A=>S.ul[A.key]);const al=ALBUMS.filter(A=>S.ul[A.key]).length;const V=S.vits[S.vi];
-  return `<div class="kpis2"><div><b>${CARDS.filter(c=>own(c.id)).length}</b><span>sons</span></div><div><b>${al}</b><span>albums</span></div><div><b>${pl.length}</b><span>platine</span></div><div><b>${POOL[5].filter(c=>own(c.id)).length}</b><span>divins</span></div></div>
+  return `<div class="kpis3"><div class="k1"><b>${CARDS.filter(c=>own(c.id)).length}</b><span>sons</span></div><div class="k2"><b>${al}</b><span>albums</span></div><div class="k3"><b>${pl.length}</b><span>platines</span></div><div class="k4"><b>${POOL[5].filter(c=>own(c.id)).length}</b><span>divins</span></div></div>
    <div class="vtabs">${S.vits.map((v,k)=>`<button class="chip" data-act="vsel" data-i="${k}" aria-pressed="${k===S.vi}">${esc(v.n)}</button>`).join('')}${S.vits.length<3?`<button class="chip add" data-act="vnew" aria-label="Nouvelle vitrine">+</button>`:''}<button class="chip" data-act="vedit" aria-label="Renommer la vitrine">${ICON.pen}</button></div>
    <div class="pgr vit" id="pgr"></div>
    ${pl.length?`<div class="wall">${pl.map(A=>`<button data-act="seepl" data-k="${A.key}">${plaqueHTML(A)}</button>`).join('')}</div>`:''}`}
@@ -226,7 +230,8 @@ function trackHTML(){const t=tierNow();let h='';for(let i=1;i<=TIERS;i++){const 
 function vSaisonTab(){const t=tierNow(),x=(S.xp||0)%TIER_XP;const dotM=missReady(),dotS=seasonReady();
   return `<div class="view v-sea"><div class="shero"><span class="slv2" style="--p:${t>=TIERS?100:x}"><b>${t}</b><small>palier</small></span><div class="sinfo"><span class="skk">Saison 1 · Premiers sillons</span><b>${t>=TIERS?'Saison terminée, bravo':`${TIER_XP-x} XP avant le palier ${t+1}`}</b><span class="pbar" style="--p:${t>=TIERS?100:x}%"><i></i></span><small>Fin dans ${dur(new Date(SEASON_END)-now())}</small></div></div>
    <div class="seg glass">${[['pass','Pass de saison',dotS],['missions','Missions',dotM]].map(([k,n,dot])=>`<button data-act="seas" data-v="${k}" aria-pressed="${seaSub===k}">${n}${dot?'<i class="sdot"></i>':''}</button>`).join('')}</div>
-   ${seaSub==='missions'?vMissions():`<div class="trkw"><div class="trkl"><span class="pr">Premium</span><span>Gratuit</span></div><div class="strk" id="trk">${trackHTML()}</div></div>
+   ${seaSub==='missions'?vMissions():`${(()=>{let n=0,nx=null;for(let i=1;i<=TIERS;i++){if(i<=t&&!S.sfree.includes(i))n++;if(!nx&&i>t)nx=i}const r=nx?seasonRewards(nx).f:null;
+     return `<div class="sgrab${n?' on':''}"><div class="sgi">${n?`<span class="sgn">${n}</span>`:ICON.gift}</div><div class="sgt"><b>${n?`${n} récompense${n>1?'s':''} à récupérer`:'Tout est récupéré'}</b><small>${r?`Prochaine : ${rwLabel(r)} au palier ${nx}`:'Saison terminée'}</small></div>${n?`<button class="pbtn" data-act="sall">Tout récupérer</button>`:''}</div>`})()}<div class="trkw"><div class="trkl"><span class="pr">Premium</span><span>Gratuit</span></div><div class="strk" id="trk">${trackHTML()}</div></div>
    <button class="passbn" data-act="passinfo"><span class="pico">${ICON.star}</span><span><b>Pass Premium</b><small>Double récompenses, maxi gratuit toutes les 5 min</small></span><em>Bientôt</em></button>`}</div>`}
 function vSaison(){return ''}
 const missReady=()=>missReady0()||(todayMissions().every(m=>day().cl[m.k])&&!day().cl.all);
@@ -280,8 +285,8 @@ function render(){
 }
 function layout(){
   const h=$('pgr');
-  if(tab==='collection'){if($('bub'))initBub();if(h)pager(h,colList(),artistCell,{minT:92,extra:30,empty:'Ouvre un maxi pour commencer'})}
-  if(tab==='shop'&&h){if(shopSub==='encheres')mkLayout();else if(shopSub==='echanges'){if(window.SOC)SOC.layout(h)}else if(shopSub==='jetons')pager(h,shopItems(),x=>x,{cellH:jetSub==='packs'?150:130,cols:2,gap:10})}
+  if(tab==='collection'){if($('bub'))initBub();if(h)pager(h,colList(),artistRow,{cellH:66,minW:320,gap:8,empty:'Ouvre un maxi pour commencer'})}
+  if(tab==='shop'&&h){if(shopSub==='encheres')mkLayout();else if(shopSub==='echanges'){if(window.SOC)SOC.layout(h)}else if(shopSub==='jetons')pager(h,shopItems(),x=>x,{cellH:jetSub==='packs'?150:188,cols:2,gap:10})}
   if(tab==='profil'&&h){if(profSub==='vitrine'){vitInit();const F=S.fav.map(id=>C[id]);while(F.length<6)F.push(null);pager(h,F,c=>c?tileBtn(c):'<button class="fslot" data-act="vpick">'+ICON.plus+'<span>Ajouter</span></button>',{minT:96,cols:3})}
     else if(profSub==='top')pager(h,board(),boardRow,{cellH:54,minW:320,gap:6})}
   if(tab==='saison'){const tk=$('trk');if(tk){const t=tierNow();const c=tk.children[Math.max(0,t-1)];if(c)tk.scrollLeft=Math.max(0,c.offsetLeft-tk.clientWidth/2+c.clientWidth/2)}}
@@ -290,7 +295,7 @@ function layout(){
 const TABS=['collection','shop','ouvrir','saison','profil'];
 function setTab(t){const d=TABS.indexOf(t)-TABS.indexOf(tab);main.style.setProperty('--dx',(d>0?28:d<0?-28:0)+'px');clearTimeout(setTab.t);setTab.t=setTimeout(()=>main.style.setProperty('--dx','0px'),400);tab=t;try{localStorage.setItem(KEY+'-t8',t)}catch(_){}render()}
 function shopItems(){
-  if(jetSub==='jetons')return SHOP.map(p=>`<button class="pk glass" data-act="buy" data-k="${p.k}">${p.tag?`<em>${p.tag}</em>`:''}<span class="stack">${coinI}${coinI}${coinI}</span><b>${p.n.toLocaleString('fr-FR')}</b><span class="price">${p.p}</span></button>`);
+  if(jetSub==='jetons')return SHOP.map((p,i)=>`<button class="pk glass cpk cpk${i}" data-act="buy" data-k="${p.k}">${i===1?'<span class="rib">Populaire</span>':i===3?'<span class="rib best">Meilleure offre</span>':''}${p.tag?`<em>${p.tag}</em>`:''}<span class="cstack" aria-hidden="true">${Array.from({length:i+2},(_,k)=>`<i style="--k:${k}"></i>`).join('')}<s></s><s></s><s></s></span><b>${p.n.toLocaleString('fr-FR')}</b><small class="cpb">${p.tag?`dont ${Math.round(p.n-p.n/(1+parseInt(p.tag.replace(/\D/g,''))/100)).toLocaleString('fr-FR')} offerts`:'Pour bien démarrer'}</small><span class="price">${p.p}</span></button>`);
   const pk=(k,cls,name,tag,price,act)=>`<button class="pk glass pk-${cls}" data-act="${act||'buyc'}" data-k="${k}">${tag?`<em>${tag}</em>`:''}<span class="mini ${cls}"></span><b>${name}</b><span class="price">${price}</span></button>`;
   return [pk('diamant','diam','Maxi Diamant','Mythique garanti',`${PK.diamant.p.toLocaleString('fr-FR')} ${coinI}`),
     pk('nacre','nacre','Maxi Nacre','Légendaire garanti',`${PK.nacre.p} ${coinI}`),
@@ -324,10 +329,10 @@ function renderStack(keep){
      <div class="pgr" id="spgr"></div>`;
   }else if(p.type==='artist'){const A=RW[p.k];const n=A.ids.filter(own).length,pc=pct(A.ids);
     p.items=[...A.albums.map(k=>RW[k]),...(A.sgk?[RW[A.sgk]]:[])];
-    h=`<div class="ph">${back}<span class="av" style="--avg:${A.avg}">${esc(A.ini)}</span><div class="pn"><b>${esc(A.n)}</b><span>${GEN[A.g]}${A.u?' · underground':''} · ${n}/${A.ids.length}</span></div><button class="ring" data-act="seepl" data-k="${A.key}" style="--p:${pc}" aria-label="Disque de platine"><span>${pc}%</span></button></div>
+    h=`<div class="ph">${back}<span class="av" style="--avg:${esc(A.avg)}">${esc(A.ini)}</span><div class="pn"><b>${esc(A.n)}</b><span>${GEN[A.g]}${A.u?' · underground':''} · ${n}/${A.ids.length}</span></div><button class="ring" data-act="seepl" data-k="${A.key}" style="--p:${pc}" aria-label="Disque de platine"><span>${pc}%</span></button></div>
      <div class="pgr" id="spgr"></div>`;
   }else if(p.type==='album'){const B=RW[p.k];const n=B.ids.filter(own).length;
-    h=`<div class="ph">${back}<button class="alth" data-act="seeal" data-k="${B.key}" style="background:${B.art}" aria-label="Pochette"></button><div class="pn"><b>${esc(B.t)}</b><span>${esc(B.a)}${B.y?' · '+B.y:''} · ${n}/${B.ids.length}${B.p?' · sélection':''}</span></div><span class="ring" style="--p:${pct(B.ids)}"><span>${pct(B.ids)}%</span></span></div>
+    h=`<div class="ph">${back}<button class="alth" data-act="seeal" data-k="${B.key}" style="background:${esc(B.art)}" aria-label="Pochette"></button><div class="pn"><b>${esc(B.t)}</b><span>${esc(B.a)}${B.y?' · '+B.y:''} · ${n}/${B.ids.length}${B.p?' · sélection':''}</span></div><span class="ring" style="--p:${pct(B.ids)}"><span>${pct(B.ids)}%</span></span></div>
      <div class="pgr" id="spgr"></div>`;
   }
   if(!keep||!dt.querySelector('.page'))dt.innerHTML=`<div class="scrim" data-act="closestack"></div><div class="page glass">${h}</div>`;
@@ -463,7 +468,7 @@ function shatter(){const op=$('op');if(!op)return;const pl=op.querySelector('.pl
   for(let k=0;k<n;k++){const a0=k/n*360+(Math.random()-.5)*14,a1=(k+1)/n*360+(Math.random()-.5)*14,mid=(a0+a1)/2*Math.PI/180;const P=a=>{const t=a*Math.PI/180;return `${(50+Math.cos(t)*75).toFixed(1)}% ${(50+Math.sin(t)*75).toFixed(1)}%`};
     const dist=40+Math.random()*30;h+=`<div class="shd" style="clip-path:polygon(50% 50%,${P(a0)},${P((a0+a1)/2)},${P(a1)});--x:${(Math.cos(mid)*dist).toFixed(1)}cqw;--y:${(Math.sin(mid)*dist+10).toFixed(1)}cqw;--r:${((Math.random()-.5)*160).toFixed(0)}deg"><div class="bvr">${inner}</div></div>`}
   const old=pl.querySelector('.shards');if(old)old.remove();const d=document.createElement('div');d.className='shards';d.innerHTML=h;pl.appendChild(d);op.classList.add('brk')}
-const acHTML=(B,x,b,N,full)=>`<div class="acp${full?' full':''}" id="acp"><span class="acv" style="background:${B.art}"><i class="gh" style="--rc:${RAR[x.c.r].c}"></i></span><span class="acm"><b>${esc(B.t)}</b><span class="acb"><i id="acbi" style="width:${b/N*100}%"></i></span></span><em><span id="acn">${b}</span>/${N}</em></div>`;
+const acHTML=(B,x,b,N,full)=>`<div class="acp${full?' full':''}" id="acp"><span class="acv" style="background:${esc(B.art)}"><i class="gh" style="--rc:${RAR[x.c.r].c}"></i></span><span class="acm"><b>${esc(B.t)}</b><span class="acb"><i id="acbi" style="width:${b/N*100}%"></i></span></span><em><span id="acn">${b}</span>/${N}</em></div>`;
 function revealCard(){
   const R=reveal,x=R.res[R.i],r=x.c.r;R.stage='shown';hint('');stamp('',false);
   const op=$('op');const brk=!!x.isNew;
@@ -648,7 +653,7 @@ function spotFlow(){if(S.spot){spotShow();return}
   setTimeout(()=>{if(!dd.querySelector('.steps'))return;const r=rng('spot'+today());const pool=ARTISTS.filter(a=>a.g==='FR').slice(),top=[];while(top.length<5&&pool.length)top.push(pool.splice(Math.floor(r()*pool.length),1)[0].key);
     S.spot={top,min:2200+Math.floor(r()*4000)};save();spotShow();render()},350+4*550+250)}
 function spotShow(){const sp=S.spot;if(!sp)return;
-  dd.innerHTML=popHTML(`<div class="card2 glass"><span class="lbl" style="color:#1ed760">Spotify connecté · démo</span><div class="sptop">${sp.top.map(k=>{const A=RW[k];return A?`<div><span class="av" style="--avg:${A.avg}">${esc(A.ini)}</span><span>${esc(A.n)}</span></div>`:''}).join('')}</div>
+  dd.innerHTML=popHTML(`<div class="card2 glass"><span class="lbl" style="color:#1ed760">Spotify connecté · démo</span><div class="sptop">${sp.top.map(k=>{const A=RW[k];return A?`<div><span class="av" style="--avg:${esc(A.avg)}">${esc(A.ini)}</span><span>${esc(A.n)}</span></div>`:''}).join('')}</div>
    <div class="info"><span>${sp.min.toLocaleString('fr-FR')} min ce mois</span><span>×2 sur ton top</span></div><button class="gbtn" data-act="spotoff">Déconnecter</button></div>`)}
 
 /* ================= MENU ================= */
@@ -719,12 +724,14 @@ document.addEventListener('click',e=>{
     case 'recyall':recyAll();break;
     case 'soon':toast('Bientôt disponible');break;
     case 'pedit':window.SOC&&SOC.profileSheet();break;
+    case 'gofriends':closeMenu();shopSub='echanges';if(window.SOC)SOC.sub='amis';setTab('shop');break;
+    case 'invite':if(window.SOC)SOC.share();break;
     case 'shs':shopSub=t.dataset.v;render();break;
     case 'mks':mkSub=t.dataset.v;render();break;
     case 'jts':jetSub=t.dataset.v;render();break;
     case 'bid':bid(t.dataset.l);break;
     case 'sell':sellSheet(t.dataset.id);break;
-    case 'sellfrom':closeDD();closeStack();tab='shop';shopSub='encheres';mkSub='sell';render();sellSheet(t.dataset.id);break;
+    case 'sellfrom':closeDD();closeStack();shopSub='cours';setTab('shop');if(window.ECO)ECO.see(t.dataset.id);break;
     case 'sp':case 'sd':t.parentElement.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c===t));break;
     case 'list':listCard(t.dataset.id);break;
     
@@ -738,11 +745,12 @@ document.addEventListener('click',e=>{
     case 'gopass':case 'needpass':closeMenu();tab='shop';shopSub='pass';render();if(a==='needpass')toast('Réservé au TrackDex Pass');break;
     case 'prs':profSub=t.dataset.v;render();break;
     case 'seas':seaSub=t.dataset.v;render();break;
-    case 'mall':{const d=day();if(d.cl.all||todayMissions().some(m=>!d.cl[m.k]))break;d.cl.all=1;S.bonus++;addXP(50);save();toast('+1 maxi · +50 XP');render();break}
+    case 'mall':{const d=day();if(d.cl.all||todayMissions().some(m=>!d.cl[m.k]))break;if(window.ECO)ECO.op('mission_all').then(r=>{if(r){toast('+1 maxi · +50 XP');render()}});break}
     case 'passinfo':passSheet();break;
     case 'gocoins':closeMenu();closeDD();tab='shop';shopSub='jetons';jetSub='jetons';setTab('shop');break;
     case 'mclaim':mClaim(t.dataset.k);break;
     case 'sclaim':sClaim(t.dataset.i,t.dataset.t);break;
+    case 'sall':if(window.ECO){t.disabled=true;ECO.op('season_all').then(r=>{if(r){toast(`${r.n} récompense${r.n>1?'s':''} ajoutée${r.n>1?'s':''}`)}render()})}break;
     case 'menu':openMenu(t.dataset.p);break;
     case 'mclose':closeMenu();break;
     case 'mpage':menuPage=t.dataset.p||'';resetArm=false;renderMenu();break;
@@ -778,3 +786,6 @@ setInterval(()=>{document.querySelectorAll('[data-until]').forEach(el=>{el.textC
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applySkin)}catch(_){}
 
 mkInit();mkTick();render();
+
+/* bouton Ouvrir : le vinyle sort de la pochette */
+document.addEventListener('pointerdown',e=>{const t=e.target.closest('.tcen');if(!t)return;const v=t.querySelector('.tcv');if(!v)return;v.classList.remove('tap');void v.offsetWidth;v.classList.add('tap');setTimeout(()=>v.classList.remove('tap'),900)});

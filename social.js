@@ -2,10 +2,11 @@
 (function(){
   if(!window.CL||!CL.sb)return;
   var sb=CL.sb;
-  var SOC=window.SOC={list:[],sub:'recus',player:null,pick:{give:null,want:null},sig:''};
+  var SOC=window.SOC={list:[],sub:'amis',player:null,pick:{give:null,want:null},sig:'',fr:[],code:null,fsig:''};
   function me(){return CL.user&&CL.user.id}
   function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-  SOC.pending=function(){var u=me();return SOC.list.filter(function(t){return t.status==='pending'&&t.to_id===u}).length};
+  SOC.pending=function(){var u=me();return SOC.list.filter(function(t){return t.status==='pending'&&t.to_id===u}).length+SOC.fr.filter(function(f){return f.status==='pending'&&f.dir==='in'}).length};
+  SOC.friends=function(){return SOC.fr.filter(function(f){return f.status==='accepted'})};
   function avH(url,name,cls){name=name||'?';return '<span class="av '+(cls||'')+'" style="--avg:'+(url?"url('"+esc(url)+"') center/cover no-repeat,#333":'linear-gradient(140deg,hsl('+(hash(name)%360)+' 46% 60%),hsl('+((hash(name)+40)%360)+' 44% 34%))')+'">'+(url?'':esc(name.slice(0,2).toUpperCase()))+'</span>'}
   SOC.avH=avH;
   function quiet(){return !sh.innerHTML&&!ov.innerHTML&&!dd.innerHTML&&!reveal}
@@ -14,7 +15,9 @@
     if(!me())return;
     var r=await sb.from('trades').select('*').order('created_at',{ascending:false}).limit(60);
     if(r.error)return;
-    var sig=r.data.map(function(t){return t.id+t.status}).join(',');var ch=sig!==SOC.sig;SOC.sig=sig;SOC.list=r.data;
+    var f=await sb.rpc('friends_list');
+    if(!f.error&&f.data){SOC.fr=f.data.rows||[];SOC.code=f.data.code}
+    var sig=r.data.map(function(t){return t.id+t.status}).join(',')+'|'+SOC.fr.map(function(x){return x.id+x.status}).join(',');var ch=sig!==SOC.sig;SOC.sig=sig;SOC.list=r.data;
     if(ch){if(tab==='shop'&&(shopSub==='echanges'||shopSub==='hub')&&quiet())render();else{var d=$('shdot');if(d)d.hidden=!(SOC.pending()>0)}}
   }
   async function events(){
@@ -27,13 +30,14 @@
     });
     if(notes.length)toast(notes[notes.length-1]);if(window.ECO)await ECO.sync();if(quiet())render();
   }
-  SOC.kick=function(){load();events()};
+  SOC.kick=function(){useInvite().then(load);events()};
 
   /* ---------- page Échanges du Shop ---------- */
   SOC.body=function(){
-    var u=me(),rec=SOC.list.filter(function(t){return t.to_id===u&&t.status==='pending'}).length,env=SOC.list.filter(function(t){return t.from_id===u&&t.status==='pending'}).length;
-    return '<form class="trs" id="trsf"><input class="tin" id="trq" placeholder="Pseudo d’un joueur" autocomplete="off" maxlength="20" aria-label="Pseudo d’un joueur"><button class="pbtn" type="submit">Voir</button></form>'+
-      '<div class="chips">'+[['recus','Reçus'+(rec?' · '+rec:'')],['envoyes','Envoyés'+(env?' · '+env:'')],['joueurs','Joueurs']].map(function(x){return '<button class="chip" data-act="trsub" data-v="'+x[0]+'" aria-pressed="'+(SOC.sub===x[0])+'">'+x[1]+'</button>'}).join('')+'</div><div class="pgr" id="pgr"></div>';
+    var u=me(),nf=SOC.friends().length,dem=SOC.fr.filter(function(f){return f.status==='pending'&&f.dir==='in'}).length,
+      tr=SOC.list.filter(function(t){return t.to_id===u&&t.status==='pending'}).length;
+    return '<button class="addf" data-act="fradd"><span class="addfi">'+ICON.plus+'</span><span><b>Ajouter des amis</b><small>'+(nf?'Par pseudo ou avec ton lien':'Envoie ton lien d’invitation')+'</small></span></button>'+
+      '<div class="chips">'+[['amis','Amis'+(nf?' · '+nf:'')],['demandes','Demandes'+(dem?' · '+dem:'')],['echanges','Échanges'+(tr?' · '+tr:'')]].map(function(x){return '<button class="chip" data-act="trsub" data-v="'+x[0]+'" aria-pressed="'+(SOC.sub===x[0])+'">'+x[1]+'</button>'}).join('')+'</div><div class="pgr" id="pgr"></div>';
   };
   function thumb(id){var c=C[id];return c?'<button class="lth" data-act="see" data-id="'+id+'" aria-label="'+esc(c.t)+'">'+tileHTML(c,{nocount:1,lock:false})+'</button>':''}
   function row(t){
@@ -43,15 +47,59 @@
     else acts='<span class="st">'+(t.status==='accepted'?'Accepté':t.status==='declined'?'Refusé':'Annulé')+'</span>';
     return '<div class="trr">'+thumb(youGive)+'<span class="arr">'+ICON.swap+'</span>'+thumb(youGet)+'<div class="ttl"><b>'+esc(other||'Joueur')+'</b><small>Tu donnes '+esc(C[youGive].t)+'</small><small>Tu reçois '+esc(C[youGet].t)+'</small></div><div class="acts">'+acts+'</div></div>';
   }
+  function frRow(f){
+    var b;
+    if(f.status==='accepted')b='<button class="lbtn" data-act="trplayer" data-p="'+esc(f.pseudo)+'">'+ICON.swap+'Échanger</button>';
+    else if(f.dir==='in')b='<span class="acts"><button class="lbtn on" data-act="fracc" data-id="'+f.id+'">Accepter</button><button class="lbtn ghost" data-act="frdec" data-id="'+f.id+'">Refuser</button></span>';
+    else b='<span class="acts"><span class="st">En attente</span><button class="lbtn ghost" data-act="frdel" data-id="'+f.id+'">Annuler</button></span>';
+    return '<div class="prow fr">'+avH(f.avatar,f.pseudo)+'<b>'+esc(f.pseudo||'Joueur')+'</b><em>'+(f.score||0).toLocaleString('fr-FR')+' pts</em>'+b+'</div>';
+  }
   SOC.layout=function(h){
-    if(SOC.sub==='joueurs'){
-      var L=(CL.top||[]).filter(function(x){return x.pseudo&&x.pseudo!==CL.pseudo});
-      pager(h,L,function(x){return '<button class="prow" data-act="trplayer" data-p="'+esc(x.pseudo)+'">'+avH(x.avatar_url,x.pseudo)+'<b>'+esc(x.pseudo)+'</b><em>'+(x.score||0).toLocaleString('fr-FR')+' pts</em></button>'},{cellH:60,minW:320,gap:8,empty:'Aucun autre joueur pour l’instant'});
+    if(SOC.sub==='amis'){
+      var L=SOC.friends();
+      if(!L.length){h.innerHTML='<div class="frempty"><div class="fre" aria-hidden="true"><i></i><i></i><i></i></div><b>Pas encore d’amis</b><p class="cap">Invite tes potes pour échanger vos doubles.</p><button class="pbtn" data-act="frshare">Inviter des amis</button></div>';return}
+      pager(h,L,frRow,{cellH:64,minW:320,gap:8});
+    }else if(SOC.sub==='demandes'){
+      pager(h,SOC.fr.filter(function(f){return f.status==='pending'}).sort(function(a,b){return a.dir===b.dir?0:a.dir==='in'?-1:1}),frRow,{cellH:64,minW:320,gap:8,empty:'Aucune demande d’ami'});
     }else{
-      var u=me(),L2=SOC.list.filter(function(t){return SOC.sub==='recus'?t.to_id===u:t.from_id===u});
-      pager(h,L2,row,{cellH:84,minW:340,gap:8,empty:SOC.sub==='recus'?'Aucune proposition reçue. Cherche un joueur pour lui proposer un échange.':'Aucune proposition envoyée'});
+      var u=me(),L2=SOC.list.filter(function(t){return t.to_id===u||t.from_id===u});
+      pager(h,L2,row,{cellH:84,minW:340,gap:8,empty:'Aucun échange. Choisis un ami pour lui proposer un échange.'});
     }
   };
+  /* ---------- amis : invitation, demandes ---------- */
+  var INV='Installe ça, c’est le nouveau jeu qui permet de collectionner des sons et des artistes.';
+  async function share(){
+    if(!SOC.code)await load();
+    if(!SOC.code){toast('Connexion requise');return}
+    var url=location.origin+'/?ami='+SOC.code;
+    if(navigator.share){try{await navigator.share({title:'TrackDex',text:INV,url:url});return}catch(e){if(e&&e.name==='AbortError')return}}
+    try{await navigator.clipboard.writeText(INV+' '+url);toast('Lien d’invitation copié')}catch(e){toast(url)}
+  }
+  SOC.share=share;
+  function addSheet(){
+    if(!SOC.friends().length){share();return}
+    closeMenu();menuPage='addf';
+    sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Ajouter des amis"><div class="grab"></div><div class="shh"><h2>Ajouter des amis</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div>'+
+      '<form class="trs" id="frf"><input class="tin" id="frq" placeholder="Pseudo de ton ami" autocomplete="off" maxlength="20" aria-label="Pseudo"><button class="pbtn" type="submit">Envoyer</button></form>'+
+      '<p class="msg" id="frmsg"></p><div class="orl"><span>ou</span></div><button class="gbtn wide" data-act="frshare">'+ICON.share+'Partager mon lien d’invitation</button></div>';
+    setTimeout(function(){var q=$('frq');if(q)q.focus()},250);
+  }
+  async function request(ps){
+    var m=$('frmsg');if(!ps||ps.length<3){if(m)m.textContent='Entre un pseudo';return}
+    var r=await sb.rpc('friend_request',{p_pseudo:ps});
+    if(r.error){if(m)m.textContent=r.error.message;return}
+    closeMenu();toast(r.data==='accepted'?'Vous êtes maintenant amis':'Demande envoyée à '+ps);SOC.sub=r.data==='accepted'?'amis':'demandes';await load();render();
+  }
+  async function frAct(fn,args,msg){var r=await sb.rpc(fn,args);if(r.error){toast(r.error.message);return}if(msg)toast(msg);await load();render()}
+  /* lien d'invitation reçu */
+  try{var ami=new URLSearchParams(location.search).get('ami');if(ami){localStorage.setItem('td-ami',ami);history.replaceState(null,'',location.pathname)}}catch(e){}
+  async function useInvite(){
+    var c=null;try{c=localStorage.getItem('td-ami')}catch(e){}
+    if(!c||!me())return;
+    var r=await sb.rpc('friend_invite',{p_code:c});
+    try{localStorage.removeItem('td-ami')}catch(e){}
+    if(!r.error&&r.data){toast('Tu es maintenant ami avec '+r.data);await load();if(quiet())render()}
+  }
 
   /* ---------- fiche d'un joueur : choisir l'échange ---------- */
   async function openPlayer(ps){
@@ -60,6 +108,7 @@
     if(r.error){toast('Connexion au serveur impossible');return}
     if(!r.data){toast('Aucun joueur avec ce pseudo');return}
     if(r.data.me){toast('C’est toi');return}
+    if(!r.data.friend){toast('Ajoute '+r.data.pseudo+' en ami pour échanger');return}
     SOC.player=r.data;SOC.pick={give:null,want:null};renderPlayer();
   }
   function renderPlayer(){
@@ -71,7 +120,7 @@
       '<div class="shh"><div class="phd">'+avH(P.avatar,P.pseudo,'tbig')+'<div><b>'+esc(P.pseudo)+'</b><small>'+(P.score||0).toLocaleString('fr-FR')+' pts</small></div></div><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div>'+
       '<span class="lbl">Tu reçois · ses doubles</span>'+(theirs.length?'<div class="trow">'+theirs.map(function(c){return '<button class="tpick" data-act="tpw" data-id="'+c.id+'" aria-pressed="false">'+tileHTML(c,{nocount:1,lock:false})+(own(c.id)?'':'<em class="nw">Manque</em>')+'</button>'}).join('')+'</div>':'<p class="muted">Ce joueur n’a pas encore de doubles</p>')+
       '<span class="lbl">Tu donnes · tes doubles</span>'+(mine.length?'<div class="trow">'+mine.map(function(c){return '<button class="tpick" data-act="tpg" data-id="'+c.id+'" aria-pressed="false">'+tileHTML(c)+'</button>'}).join('')+'</div>':'<p class="muted">Tu n’as pas encore de doubles</p>')+
-      '<button class="pbtn" id="tpgo" data-act="tpropose" disabled>Proposer l’échange</button></div>';
+      '<button class="pbtn" id="tpgo" data-act="tpropose" disabled>Proposer l’échange</button><button class="gl2" data-act="frrm" data-p="'+esc(P.pseudo)+'">Retirer des amis</button></div>';
   }
   function pick(t,k){t.parentElement.querySelectorAll('.tpick').forEach(function(x){x.setAttribute('aria-pressed',x===t)});SOC.pick[k]=t.dataset.id;var b=$('tpgo');if(b)b.disabled=!(SOC.pick.give&&SOC.pick.want)}
   async function propose(){
@@ -128,7 +177,7 @@
   }
 
   document.addEventListener('change',function(ev){if(ev.target&&ev.target.id==='avfile'&&ev.target.files&&ev.target.files[0])upload(ev.target.files[0])});
-  document.addEventListener('submit',function(ev){if(ev.target&&ev.target.id==='trsf'){ev.preventDefault();var q=$('trq');openPlayer(q?q.value.trim():'')}});
+  document.addEventListener('submit',function(ev){if(ev.target&&ev.target.id==='frf'){ev.preventDefault();var q=$('frq');request(q?q.value.trim():'')}});
   document.addEventListener('click',function(ev){
     var t=ev.target.closest('[data-act]');if(!t)return;var a=t.dataset.act;
     if(a==='trsub'){SOC.sub=t.dataset.v;render()}
@@ -140,6 +189,12 @@
     else if(a==='trdec')respond(t.dataset.id,false);
     else if(a==='trcancel')cancel(t.dataset.id);
     else if(a==='pfsave')savePseudo();
+    else if(a==='fradd')addSheet();
+    else if(a==='frshare')share();
+    else if(a==='fracc')frAct('friend_respond',{p_id:+t.dataset.id,p_accept:true},'Nouvel ami ajouté');
+    else if(a==='frdec')frAct('friend_respond',{p_id:+t.dataset.id,p_accept:false});
+    else if(a==='frdel')frAct('friend_remove',{p_id:+t.dataset.id});
+    else if(a==='frrm'){var f=SOC.fr.find(function(x){return x.pseudo===t.dataset.p});if(f){closeMenu();frAct('friend_remove',{p_id:f.id},t.dataset.p+' retiré de tes amis')}}
   });
   var n=0;
   setInterval(function(){n++;if(!me()||document.hidden)return;if(tab==='shop'&&shopSub==='echanges')load();else if(n%3===0)load();if(n%3===0)events()},8000);
