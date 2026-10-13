@@ -4,7 +4,7 @@ const COST=100,ALB_BONUS=250,ART_BONUS=500,GOLD_COST=400,DROP_COST=250,DROP_LIMI
 const CODES={UNDERGROUND:500,TRACKDEX:300,ZARMA:200};
 const SHOP=[{k:'c500',n:500,p:'1,99 €'},{k:'c1200',n:1200,p:'4,99 €',tag:'+20 %'},{k:'c2600',n:2600,p:'9,99 €',tag:'+30 %'},{k:'c6500',n:6500,p:'19,99 €',tag:'+60 %'}];
 const PK={gold:{n:'Maxi Or',p:GOLD_COST,min:1,last:2,b:{},g:'Ultra rare garanti'},nacre:{n:'Maxi Nacre',p:900,min:1,last:3,b:{3:2,4:2,5:2},g:'Légendaire garanti'},diamant:{n:'Maxi Diamant',p:2000,min:2,last:4,b:{4:2,5:2},g:'Mythique garanti'}};
-const PASS_PRICE='4,99 € / mois';
+const PASS_PRICE='5,99 € / mois';
 const PSEUDOS=['zayn.93','lunatic_k','dalida.wav','mvp_sinna','yaya.prod','nekfan','oz.92i','soso.lune','ritchie.mp3','k.dot.fr','bbf_only','cramé.exe','mel_zer','djadja94','wave.95','rodé.x','ninho.lt','sch.akimbo','jvlivs','nuit.blanche'];
 const FRIENDS=['soso.lune','mvp_sinna','oz.92i','wave.95','mel_zer'];
 const DUST_GET=[5,10,25,60,150,400],DUST_COST=[40,80,200,500,1200,3000];
@@ -97,7 +97,7 @@ function evState(e){const t=now();return t<+new Date(e.s)?'next':t<+new Date(e.e
 const liveEv=()=>EVENTS.find(e=>evState(e)==='live');
 const nextEv=()=>EVENTS.filter(e=>evState(e)==='next').sort((a,b)=>new Date(a.s)-new Date(b.s))[0];
 const cost=()=>{const e=liveEv();return e&&e.fx.cost||COST};
-const hasPass=()=>false;
+const hasPass=()=>!!(S.passUntil&&S.passUntil>Date.now());
 const freeMs=()=>hasPass()?300e3:600e3;
 const coinI='<i class="coin"></i>',dustI='<i class="dust"></i>';
 const own=id=>(S.owned[id]||0)>0;
@@ -150,20 +150,25 @@ function pager(host,items,fn,o){
   tr.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)<=Math.abs(e.deltaX)||P<2)return;e.preventDefault();const t=performance.now();if(t-last<350)return;last=t;tr.scrollBy({left:Math.sign(e.deltaY)*tr.clientWidth,behavior:'smooth'})},{passive:false});
 }
 
+
+/* illustrations du Shop */
+const ART={
+ bourse:`<svg class="hart ha-b" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="hab" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#30c07a" stop-opacity=".45"/><stop offset="1" stop-color="#30c07a" stop-opacity="0"/></linearGradient></defs><g class="hgr">${[30,60,90,120,150].map(y=>`<line x1="0" x2="320" y1="${y}" y2="${y}"/>`).join('')}${[40,80,120,160,200,240,280].map(x=>`<line y1="0" y2="180" x1="${x}" x2="${x}"/>`).join('')}</g>${[[24,96,120,82,128],[44,90,104,70,118],[64,98,110,86,122],[84,76,94,60,104],[104,82,100,70,112],[124,64,86,52,94],[144,72,80,58,92],[164,50,70,40,80],[184,58,66,44,76],[204,40,56,30,64],[224,46,52,32,62],[244,30,44,20,52],[264,34,40,24,50],[284,22,30,12,38]].map(([x,o,c,h,l],k)=>`<g class="${k%3===1?'cd':'cu'}" style="--k:${k}"><line x1="${x+5}" x2="${x+5}" y1="${h}" y2="${l}"/><rect x="${x}" y="${Math.min(o,c)}" width="10" height="${Math.max(3,Math.abs(c-o))}" rx="1.5"/></g>`).join('')}<path class="hl" d="M0 128 C40 120 60 112 90 100 S150 80 180 66 S250 40 320 22"/><path d="M0 128 C40 120 60 112 90 100 S150 80 180 66 S250 40 320 22 V180 H0Z" fill="url(#hab)"/><circle class="hdot" cx="320" cy="22" r="5"/></svg>`,
+ amis:`<svg class="hart ha-a" viewBox="0 0 160 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="haa1" x1="0" x2="1"><stop offset="0" stop-color="#ffc23d"/><stop offset="1" stop-color="#ff8a3d"/></linearGradient><linearGradient id="haa2" x1="0" x2="1"><stop offset="0" stop-color="#20c997"/><stop offset="1" stop-color="#1c7fd6"/></linearGradient></defs><circle cx="130" cy="30" r="46" fill="rgba(255,255,255,.12)"/><g class="hav"><circle cx="62" cy="62" r="24" fill="url(#haa1)"/><circle cx="62" cy="55" r="8" fill="rgba(255,255,255,.85)"/><path d="M48 76a14 12 0 0 1 28 0" fill="rgba(255,255,255,.85)"/></g><g class="hav h2"><circle cx="108" cy="78" r="24" fill="url(#haa2)"/><circle cx="108" cy="71" r="8" fill="rgba(255,255,255,.85)"/><path d="M94 92a14 12 0 0 1 28 0" fill="rgba(255,255,255,.85)"/></g><g class="hsw"><circle cx="86" cy="112" r="14" fill="#fff"/><path d="M79 109h12l-3-3M93 115H81l3 3" fill="none" stroke="#6d5cff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g><rect class="hcd" x="22" y="104" width="30" height="40" rx="6" fill="rgba(255,255,255,.9)"/><rect class="hcd h2" x="118" y="110" width="30" height="40" rx="6" fill="rgba(255,255,255,.75)"/></svg>`,
+ pass:`<svg class="hart ha-p" viewBox="0 0 160 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="hap" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6d6"/><stop offset="1" stop-color="#f2c45a"/></linearGradient></defs><g class="hrays">${Array.from({length:12},(_,k)=>`<path d="M100 56 L${100+120*Math.cos(k*Math.PI/6)} ${56+120*Math.sin(k*Math.PI/6)} L${100+120*Math.cos(k*Math.PI/6+.18)} ${56+120*Math.sin(k*Math.PI/6+.18)}Z"/>`).join('')}</g><g class="htk"><path d="M52 30h96v24a10 10 0 0 0 0 20v24H52V74a10 10 0 0 0 0-20z" fill="url(#hap)" stroke="rgba(120,80,0,.25)"/><line x1="78" x2="78" y1="34" y2="94" stroke="rgba(120,80,0,.3)" stroke-dasharray="3 4"/><path d="M113 46l4.5 9.2 10.1 1.5-7.3 7.1 1.7 10.1-9-4.8-9 4.8 1.7-10.1-7.3-7.1 10.1-1.5z" fill="#c98a12"/></g><circle class="hsp" cx="40" cy="40" r="3" fill="#fff"/><circle class="hsp s2" cx="140" cy="20" r="2.5" fill="#fff"/></svg>`,
+ packs:`<svg class="hart ha-k" viewBox="0 0 160 120" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><defs><linearGradient id="hk1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8ce0ff"/><stop offset="1" stop-color="#6d5cff"/></linearGradient><linearGradient id="hk2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3c4"/><stop offset="1" stop-color="#e0a21a"/></linearGradient><linearGradient id="hk3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fdf6ff"/><stop offset="1" stop-color="#d9c8f2"/></linearGradient><radialGradient id="hkc" cx=".35" cy=".3"><stop offset="0" stop-color="#fff3c4"/><stop offset=".5" stop-color="#ffc23d"/><stop offset="1" stop-color="#c98a12"/></radialGradient></defs><g class="hpk"><rect x="18" y="22" width="44" height="60" rx="7" fill="#2a2b33" transform="rotate(-16 40 52)"/><rect x="40" y="16" width="44" height="60" rx="7" fill="url(#hk2)" transform="rotate(-6 62 46)"/><rect x="62" y="14" width="44" height="60" rx="7" fill="url(#hk3)" transform="rotate(5 84 44)"/><rect x="84" y="18" width="44" height="60" rx="7" fill="url(#hk1)" transform="rotate(15 106 48)"/><circle cx="106" cy="48" r="9" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="2" transform="rotate(15 106 48)"/></g><g class="hco">${[[112,98],[126,92],[138,100],[124,104]].map(([x,y],k)=>`<ellipse cx="${x}" cy="${y}" rx="11" ry="11" fill="url(#hkc)" stroke="#a8730d" stroke-width="1.2" style="--k:${k}"/>`).join('')}</g></svg>`
+};
 /* ================= VUES ================= */
 function vOuvrir(){
   const e=liveEv(),nx=nextEv(),cst=cost(),free=canFree(),can=free||S.coins>=cst;const dp=curDrop();const left=Math.max(0,DROP_LIMIT-(S.drop[dp.w]||0)-((hash('ds'+dp.w)%120)+Math.floor((now()-(dp.w*48*3600e3))/(48*3600e3)*260)));
   const evp=e?`<button class="evp glass" data-act="menu" data-p="events"><i class="ldot"></i><b>${e.n}</b><span data-until="${e.e}">${dur(new Date(e.e)-now())}</span></button>`:nx?`<button class="evp glass" data-act="menu" data-p="events"><b>${nx.n}</b><span>${fdate(nx.s)}</span></button>`:'';
   return `<div class="view v-open">${evp}
-   <div class="ofx" aria-hidden="true"><i class="n1">♪</i><i class="n2">♫</i><i class="n3">♪</i><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>
+   <div class="obg" aria-hidden="true"><i class="og1"></i><i class="og2"></i><i class="og3"></i><span class="ogrid"></span><span class="orays"></span>${Array.from({length:14},(_,i)=>`<b style="--x:${(i*37)%100};--y:${(i*53)%100};--d:${(i%7)*.9}s;--s:${2+(i%3)}px"></b>`).join('')}</div><div class="ofx" aria-hidden="true"><i class="n1">♪</i><i class="n2">♫</i><i class="n3">♪</i><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>
    <div class="mbox" data-act="open" data-m="${free?'free':'pay'}" role="button" tabindex="0" aria-label="Ouvrir un maxi"><div class="maxi"><div class="mv" style="--lc:${e?'#ff5f86':'#c9c3b5'}"></div><div class="ms glass"><b>Track<br>Dex</b><span>Vol. 01</span><em>5 sons</em></div></div></div>
    <div class="obar"><button class="pbtn" data-act="open" data-m="${free?'free':'pay'}" ${can?'':'disabled'}>${free?(S.bonus>0?`Ouvrir · ${S.bonus} offert${S.bonus>1?'s':''}`:'Ouvrir · Gratuit'):`Ouvrir · ${cst} ${coinI}`}</button><button class="gbtn sq" data-act="openall" aria-label="Ouverture express" ${can?'':'disabled'}>${ICON.bolt}</button></div>
    <div class="odeco" aria-hidden="true">${Array.from({length:23},(_,i)=>`<i style="--d:${(i*.137%1).toFixed(2)};--h:${(.25+((i*7)%10)/14).toFixed(2)}"></i>`).join('')}</div>
    <p class="cap" id="freecap">${freeReady()?'Maxi gratuit prêt':`Gratuit dans <b data-clock="${S.freeAt}">${clock(S.freeAt-now())}</b>`}</p>
-   <div class="orow">
-     <button class="dropc glass" data-act="opendrop" ${S.coins>=DROP_COST&&left>0?'':'disabled'}><span class="dcv" style="background:${esc(dp.A.art)}"></span><span class="dct"><b>Drop numéroté</b><small><i class="ldot"></i><span data-clock="${dp.e}">${clock(dp.e-now())}</span></small></span><span class="dcp">${DROP_COST} ${coinI}</span></button>
-     ${S.gold>0?`<button class="goldp" data-act="opengold" aria-label="Ouvrir un Maxi Or">Or ×${S.gold}</button>`:''}
-   </div>
+   ${S.gold>0?`<button class="goldp" data-act="opengold" aria-label="Ouvrir un Maxi Or">Maxi Or ×${S.gold}</button>`:''}
   </div>`;
 }
 function colList(){return ownedArtists().filter(A=>colG==='Tous'||A.g===colG).sort((a,b)=>pct(b.ids)-pct(a.ids)||a.n.localeCompare(b.n))}
@@ -172,7 +177,7 @@ function vCollection(){
   return `<div class="view v-col"><div class="vh"><button class="gbtn sq" data-act="colv" data-v="${colView==='bulles'?'liste':'bulles'}" aria-label="${colView==='bulles'?'Voir en liste':'Voir en bulles'}">${colView==='bulles'?ICON.list:ICON.bub}</button>
     <div class="seg glass sm">${['Tous','FR','US','UK','Monde'].map(g=>`<button data-act="colg" data-v="${g}" aria-pressed="${colG===g}">${g}</button>`).join('')}</div>
     <button class="gbtn sq" data-act="recy" aria-label="Recycler les doubles" style="margin-left:auto">${ICON.recycle}</button><button class="gbtn sq" data-act="cat" aria-label="Tout le catalogue">${ICON.search}</button></div>
-    <p class="cnt2">${tot} rappeur${tot>1?'s':''} · ${CARDS.filter(c=>own(c.id)).length}/${N} sons · ${dustI}${S.dust}</p>
+    <p class="cnt2">${tot} artiste${tot>1?'s':''} · ${CARDS.filter(c=>own(c.id)).length}/${N} sons · ${dustI}${S.dust}</p>
     ${colView==='bulles'?`<div class="bubw glass" id="bub">${L.length?'':'<p class="empty">Ouvre un maxi pour commencer</p>'}</div>`:`<div class="pgr" id="pgr"></div>`}</div>`;
 }
 function tickHTML(){mkInit();const L=S.mk.list.filter(l=>!l.mine).slice().sort((a,b)=>Math.abs(chg(b))-Math.abs(chg(a))).slice(0,8);if(!L.length)return '';
@@ -184,14 +189,14 @@ function bigChart(){const R=rng('ws'+Math.floor(now()/3600e3));let v=50,p=[];for
 const subHead=(t,x)=>`<div class="vh shd2"><button class="gbtn sq" data-act="shs" data-v="hub" aria-label="Retour">${ICON.back}</button><h2>${t}</h2>${x||''}</div>`;
 function vShop(){
   if(shopSub==='encheres')shopSub='cours';
-  if(shopSub==='hub'){mkTick();const live=S.mk.list.filter(l=>!l.mine).length,mine=S.mk.list.filter(l=>l.mine).length,ix=window.ECO?ECO.ix:wsIndex(),on=hasPass();
+  if(shopSub==='hub'){const ix=window.ECO?ECO.ix:0,pend=window.SOC?SOC.pending():0,nf=window.SOC?SOC.friends().length:0,on=hasPass();
     return `<div class="view v-shop v-hub"><div class="hgrid">
-     <button class="hb hb-ws" data-act="shs" data-v="cours">${bigChart()}${tickHTML()}<span class="hbt"><span class="hbk">Achète et vends tes sons</span><b>La Bourse</b><small><i class="ldot"></i>Cours en direct</small></span><span class="wix${ix>0?' gn':ix===0?' z':''}">CAC Son ${ix>0?'▲':ix<0?'▼':'='} ${fr(Math.abs(ix))} %</span></button>
+     <button class="hb hb-ws" data-act="shs" data-v="cours">${ART.bourse}<span class="wix${ix>0?' gn':ix===0?' z':''}">CAC Son ${ix>0?'▲':ix<0?'▼':'='} ${fr(Math.abs(ix))} %</span><span class="hbt"><span class="hbk">Achète et vends tes sons</span><b>La Bourse</b><small><i class="ldot"></i>Cours en direct</small></span></button>
      <div class="hrow">
-      <button class="hb hb-tr" data-act="shs" data-v="echanges"><span class="hbi">${ICON.users}</span><span class="hbt"><b>Amis</b><small>${window.SOC&&SOC.pending()?`${SOC.pending()} nouveauté${SOC.pending()>1?'s':''}`:'Échange avec tes amis'}</small></span></button>
-      <button class="hb hb-ps" data-act="passinfo"><span class="hbi">${ICON.star}</span><span class="hbt"><b>Pass</b><small>Saison 1 · bientôt</small></span></button>
+      <button class="hb hb-tr" data-act="shs" data-v="echanges">${ART.amis}${pend?`<i class="hbn">${pend}</i>`:''}<span class="hbt"><b>Amis</b><small>${pend?`${pend} nouveauté${pend>1?'s':''}`:nf?`${nf} ami${nf>1?'s':''} · échanges`:'Invite tes potes'}</small></span></button>
+      <button class="hb hb-ps" data-act="passinfo">${ART.pass}<span class="hbt"><b>Pass</b><small>${on?'Actif':'5,99 € / mois'}</small></span></button>
      </div>
-     <button class="hb hb-jt" data-act="shs" data-v="jetons"><span class="fan"><i class="mini"></i><i class="mini gold"></i><i class="mini nacre"></i><i class="mini diam"></i></span><span class="hbt"><b>Packs & jetons</b><small>Maxi Diamant · Mythique garanti</small></span></button>
+     <button class="hb hb-jt" data-act="shs" data-v="jetons">${ART.packs}<span class="hbt"><b>Packs & jetons</b><small>Maxi Diamant · Mythique garanti</small></span></button>
     </div></div>`}
   let head='',body='';
   if(shopSub==='encheres'){mkTick();const mine=S.mk.list.filter(l=>l.mine).length;const dups=CARDS.filter(c=>(S.owned[c.id]||0)>1).length;const ix=wsIndex();
@@ -201,8 +206,8 @@ function vShop(){
   else if(shopSub==='pass'){const on=hasPass();head=subHead('TrackDex Pass');
     body=`<div class="passc glass"><div class="ph2"><span class="pico">${ICON.star}</span><div><b>TrackDex Pass</b><small>${on?'Actif':PASS_PRICE}</small></div></div>
      <ul class="perks">${['Maxi gratuit toutes les 5 min','+1 maxi offert chaque jour','1 Maxi Or chaque lundi','Pass de saison premium','Thèmes Minuit et Nacre'].map(t=>`<li>${ICON.check}${t}</li>`).join('')}</ul>
-     ${on?`<div class="row">${S.passDay!==today()?'<button class="pbtn" data-act="claim">Maxi du jour</button>':'<button class="pbtn" disabled>Récupéré</button>'}<button class="gbtn" data-act="passoff">Résilier</button></div>`:`<button class="pbtn wide" data-act="buy" data-k="pass">S’abonner · ${PASS_PRICE}</button>`}</div><p class="cap">Paiement simulé dans cette démo</p>`}
-  else{head=subHead('Packs & jetons');body=`<div class="chips">${[['packs','Packs'],['jetons','Jetons']].map(([k,n])=>`<button class="chip" data-act="jts" data-v="${k}" aria-pressed="${jetSub===k}">${n}</button>`).join('')}</div><div class="pgr" id="pgr"></div>${jetSub==='jetons'?'<p class="cap">Paiement sécurisé bientôt disponible</p>':''}`}
+     ${on?`<div class="row">${!day().pd?'<button class="pbtn" data-act="claim">Maxi du jour</button>':'<button class="pbtn" disabled>Récupéré</button>'}<button class="gbtn" data-act="passmanage">Gérer l’abonnement</button></div>`:`<button class="pbtn wide" data-act="buy" data-k="pass">S’abonner · ${PASS_PRICE}</button>`}</div><p class="cap">Paiement sécurisé par Stripe. Résiliable à tout moment.</p>`}
+  else{head=subHead('Packs & jetons');body=`<div class="chips">${[['packs','Packs'],['jetons','Jetons']].map(([k,n])=>`<button class="chip" data-act="jts" data-v="${k}" aria-pressed="${jetSub===k}">${n}</button>`).join('')}</div><div class="pgr" id="pgr"></div>${jetSub==='jetons'?'<p class="cap">Paiement sécurisé par Stripe · jetons ajoutés en quelques secondes</p>':''}`}
   return `<div class="view v-shop">${head}${body}</div>`;
 }
 function avHTML(cls){const ph=window.CL&&CL.avatar;const nm=(window.CL&&CL.pseudo)||'Moi';return `<span class="av me ${cls||''}" style="${ph?`--avg:url('${esc(ph)}') center/cover no-repeat,#333`:''}">${ph?'':esc(nm.slice(0,2).toUpperCase())}</span>`}
@@ -218,7 +223,7 @@ function vVitrine(){vitInit();const pl=ARTISTS.filter(A=>S.ul[A.key]);const al=A
    <div class="vtabs">${S.vits.map((v,k)=>`<button class="chip" data-act="vsel" data-i="${k}" aria-pressed="${k===S.vi}">${esc(v.n)}</button>`).join('')}${S.vits.length<3?`<button class="chip add" data-act="vnew" aria-label="Nouvelle vitrine">+</button>`:''}<button class="chip" data-act="vedit" aria-label="Renommer la vitrine">${ICON.pen}</button></div>
    <div class="pgr vit" id="pgr"></div>
    ${pl.length?`<div class="wall">${pl.map(A=>`<button data-act="seepl" data-k="${A.key}">${plaqueHTML(A)}</button>`).join('')}</div>`:''}`}
-const MI={open:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/>',newT:'<path d="M12 3l2.2 5.6L20 9.3l-4.4 3.9L17 19l-5-3-5 3 1.4-5.8L4 9.3l5.8-.7z"/>',bid:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',recycle:'<path d="M7 19H4l3-5M17 19h3l-3-5M12 4l-2 3h4z"/><path d="M9 14l3-5 3 5"/>',sell:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',trade:'<path d="M7 7h12l-3-3M17 17H5l3 3"/>'};
+const MI={buy:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',open:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/>',newT:'<path d="M12 3l2.2 5.6L20 9.3l-4.4 3.9L17 19l-5-3-5 3 1.4-5.8L4 9.3l5.8-.7z"/>',bid:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',recycle:'<path d="M7 19H4l3-5M17 19h3l-3-5M12 4l-2 3h4z"/><path d="M9 14l3-5 3 5"/>',sell:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',trade:'<path d="M7 7h12l-3-3M17 17H5l3 3"/>'};
 function vMissions(){const d=day();const L=todayMissions();const tm=new Date();tm.setHours(24,0,0,0);const done=L.filter(m=>d.cl[m.k]).length;
   return `<div class="mhead"><div><b>Missions du jour</b><small>Nouvelles dans <span data-clock="${+tm}">${clock(+tm-now())}</span></small></div><div class="mbonus${done>=L.length?' ok':''}">${done>=L.length&&!d.cl.all?`<button class="pbtn" data-act="mall" style="height:38px">Bonus · 1 maxi</button>`:`<span>${d.cl.all?ICON.check+'Bonus récupéré':`${done}/${L.length} · bonus 1 maxi`}</span>`}</div></div>
    <div class="mlist3">${L.map((m,ix)=>{const v=Math.min(d[m.k]||0,m.n),ok=v>=m.n,cl=d.cl[m.k];return `<div class="mcard${ok?' ok':''}${cl?' cl':''}" style="--p:${v/m.n*100};--i:${ix}"><span class="mring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${MI[m.k]||''}</svg></span><div class="mtx"><b>${m.t}</b><small>${v}/${m.n}</small><span class="mrw"><em>+${m.c} ${coinI}</em><em>+${m.x} XP</em></span></div><button class="mbtn" data-act="mclaim" data-k="${m.k}" ${ok&&!cl?'':'disabled'}>${cl?ICON.check:ok?'Prendre':`${Math.round(v/m.n*100)} %`}</button></div>`}).join('')}</div>`}
@@ -230,9 +235,9 @@ function trackHTML(){const t=tierNow();let h='';for(let i=1;i<=TIERS;i++){const 
 function vSaisonTab(){const t=tierNow(),x=(S.xp||0)%TIER_XP;const dotM=missReady(),dotS=seasonReady();
   return `<div class="view v-sea"><div class="shero"><span class="slv2" style="--p:${t>=TIERS?100:x}"><b>${t}</b><small>palier</small></span><div class="sinfo"><span class="skk">Saison 1 · Premiers sillons</span><b>${t>=TIERS?'Saison terminée, bravo':`${TIER_XP-x} XP avant le palier ${t+1}`}</b><span class="pbar" style="--p:${t>=TIERS?100:x}%"><i></i></span><small>Fin dans ${dur(new Date(SEASON_END)-now())}</small></div></div>
    <div class="seg glass">${[['pass','Pass de saison',dotS],['missions','Missions',dotM]].map(([k,n,dot])=>`<button data-act="seas" data-v="${k}" aria-pressed="${seaSub===k}">${n}${dot?'<i class="sdot"></i>':''}</button>`).join('')}</div>
-   ${seaSub==='missions'?vMissions():`${(()=>{let n=0,nx=null;for(let i=1;i<=TIERS;i++){if(i<=t&&!S.sfree.includes(i))n++;if(!nx&&i>t)nx=i}const r=nx?seasonRewards(nx).f:null;
+   ${seaSub==='missions'?vMissions():`<div class="xpw"><button class="xph" data-act="seahelp"><span>Comment ça marche</span>${ICON.help}</button><div class="xpc"><span><i>${ICON.play}</i>Maxi <b>+20 XP</b></span><span><i>${ICON.star}</i>Nouveau son <b>+10</b></span><span><i>${ICON.check}</i>Mission <b>+40 à 80</b></span><span><i>${ICON.grid}</i>Album complet <b>+100</b></span></div></div>${(()=>{let n=0,nx=null;for(let i=1;i<=TIERS;i++){if(i<=t&&!S.sfree.includes(i))n++;if(!nx&&i>t)nx=i}const r=nx?seasonRewards(nx).f:null;
      return `<div class="sgrab${n?' on':''}"><div class="sgi">${n?`<span class="sgn">${n}</span>`:ICON.gift}</div><div class="sgt"><b>${n?`${n} récompense${n>1?'s':''} à récupérer`:'Tout est récupéré'}</b><small>${r?`Prochaine : ${rwLabel(r)} au palier ${nx}`:'Saison terminée'}</small></div>${n?`<button class="pbtn" data-act="sall">Tout récupérer</button>`:''}</div>`})()}<div class="trkw"><div class="trkl"><span class="pr">Premium</span><span>Gratuit</span></div><div class="strk" id="trk">${trackHTML()}</div></div>
-   <button class="passbn" data-act="passinfo"><span class="pico">${ICON.star}</span><span><b>Pass Premium</b><small>Double récompenses, maxi gratuit toutes les 5 min</small></span><em>Bientôt</em></button>`}</div>`}
+   <button class="passbn" data-act="passinfo"><span class="pico">${ICON.star}</span><span><b>Pass Premium</b><small>Double récompenses, maxi gratuit toutes les 5 min</small></span><em>${hasPass()?'Actif':'5,99 €'}</em></button>`}</div>`}
 function vSaison(){return ''}
 const missReady=()=>missReady0()||(todayMissions().every(m=>day().cl[m.k])&&!day().cl.all);
 const seasonReady=()=>seasonReady0();
@@ -616,7 +621,7 @@ function needCoins(miss){miss=Math.max(1,miss|0);closeMenu();menuPage='need';
 function passSheet(){closeMenu();menuPage='pass';
   sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass passsh" role="dialog" aria-label="Pass Premium"><div class="grab"></div><div class="shh"><h2>Pass Premium</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
    <ul class="perks">${['Une 2e récompense à chaque palier de la saison','Maxi gratuit toutes les 5 min au lieu de 10','+1 maxi offert chaque jour','1 Maxi Or chaque lundi','Thèmes Minuit et Nacre'].map(t=>`<li>${ICON.check}${t}</li>`).join('')}</ul>
-   <button class="pbtn" data-act="buy" data-k="pass">${PASS_PRICE} · bientôt</button></div>`}
+   ${hasPass()?`<p class="cap">Actif jusqu’au ${new Date(S.passUntil).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}, renouvelé automatiquement.</p><div class="row">${day().pd?'<button class="pbtn" disabled>Maxi du jour récupéré</button>':'<button class="pbtn" data-act="claim">Maxi du jour</button>'}<button class="gbtn" data-act="passmanage">Gérer</button></div>`:`<button class="pbtn" data-act="buy" data-k="pass">S’abonner · ${PASS_PRICE}</button><p class="cap">Paiement sécurisé par Stripe. Résiliable à tout moment.</p>`}</div>`}
 function vitSheet(){vitInit();closeMenu();menuPage='vit';const V=S.vits[S.vi];
   sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Vitrine"><div class="grab"></div><div class="shh"><h2>Vitrine</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
    <label class="lbl" for="vname">Nom</label><input class="tin" id="vname" maxlength="18" value="${esc(V.n)}">
@@ -738,15 +743,16 @@ document.addEventListener('click',e=>{
     case 'tget':case 'tgive':tradePick(t);break;
     case 'tgo':tradeGo();break;
     case 'gojet':closeMenu();closeStack();closeDD();tab='shop';shopSub='jetons';jetSub='packs';setTab('shop');break;
-    case 'buy':toast('Paiement bientôt disponible');break;
+    case 'buy':buyFlow(t.dataset.k);break;
     case 'buyok':buyOk(t.dataset.k);break;
     case 'buyc':buyCoins(t.dataset.k);break;
-    case 'passoff':S.pass=null;applySkin();save();toast('Pass résilié');render();break;
+    case 'passoff':case 'passmanage':window.open('https://billing.stripe.com/p/login/3cI9ASgU66yOg1Gbqh5AQ00','_blank','noopener');break;
     case 'gopass':case 'needpass':closeMenu();tab='shop';shopSub='pass';render();if(a==='needpass')toast('Réservé au TrackDex Pass');break;
     case 'prs':profSub=t.dataset.v;render();break;
     case 'seas':seaSub=t.dataset.v;render();break;
     case 'mall':{const d=day();if(d.cl.all||todayMissions().some(m=>!d.cl[m.k]))break;if(window.ECO)ECO.op('mission_all').then(r=>{if(r){toast('+1 maxi · +50 XP');render()}});break}
     case 'passinfo':passSheet();break;
+    case 'seahelp':closeMenu();menuPage='seah';sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Le pass de saison"><div class="grab"></div><div class="shh"><h2>Le pass de saison</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div><ol class="howl"><li><b>Gagne de l’XP</b><span>Chaque maxi ouvert, chaque nouveau son, chaque mission et chaque album complété te donnent de l’XP.</span></li><li><b>Monte de palier</b><span>Tous les ${TIER_XP} XP, tu passes au palier suivant. Il y a ${TIERS} paliers jusqu’au ${new Date(SEASON_END).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}.</span></li><li><b>Récupère tes récompenses</b><span>Chaque palier débloque une récompense gratuite : jetons, poussière, maxis ou Maxi Or. Avec le Pass, tu en as une deuxième à chaque palier.</span></li></ol><button class="pbtn" data-act="mclose">Compris</button></div>`;break;
     case 'gocoins':closeMenu();closeDD();tab='shop';shopSub='jetons';jetSub='jetons';setTab('shop');break;
     case 'mclaim':mClaim(t.dataset.k);break;
     case 'sclaim':sClaim(t.dataset.i,t.dataset.t);break;

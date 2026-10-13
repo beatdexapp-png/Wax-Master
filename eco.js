@@ -11,16 +11,16 @@
     if(!w)return;
     S.coins=w.coins;S.gold=w.gold;S.bonus=w.bonus;S.dust=w.dust;
     var o={};for(var k in (w.owned||{}))if(C[k])o[k]=w.owned[k];S.owned=o;
-    S.freeAt=+new Date(w.free_at)||0;S.xp=w.sxp||0;
-    var cl=w.claims||{};S.ul=Object.assign({},cl.ul||{});S.sfree=(cl.sf||[]).slice();S.codes=Object.assign({},cl.codes||{});
+    S.freeAt=+new Date(w.free_at)||0;S.xp=w.sxp||0;S.passUntil=w.pass_until?+new Date(w.pass_until):0;
+    var cl=w.claims||{};S.ul=Object.assign({},cl.ul||{});S.sfree=(cl.sf||[]).slice();S.sprem=(cl.sp||[]).slice();S.codes=Object.assign({},cl.codes||{});
     var d=w.day||{};S.day=d.d===today()?Object.assign(fresh0(),d,{cl:Object.assign({},d.cl||{})}):fresh0();
     save();setCoins();
   };
   /* appel brut : renvoie {error} ou les données */
   ECO.call=async function(op,a){
     if(!CL.user)return{error:'Connexion requise'};
-    var r=await sb.rpc('eco',{p_op:op,p_a:a||{}});
-    if(r.error)return{error:r.error.message};
+    var r;try{r=await sb.rpc('eco',{p_op:op,p_a:a||{}})}catch(x){return{error:'Connexion impossible, réessaie'}}
+    if(r.error)return{error:/fetch|network/i.test(r.error.message)?'Connexion impossible, réessaie':r.error.message};
     ECO.apply(r.data.w);return r.data;
   };
   ECO.op=async function(op,a){var r=await ECO.call(op,a);if(r.error){toast(r.error);return null}return r};
@@ -57,17 +57,36 @@
     toast(c.t+' fabriqué'+(r.ul&&r.ul.length?' · récompense !':''));see(id);render();
   };
   window.mClaim=async function(k){var m=MISS.find(function(x){return x.k===k});var r=await ECO.op('mission',{k:k});if(!r)return;toast('+'+m.c+' jetons · +'+m.x+' XP');render()};
-  window.sClaim=async function(i,t){if(t==='p'){toast('Pass bientôt disponible');return}var r=await ECO.op('season',{i:+i,t:'f'});if(!r)return;toast('Récompense ajoutée');render()};
+  window.sClaim=async function(i,t){if(t==='p'&&!hasPass()){passSheet();return}var r=await ECO.op('season',{i:+i,t:t==='p'?'p':'f'});if(!r)return;toast('Récompense ajoutée');render()};
   window.buyCoins=async function(k){
     if(k==='nacre'||k==='diamant'){if(S.coins<PK[k].p){needCoins(PK[k].p-S.coins);return}openPack(k);return}
     var P={gold:GOLD_COST,lot5:450,dust:300}[k];if(!P)return;if(S.coins<P){needCoins(P-S.coins);return}
     var r=await ECO.op('item',{k:k});if(!r)return;
     toast(k==='gold'?'Maxi Or ajouté':k==='lot5'?'5 maxis ajoutés':'+200 poussière');render();
   };
-  /* paiements réels : pas encore branchés (Stripe) */
-  window.buyFlow=function(){toast('Paiement bientôt disponible')};
-  window.buyOk=function(){closeDD();toast('Paiement bientôt disponible')};
-  window.claim=function(){};
+  /* paiements Stripe (liens de paiement, crédités par le serveur après confirmation de Stripe) */
+  var PAY={pass:'https://buy.stripe.com/3cI9ASgU66yOg1Gbqh5AQ00',c500:'https://buy.stripe.com/7sYcN46fs8GW02I8e55AQ01',c1200:'https://buy.stripe.com/5kQ6oGcDQf5k7va8e55AQ02',c2600:'https://buy.stripe.com/28E5kC8nA7CS3eU2TL5AQ03',c6500:'https://buy.stripe.com/14A8wO9rEcXc02I51T5AQ04'};
+  window.buyFlow=function(k){
+    if(!CL.user){toast('Connexion requise');return}
+    if(!PAY[k]){toast('Bientôt disponible');return}
+    if(k==='pass'&&hasPass()){passSheet();return}
+    var item=k==='pass'?{n:'TrackDex Pass',p:PASS_PRICE}:(function(){var s=SHOP.find(function(x){return x.k===k});return{n:s.n.toLocaleString('fr-FR')+' jetons',p:s.p}})();
+    var url=PAY[k]+'?client_reference_id='+encodeURIComponent(CL.user.id)+(CL.user.email?'&prefilled_email='+encodeURIComponent(CL.user.email):'')+'&locale=fr';
+    closeMenu();
+    dd.innerHTML=popHTML('<div class="card2 glass paysh"><span class="lbl">Paiement sécurisé · Stripe</span><h2>'+esc(item.n)+'</h2><p class="price2">'+item.p+'</p><p class="cap">Tu vas payer sur la page Stripe, puis revenir dans l’app. '+(k==='pass'?'Le Pass s’active':'Les jetons arrivent')+' en quelques secondes.</p><div class="row"><button class="gbtn" data-act="ddclose">Annuler</button><a class="pbtn" href="'+esc(url)+'" rel="noopener">Payer '+item.p.replace(' / mois','')+'</a></div></div>');
+  };
+  window.buyOk=function(k){buyFlow(k)};
+  window.claim=async function(){var r=await ECO.op('pass_daily');if(!r)return;toast('+1 maxi'+(new Date().getDay()===1?' et 1 Maxi Or':''));closeMenu();render()};
+  /* retour de Stripe */
+  var paid=null;try{paid=new URLSearchParams(location.search).get('paye');if(paid)history.replaceState(null,'',location.pathname)}catch(e){}
+  ECO.afterLogin=function(){
+    if(!paid)return;var k=paid,c0=S.coins,p0=hasPass(),n=0;paid=null;
+    toast('Paiement reçu, merci !');
+    (function poll(){n++;ECO.sync().then(function(){
+      if(k==='pass'?hasPass()&&!p0:S.coins>c0){toast(k==='pass'?'TrackDex Pass activé':'+'+(S.coins-c0).toLocaleString('fr-FR')+' jetons');return}
+      if(n<10)setTimeout(poll,3000);else toast('Paiement en cours de validation, tes achats arrivent bientôt');
+    })})();
+  };
 
   /* ---------- Bourse ---------- */
   function pct(v){v=+v||0;return (v>0?'+':v<0?'−':'')+fr(Math.abs(v))+' %'}

@@ -146,7 +146,7 @@
     var u=session?session.user:null,changed=(u&&u.id)!==(CL.user&&CL.user.id);
     CL.user=u;
     if(!u){loaded=false;CL.pseudo=null;CL.avatar=null;CL.ready=true;showGate(mode==='up'?'up':'in');rerender();return}
-    if(changed)setTimeout(function(){pull().then(function(){CL.ready=true;afterLogin();rerender();if(window.ECO)ECO.sync();if(window.MK)MK.kick();if(window.SOC)SOC.kick();if(!reveal)render()})},0);
+    if(changed)setTimeout(function(){pull().then(function(){CL.ready=true;afterLogin();rerender();if(window.ECO)ECO.sync().then(function(){if(ECO.afterLogin)ECO.afterLogin()});if(window.MK)MK.kick();if(window.SOC)SOC.kick();if(!reveal)render()})},0);
     else if(recovery)showGate('newpass');
     else rerender();
   });
