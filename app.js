@@ -33,21 +33,21 @@ function cover(seed,r){
 /* ================= CONSTRUCTION ================= */
 const CARDS=[],ALBUMS=[],ARTISTS=[],C={},RW={};
 RAW.forEach(A=>{
-  const ak=slug(A.n);const art={key:ak,n:A.n,g:A.g,u:!!A.u,ids:[],albums:[],sgk:null,ini0:A.ini,type:'artiste'};
+  const ak=A.k||slug(A.n);const art={key:ak,n:A.n,g:A.g,u:!!A.u,ids:[],albums:[],sgk:null,ini0:A.ini,type:'artiste'};
   (A.al||[]).forEach(al=>{
-    const alk='al-'+ak+'-'+slug(al.t);const alb={key:alk,t:al.t,a:A.n,ak,g:A.g,y:al.y,ids:[],p:!!al.p,type:'album'};
+    const alk=al.k||('al-'+ak+'-'+slug(al.t));const alb={key:alk,t:al.t,a:A.n,ak,g:A.g,y:al.y,ids:[],p:!!al.p,type:'album'};
     const R=rng('st|'+alk);
-    al.tr.forEach(x=>{const [t,s0]=typeof x==='string'?[x,undefined]:x;const id=ak+'--'+slug(t);if(C[id])return;
-      const s=s0===undefined?Math.max(1,Math.round(al.b*(.45+R()*.9))):s0;const c={id,t,a:A.n,ak,g:A.g,y:al.y,s,al:al.t,alk};C[id]=c;CARDS.push(c);alb.ids.push(id);art.ids.push(id)});
+    al.tr.forEach(x=>{const [t,s0,id0,r0]=typeof x==='string'?[x,undefined]:x;const id=id0||ak+'--'+slug(t);if(C[id])return;
+      const s=s0===undefined?Math.max(1,Math.round(al.b*(.45+R()*.9))):s0;const c={id,t,a:A.n,ak,g:A.g,y:al.y,s,al:al.t,alk,r0};C[id]=c;CARDS.push(c);alb.ids.push(id);art.ids.push(id)});
     ALBUMS.push(alb);art.albums.push(alk);RW[alk]=alb;
   });
   if(A.sg&&A.sg.length){const sk='sg-'+ak;const sgl={key:sk,t:'Singles',a:A.n,ak,g:A.g,y:null,ids:[],single:true,type:'album'};
-    A.sg.forEach(([t,s,y,from])=>{const id=ak+'--'+slug(t);if(C[id])return;const c={id,t,a:A.n,ak,g:A.g,y,s,al:from||null,alk:sk};C[id]=c;CARDS.push(c);sgl.ids.push(id);art.ids.push(id)});
+    A.sg.forEach(([t,s,y,from,id0,r0])=>{const id=id0||ak+'--'+slug(t);if(C[id])return;const c={id,t,a:A.n,ak,g:A.g,y,s,al:from||null,alk:sk,r0};C[id]=c;CARDS.push(c);sgl.ids.push(id);art.ids.push(id)});
     art.sgk=sk;RW[sk]=sgl}
   ARTISTS.push(art);RW[ak]=art;
 });
 const BASE=[[24,24],[36,24],[49,22],[61,20],[73,18],[84,15]];
-CARDS.forEach(c=>{c.r=tierOf(c.s)});
+CARDS.forEach(c=>{c.r=c.r0!=null?c.r0:tierOf(c.s)});
 CARDS.sort((x,y)=>x.r-y.r||(x.s??0)-(y.s??0)||x.t.localeCompare(y.t));
 CARDS.forEach((c,i)=>{c.no=i+1;c.q=slug(c.t+' '+c.a);
   const R=rng('bg'+c.id),h=R()*360|0;c.bg=c.r===5?'linear-gradient(155deg,#f6eedb,#e3d1a8)':`linear-gradient(155deg,hsl(${h} 32% 27%),hsl(${(h+40)%360} 38% 11%))`;c.hue=h;
@@ -180,9 +180,9 @@ function bigChart(){const R=rng('ws'+Math.floor(now()/3600e3));let v=50,p=[];for
   return `<svg class="bch" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,100 ${p.join(' ')} 100,100"/><polyline points="${p.join(' ')}"/></svg>`}
 const subHead=(t,x)=>`<div class="vh shd2"><button class="gbtn sq" data-act="shs" data-v="hub" aria-label="Retour">${ICON.back}</button><h2>${t}</h2>${x||''}</div>`;
 function vShop(){
-  if(shopSub==='hub'){mkTick();const live=S.mk.list.filter(l=>!l.mine).length,mine=S.mk.list.filter(l=>l.mine).length,ix=wsIndex(),on=hasPass();
+  if(shopSub==='hub'){mkTick();const live=S.mk.list.filter(l=>!l.mine).length,mine=S.mk.list.filter(l=>l.mine).length,ix=window.ECO?ECO.ix:wsIndex(),on=hasPass();
     return `<div class="view v-shop v-hub"><div class="hgrid">
-     <button class="hb hb-ws" data-act="shs" data-v="encheres">${bigChart()}${tickHTML()}<span class="hbt"><span class="hbk">Achète et vends tes sons</span><b>La Bourse</b><small><i class="ldot"></i>${live} en cours${mine?` · ${mine} à toi`:''}</small></span><span class="wix${ix>0?' gn':ix===0?' z':''}">CAC Son ${ix>0?'▲':ix<0?'▼':'='} ${fr(Math.abs(ix))} %</span></button>
+     <button class="hb hb-ws" data-act="shs" data-v="cours">${bigChart()}${tickHTML()}<span class="hbt"><span class="hbk">Achète et vends tes sons</span><b>La Bourse</b><small><i class="ldot"></i>Cours en direct · ${live} enchère${live>1?'s':''}</small></span><span class="wix${ix>0?' gn':ix===0?' z':''}">CAC Son ${ix>0?'▲':ix<0?'▼':'='} ${fr(Math.abs(ix))} %</span></button>
      <div class="hrow">
       <button class="hb hb-tr" data-act="shs" data-v="echanges"><span class="hbi">${ICON.swap}</span><span class="hbt"><b>Échanges</b><small>${window.SOC&&SOC.pending()?`${SOC.pending()} proposition${SOC.pending()>1?'s':''} reçue${SOC.pending()>1?'s':''}`:'Entre joueurs'}</small></span></button>
       <button class="hb hb-ps" data-act="passinfo"><span class="hbi">${ICON.star}</span><span class="hbt"><b>Pass</b><small>Saison 1 · bientôt</small></span></button>
@@ -191,7 +191,7 @@ function vShop(){
     </div></div>`}
   let head='',body='';
   if(shopSub==='encheres'){mkTick();const mine=S.mk.list.filter(l=>l.mine).length;const dups=CARDS.filter(c=>(S.owned[c.id]||0)>1).length;const ix=wsIndex();
-    head=subHead('La Bourse',`<span class="wix sm${ix>0?' gn':ix===0?' z':''}">CAC Son ${ix>0?'▲':ix<0?'▼':'='} ${fr(Math.abs(ix))} %</span>`);
+    head=subHead('Enchères');
     body=`${tickHTML()}<div class="chips">${[['live','Marché'],['mine',`Mes ventes ${mine}/${mkMax()}`],['sell',`Vendre · ${dups}`]].map(([k,n])=>`<button class="chip" data-act="mks" data-v="${k}" aria-pressed="${mkSub===k}">${n}</button>`).join('')}</div><div class="pgr" id="pgr"></div>`}
   else if(shopSub==='echanges'){head=subHead('Échanges');body=window.SOC?SOC.body():'<p class="cap">Connexion requise</p>'}
   else if(shopSub==='pass'){const on=hasPass();head=subHead('TrackDex Pass');
@@ -355,14 +355,15 @@ const SPP=[0,.08,.22,.45,.6,.8];
 function pull(kind){
   S.packs++;const base=new Set(Object.keys(S.owned).filter(k=>S.owned[k]>0));let cards;
   if(kind==='drop'){const dp=curDrop();const ids=dp.A.ids.slice();cards=[];for(let k=0;k<3&&ids.length;k++)cards.push(C[ids.splice(Math.floor(Math.random()*ids.length),1)[0]]);cards.sort((a,b)=>a.r-b.r);
-    S.drop[dp.w]=(S.drop[dp.w]||0)+1;const last=cards[cards.length-1];S.ser[last.id]=Math.min(DROP_LIMIT,(hash('ds'+dp.w)%120)+Math.floor((now()-dp.w*48*3600e3)/(48*3600e3)*260)+S.drop[dp.w])}
+    S.drop[dp.w]=(S.drop[dp.w]||0)+1;if(window.SRV)cards=SRV.cards.map(id=>C[id]).sort((a,b)=>a.r-b.r);const last=cards[cards.length-1];S.ser[last.id]=Math.min(DROP_LIMIT,(hash('ds'+dp.w)%120)+Math.floor((now()-dp.w*48*3600e3)/(48*3600e3)*260)+S.drop[dp.w])}
   else if(PK[kind]){const P=PK[kind];cards=[0,1,2,3].map(()=>drawCard(P.min,P.b));cards.push(drawCard(P.last,P.b));cards.sort((a,b)=>a.r-b.r)}
   else cards=[drawCard(),drawCard(),drawCard(),drawCard(),drawCard(1)].sort((a,b)=>a.r-b.r);
+  if(window.SRV&&kind!=='drop')cards=SRV.cards.map(id=>C[id]).sort((a,b)=>a.r-b.r);
   const seen=new Set();
   const res=cards.map(c=>{const isNew=!own(c.id)&&!seen.has(c.id);seen.add(c.id);S.owned[c.id]=(S.owned[c.id]||0)+1;
     let sp=null;if(c.r>=3&&Math.random()<[0,0,0,.6,.85,1][c.r]){const at=c.r-1-(c.r>=4&&Math.random()<.4?1:0);const opts=['scratch','pulse','fake'];if(c.r>=4)opts.push('faceb','blackout');if(at+2<=c.r)opts.push('rewind');if(c.r===5)opts.push('blackout','pulse');sp={at,kind:opts[Math.floor(Math.random()*opts.length)]}}
     return{c,isNew,sp}});
-  const secret=!!PK[kind]||(kind!=='drop'&&Math.random()<1/40);const gain=secret&&kind==='std'?100:0;
+  const secret=!!PK[kind]||(window.SRV?SRV.secret:(kind!=='drop'&&Math.random()<1/40));const gain=window.SRV?SRV.gain:(secret&&kind==='std'?100:0);
   const nn=res.filter(x=>x.isNew).length;const d=day();d.open++;d.newT+=nn;addXP(20+10*nn);
   S.coins+=gain;const ul=checkUnlocks();save();setCoins();
   return{res,i:0,lv:0,ul,gain,stage:'seal',secret,kind,base};
@@ -747,15 +748,14 @@ document.addEventListener('click',e=>{
     case 'mpage':menuPage=t.dataset.p||'';resetArm=false;renderMenu();break;
     case 'skin':S.set.skin=t.dataset.s;save();applySkin();renderMenu();break;
     case 'lite':S.set.lite=!S.set.lite;save();applySkin();renderMenu();break;
-    case 'reset':if(!resetArm){resetArm=true;renderMenu()}else{resetArm=false;S=fresh();save();closeMenu();closeStack();setTab('ouvrir');toast('Progression effacée')}break;
+    case 'reset':if(!resetArm){resetArm=true;renderMenu()}else{resetArm=false;S=fresh();save();closeMenu();closeStack();setTab('ouvrir');if(window.ECO)ECO.sync();toast('Réglages effacés')}break;
   }
 });
 document.addEventListener('submit',e=>{
   if(e.target.id!=='codef')return;e.preventDefault();
   const v=$('code').value.trim().toUpperCase(),m=$('cmsg');
-  if(!CODES[v]){m.textContent='Code inconnu';m.style.color='#e5484d';return}
-  if(S.codes[v]){m.textContent='Déjà utilisé';m.style.color='#e5484d';return}
-  S.codes[v]=1;S.coins+=CODES[v];save();m.textContent=`+${CODES[v]} jetons`;m.style.color='#30a46c';setCoins();
+  if(window.ECO){ECO.call('code',{v}).then(r=>{if(r.error){m.textContent=r.error;m.style.color='#e5484d'}else{m.textContent=`+${r.coins} jetons`;m.style.color='#30a46c'}});return}
+  m.textContent='Connexion requise';m.style.color='#e5484d';
 });
 let qT=0;
 document.addEventListener('input',e=>{if(e.target.id==='cq'){catQ=e.target.value;clearTimeout(qT);qT=setTimeout(catPager,140)}});

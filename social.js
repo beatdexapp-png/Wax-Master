@@ -22,10 +22,10 @@
     var r=await sb.rpc('trade_events');if(r.error||!Array.isArray(r.data)||!r.data.length)return;
     var notes=[];
     r.data.forEach(function(e){
-      if(e.status==='accepted'&&C[e.want]){S.owned[e.want]=(S.owned[e.want]||0)+1;notes.push((e.to||'Le joueur')+' a accepté : tu reçois '+C[e.want].t)}
-      else if(C[e.give]){S.owned[e.give]=(S.owned[e.give]||0)+1;notes.push(e.status==='declined'?(e.to||'Le joueur')+' a refusé ton échange':'Échange annulé, ton son est revenu')}
+      if(e.status==='accepted'&&C[e.want]){notes.push((e.to||'Le joueur')+' a accepté : tu reçois '+C[e.want].t)}
+      else if(C[e.give]){notes.push(e.status==='declined'?(e.to||'Le joueur')+' a refusé ton échange':'Échange annulé, ton son est revenu')}
     });
-    checkUnlocks();save();setCoins();if(notes.length)toast(notes[notes.length-1]);if(quiet())render();
+    if(notes.length)toast(notes[notes.length-1]);if(window.ECO)await ECO.sync();if(quiet())render();
   }
   SOC.kick=function(){load();events()};
 
@@ -78,23 +78,23 @@
     var P=SOC.player,g=SOC.pick.give,w=SOC.pick.want;if(!P||!g||!w)return;
     if((S.owned[g]||0)<2){toast('Il te faut ce son en double');return}
     var b=$('tpgo');if(b){b.disabled=true;b.textContent='Envoi…'}
-    S.owned[g]--;save();
     var r=await sb.rpc('propose_trade',{p_to:P.pseudo,p_give:g,p_want:w});
-    if(r.error){S.owned[g]++;save();toast(r.error.message);if(b){b.disabled=false;b.textContent='Proposer l’échange'}return}
-    day().trade++;save();closeMenu();toast('Proposition envoyée à '+P.pseudo);SOC.sub='envoyes';await load();if(tab==='shop'&&shopSub==='echanges')render();
+    if(r.error){toast(r.error.message);if(b){b.disabled=false;b.textContent='Proposer l’échange'}return}
+    if(window.ECO)await ECO.sync(true);closeMenu();toast('Proposition envoyée à '+P.pseudo);SOC.sub='envoyes';await load();if(tab==='shop'&&shopSub==='echanges')render();
   }
   async function respond(id,ok){
     var t=SOC.list.find(function(x){return String(x.id)===String(id)});if(!t)return;
     if(ok&&!own(t.want_card)){toast('Tu n’as plus '+(C[t.want_card]?C[t.want_card].t:'ce son'));return}
     var r=await sb.rpc('respond_trade',{p_id:t.id,p_accept:ok});
     if(r.error){toast(r.error.message);load();return}
-    if(ok){S.owned[t.want_card]--;S.owned[t.give_card]=(S.owned[t.give_card]||0)+1;checkUnlocks();save();toast('Échange fait : tu reçois '+C[t.give_card].t)}
+    if(window.ECO)await ECO.sync(true);
+    if(ok)toast('Échange fait : tu reçois '+(C[t.give_card]?C[t.give_card].t:'un son'))
     else toast('Échange refusé');
     await load();render();
   }
   async function cancel(id){
     var r=await sb.rpc('cancel_trade',{p_id:+id});if(r.error){toast(r.error.message);return}
-    await events();await load();render();
+    await events();if(window.ECO)await ECO.sync(true);await load();render();
   }
 
   /* ---------- profil : photo et pseudo ---------- */

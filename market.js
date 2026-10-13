@@ -22,11 +22,10 @@
     if(!me())return;
     var r=await sb.rpc('market_events');if(r.error||!r.data)return;
     var d=r.data,notes=[];
-    if(d.refund>0){S.coins+=d.refund;notes.push(d.refund+' jetons rendus après une surenchère')}
-    (d.won||[]).forEach(function(w){if(C[w.card]){S.owned[w.card]=(S.owned[w.card]||0)+1;notes.push('Remporté : '+C[w.card].t)}});
-    (d.sold||[]).forEach(function(x){var c=C[x.card];if(!c)return;
-      if(x.sold){S.coins+=x.price;notes.push(c.t+' vendu '+x.price+' jetons')}else{S.owned[x.card]=(S.owned[x.card]||0)+1;notes.push(c.t+' invendu, rendu')}});
-    if(notes.length){checkUnlocks();save();setCoins();toast(notes[notes.length-1]);if(!reveal&&!ov.innerHTML&&!sh.innerHTML)render()}
+    if(d.refund>0)notes.push(d.refund+' jetons rendus après une surenchère');
+    (d.won||[]).forEach(function(w){if(C[w.card])notes.push('Remporté : '+C[w.card].t)});
+    (d.sold||[]).forEach(function(x){var c=C[x.card];if(!c)return;notes.push(x.sold?c.t+' vendu '+x.price+' jetons':c.t+' invendu, rendu')});
+    if(notes.length){toast(notes[notes.length-1]);if(window.ECO)ECO.sync()}
   }
 
   /* on remplace la simulation par le vrai marché */
@@ -36,17 +35,16 @@
     var nb=nextBid(l);if(S.coins<nb){toast('Pas assez de jetons');return}
     var r=await sb.rpc('place_bid',{p_id:l.sid});
     if(r.error){toast(r.error.message);refresh(true);return}
-    S.coins-=r.data.cur_price;day().bid++;save();setCoins();toast('Tu es en tête');refresh(true);
+    toast('Tu es en tête');refresh(true);if(window.ECO)ECO.sync();
   };
   window.listCard=async function(id){
     var c=C[id];if(!c||(S.owned[id]||0)<2)return;
     if(S.mk.list.filter(function(l){return l.mine}).length>=mkMax()){toast('5 ventes maximum');return}
     var sp=sh.querySelector('[data-act=sp][aria-pressed=true]'),sd=sh.querySelector('[data-act=sd][aria-pressed=true]');
     var p=sp?+sp.dataset.v:valOf(c),m=sd?+sd.dataset.v:15;
-    S.owned[id]--;save();
     var r=await sb.rpc('create_listing',{p_card:id,p_price:p,p_minutes:m});
-    if(r.error){S.owned[id]++;save();toast(r.error.message);return}
-    day().sell++;save();closeMenu();shopSub='encheres';mkSub='mine';await refresh(true);render();toast('Mis en vente');
+    if(r.error){toast(r.error.message);return}
+    if(window.ECO)await ECO.sync(true);closeMenu();shopSub='encheres';mkSub='mine';await refresh(true);render();toast('Mis en vente');
   };
 
   window.MK={kick:function(){refresh(true);events()}};
