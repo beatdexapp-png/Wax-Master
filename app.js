@@ -1,9 +1,9 @@
 const SKINS=[['auto','Auto'],['graphite','Graphite'],['encre','Encre'],['aube','Aube'],['foret','Forêt'],['or','Or'],['brume','Brume'],['sable','Sable'],['lilas','Lilas'],['minuit','Minuit',1],['nacre','Nacre',1]];
 const SKPV={auto:'linear-gradient(135deg,#e8ebf1 50%,#0e0f12 50%)',graphite:'radial-gradient(circle at 20% 20%,rgba(90,110,190,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(40,130,115,.7),transparent 60%),#0e0f12',encre:'radial-gradient(circle at 20% 20%,rgba(70,90,230,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(40,170,220,.7),transparent 60%),#0a0e1c',aube:'radial-gradient(circle at 20% 20%,rgba(230,90,110,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(240,160,80,.7),transparent 60%),#160d10',foret:'radial-gradient(circle at 20% 20%,rgba(60,170,120,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(150,190,80,.6),transparent 60%),#0b120f',or:'radial-gradient(circle at 20% 20%,rgba(210,160,60,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(160,110,40,.7),transparent 60%),#12100a',brume:'radial-gradient(circle at 20% 20%,rgba(150,170,255,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,190,160,.9),transparent 60%),#e8ebf1',sable:'radial-gradient(circle at 20% 20%,rgba(230,150,110,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(150,180,140,.8),transparent 60%),#efe7db',lilas:'radial-gradient(circle at 20% 20%,rgba(170,140,255,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,170,210,.85),transparent 60%),#ebe7f4',minuit:'radial-gradient(circle at 20% 20%,rgba(140,80,255,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,60,140,.6),transparent 60%),#05040a',nacre:'radial-gradient(circle at 20% 20%,rgba(255,220,240,.95),transparent 60%),radial-gradient(circle at 90% 80%,rgba(200,240,255,.95),transparent 60%),#f6f4f1'};
-const COST=100,ALB_BONUS=250,ART_BONUS=500,GOLD_COST=400,DROP_COST=250,DROP_LIMIT=500;
+const COST=100,ALB_BONUS=250,ART_BONUS=500,GOLD_COST=900,DROP_COST=250,DROP_LIMIT=500;
 const CODES={UNDERGROUND:500,TRACKDEX:300,ZARMA:200};
 const SHOP=[{k:'c500',n:500,p:'1,99 €'},{k:'c1200',n:1200,p:'4,99 €',tag:'+20 %'},{k:'c2600',n:2600,p:'9,99 €',tag:'+30 %'},{k:'c6500',n:6500,p:'19,99 €',tag:'+60 %'}];
-const PK={gold:{n:'Maxi Or',p:GOLD_COST,min:1,last:2,b:{},g:'Ultra rare garanti'},nacre:{n:'Maxi Nacre',p:900,min:1,last:3,b:{3:2,4:2,5:2},g:'Légendaire garanti'},diamant:{n:'Maxi Diamant',p:2000,min:2,last:4,b:{4:2,5:2},g:'Mythique garanti'}};
+const PK={gold:{n:'Maxi Or',p:GOLD_COST,min:1,last:3,b:{3:2,4:2,5:2},g:'Légendaire garanti'},nacre:{n:'Maxi Nacre',p:400,min:1,last:2,b:{},g:'Ultra rare garanti'},diamant:{n:'Maxi Diamant',p:2000,min:2,last:4,b:{4:2,5:2},g:'Mythique garanti'}};
 const PASS_PRICE='5,99 € / mois';
 const PSEUDOS=['zayn.93','lunatic_k','dalida.wav','mvp_sinna','yaya.prod','nekfan','oz.92i','soso.lune','ritchie.mp3','k.dot.fr','bbf_only','cramé.exe','mel_zer','djadja94','wave.95','rodé.x','ninho.lt','sch.akimbo','jvlivs','nuit.blanche'];
 const FRIENDS=['soso.lune','mvp_sinna','oz.92i','wave.95','mel_zer'];
@@ -115,7 +115,7 @@ const missReady0=()=>{const d=day();return todayMissions().some(m=>!d.cl[m.k]&&d
 const seasonReady0=()=>{const t=tierNow();for(let i=1;i<=t;i++){if(!S.sfree.includes(i))return true;if(hasPass()&&!S.sprem.includes(i))return true}return false};
 function toast(t){document.querySelectorAll('.toast').forEach(x=>x.remove());const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2400)}
 const I=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
-const ICON={list:I('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01" stroke-width="2.6"/>'),users:I('<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3 3 0 0 1 0 5.6M17.5 14.2A5 5 0 0 1 21 19"/>'),pen:I('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'),plus:I('<path d="M12 5v14M5 12h14"/>'),cam:I('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),bolt:I('<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'),sp:I('<circle cx="12" cy="12" r="9"/><path d="M7.5 9.5c3-.9 6.3-.6 9 .9M8 12.6c2.4-.6 4.9-.4 7 .7M8.6 15.5c1.8-.4 3.6-.3 5.2.5"/>'),gift:I('<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18M12 8v13M12 8c-1.5-3.5-5-4-5-1.5S12 8 12 8zm0 0c1.5-3.5 5-4 5-1.5S12 8 12 8z"/>'),search:I('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/>'),back:I('<path d="m15 5-7 7 7 7"/>'),x:I('<path d="M6 6l12 12M18 6 6 18"/>'),share:I('<path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>'),cal:I('<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>'),theme:I('<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>'),gem:I('<path d="M12 3 20 12 12 21 4 12z"/>'),gear:I('<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.6M12 18.6v2.6M4.4 4.4l1.9 1.9M17.7 17.7l1.9 1.9M2.8 12h2.6M18.6 12h2.6M4.4 19.6l1.9-1.9M17.7 6.3l1.9-1.9"/>'),help:I('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17.2v.3"/>'),star:I('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'),check:I('<path d="m5 12 5 5 9-10"/>'),grid:I('<rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/>'),bub:I('<circle cx="8.5" cy="9" r="4.5"/><circle cx="17" cy="15" r="3.5"/><circle cx="9.5" cy="18.5" r="2"/>'),recycle:I('<path d="M7 19H4.5a1.5 1.5 0 0 1-1.3-2.2L5 13.5M14 4.3l-1.3-2.2a1.5 1.5 0 0 0-2.6 0L8.3 5.4M17 13.5l1.8 3.3a1.5 1.5 0 0 1-1.3 2.2H11"/><path d="m11 16-2 3 2 3M3 9.5l2.9 1 1-2.9M20.2 7.5l-1 3-3-.9"/>'),play:I('<path d="M7 5v14l11-7z"/>'),pin:I('<path d="M12 17v5M8 3h8l-1 6 3 4H6l3-4z"/>'),swap:I('<path d="M7 7h12l-3-3M17 17H5l3 3"/>'),lock:I('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')};
+const ICON={list:I('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01" stroke-width="2.6"/>'),users:I('<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3 3 0 0 1 0 5.6M17.5 14.2A5 5 0 0 1 21 19"/>'),pen:I('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'),plus:I('<path d="M12 5v14M5 12h14"/>'),cam:I('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),bolt:I('<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'),sp:I('<circle cx="12" cy="12" r="9"/><path d="M7.5 9.5c3-.9 6.3-.6 9 .9M8 12.6c2.4-.6 4.9-.4 7 .7M8.6 15.5c1.8-.4 3.6-.3 5.2.5"/>'),gift:I('<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18M12 8v13M12 8c-1.5-3.5-5-4-5-1.5S12 8 12 8zm0 0c1.5-3.5 5-4 5-1.5S12 8 12 8z"/>'),search:I('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/>'),back:I('<path d="m15 5-7 7 7 7"/>'),x:I('<path d="M6 6l12 12M18 6 6 18"/>'),share:I('<path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>'),cal:I('<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>'),theme:I('<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>'),gem:I('<path d="M12 3 20 12 12 21 4 12z"/>'),gear:I('<path d="M10.3 3h3.4l.5 2.4 1.9.8 2-1.4 2.4 2.4-1.4 2 .8 1.9 2.4.5v3.4l-2.4.5-.8 1.9 1.4 2-2.4 2.4-2-1.4-1.9.8-.5 2.4h-3.4l-.5-2.4-1.9-.8-2 1.4-2.4-2.4 1.4-2-.8-1.9L3 13.7v-3.4l2.4-.5.8-1.9-1.4-2 2.4-2.4 2 1.4 1.9-.8z"/><circle cx="12" cy="12" r="3.2"/>'),help:I('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17.2v.3"/>'),star:I('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'),check:I('<path d="m5 12 5 5 9-10"/>'),grid:I('<rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/>'),bub:I('<circle cx="8.5" cy="9" r="4.5"/><circle cx="17" cy="15" r="3.5"/><circle cx="9.5" cy="18.5" r="2"/>'),recycle:I('<path d="M7 19H4.5a1.5 1.5 0 0 1-1.3-2.2L5 13.5M14 4.3l-1.3-2.2a1.5 1.5 0 0 0-2.6 0L8.3 5.4M17 13.5l1.8 3.3a1.5 1.5 0 0 1-1.3 2.2H11"/><path d="m11 16-2 3 2 3M3 9.5l2.9 1 1-2.9M20.2 7.5l-1 3-3-.9"/>'),play:I('<path d="M7 5v14l11-7z"/>'),pin:I('<path d="M12 17v5M8 3h8l-1 6 3 4H6l3-4z"/>'),swap:I('<path d="M7 7h12l-3-3M17 17H5l3 3"/>'),lock:I('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')};
 
 /* ================= RENDUS D'OBJETS ================= */
 function waveSVG(c){if(!c.wv){const R=rng('wv'+c.id);let d='';for(let k=0;k<24;k++){const v=.16+.84*Math.abs(Math.sin(k*.45+R()*2.2))*(.45+.55*R());const h=v*40;d+=`M${k*4.4+2} ${(24-h/2).toFixed(1)}v${h.toFixed(1)}`}c.wv=d}
@@ -151,6 +151,11 @@ function pager(host,items,fn,o){
 }
 
 
+/* poussière : explication */
+function dustHelp(){closeMenu();menuPage='dust';sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="La poussière"><div class="grab"></div><div class="shh"><h2>La poussière</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
+  <div class="dsh"><span class="dsi">${dustI}</span><b>Tu en as ${S.dust.toLocaleString('fr-FR')}</b></div>
+  <ol class="howl"><li><b>Recycle tes doubles</b><span>Chaque son en trop se transforme en poussière : ${DUST_GET.slice(0,5).map((v,i)=>`${RAR[i].n} ${v}`).join(', ')}.</span></li><li><b>Fabrique le son qui te manque</b><span>Ouvre un son que tu n’as pas et touche « Fabriquer ». Prix : ${DUST_COST.slice(0,5).map((v,i)=>`${RAR[i].n} ${v}`).join(', ')}.</span></li><li><b>Complète tes albums</b><span>C’est le moyen le plus sûr de finir un album sans compter sur la chance.</span></li></ol>
+  <div class="row"><button class="gbtn" data-act="recy">Recycler mes doubles</button><button class="pbtn" data-act="buyc" data-k="dust">+200 · 300 jetons</button></div></div>`}
 /* récompenses récupérées */
 function rewardPop(g,n){const L=[g.coins>0&&[coinI,'+'+g.coins.toLocaleString('fr-FR'),'jetons'],g.maxi>0&&['<i class="mini"></i>','+'+g.maxi,'maxi'+(g.maxi>1?'s':'')],g.gold>0&&['<i class="mini gold"></i>','+'+g.gold,'Maxi Or'],g.dust>0&&[dustI,'+'+g.dust,'poussière']].filter(Boolean);
   dd.innerHTML=popHTML(`<div class="rwp"><div class="rwrays" aria-hidden="true"></div><span class="lbl">Pass de saison</span><h2>${n} récompense${n>1?'s':''} récupérée${n>1?'s':''}</h2><div class="rwl">${L.map(([i,v,t],k)=>`<div class="rwi" style="--k:${k}"><span class="rwic">${i}</span><b>${v}</b><small>${t}</small></div>`).join('')}</div><button class="pbtn" data-act="ddclose">Super</button></div>`);
@@ -197,7 +202,7 @@ function vShop(){
     return `<div class="view v-shop v-hub"><div class="hgrid">
      <button class="hb hb-ws" data-act="shs" data-v="cours">${ART.bourse}<span class="wix${ix>0?' gn':ix===0?' z':''}">CAC Son ${ix>0?'▲':ix<0?'▼':'='} ${fr(Math.abs(ix))} %</span><span class="hbt"><span class="hbk">Achète et vends tes sons</span><b>La Bourse</b><small><i class="ldot"></i>Cours en direct</small></span></button>
      <div class="hrow">
-      <button class="hb hb-tr" data-act="shs" data-v="echanges">${ART.amis}${pend?`<i class="hbn">${pend}</i>`:''}<span class="hbt"><b>Amis</b><small>${pend?`${pend} nouveauté${pend>1?'s':''}`:nf?`${nf} ami${nf>1?'s':''} · échanges`:'Invite tes potes'}</small></span></button>
+      <button class="hb hb-tr" data-act="shs" data-v="echanges">${ART.amis}${pend?`<i class="hbn">${pend}</i>`:''}<span class="hbt"><b>Amis & échanges</b><small>${pend?`${pend} nouveauté${pend>1?'s':''}`:nf?`${nf} ami${nf>1?'s':''} · échanges`:'Invite tes potes'}</small></span></button>
       <button class="hb hb-ps" data-act="passinfo">${ART.pass}<span class="hbt"><b>Pass</b><small>${on?'Actif':'5,99 € / mois'}</small></span></button>
      </div>
      <button class="hb hb-jt" data-act="shs" data-v="jetons">${ART.packs}<span class="hbt"><b>Packs & jetons</b><small>Maxi Diamant · Mythique garanti</small></span></button>
@@ -302,7 +307,7 @@ function render(){
 function layout(){
   const h=$('pgr');
   if(tab==='collection'){if($('bub'))initBub();if(h)pager(h,colList(),artistRow,{cellH:66,minW:320,gap:8,empty:'Ouvre un maxi pour commencer'})}
-  if(tab==='shop'&&h){if(shopSub==='encheres')mkLayout();else if(shopSub==='echanges'){if(window.SOC)SOC.layout(h)}else if(shopSub==='jetons')pager(h,shopItems(),x=>x,{cellH:jetSub==='packs'?150:188,cols:2,gap:10})}
+  if(tab==='shop'&&h){if(shopSub==='encheres')mkLayout();else if(shopSub==='echanges'){if(window.SOC)SOC.layout(h)}else if(shopSub==='jetons')pager(h,shopItems(),x=>x,{cellH:jetSub==='packs'?190:188,cols:2,gap:10})}
   if(tab==='profil'&&h){if(profSub==='vitrine'){vitInit();const F=S.fav.map(id=>C[id]);while(F.length<6)F.push(null);pager(h,F,c=>c?tileBtn(c):'<button class="fslot" data-act="vpick">'+ICON.plus+'<span>Ajouter</span></button>',{minT:96,cols:3})}
     else if(profSub==='top')pager(h,board(),boardRow,{cellH:54,minW:320,gap:6})}
   if(tab==='saison'){const tk=$('trk');if(tk){const t=tierNow();const c=tk.children[Math.max(0,t-1)];if(c)tk.scrollLeft=Math.max(0,c.offsetLeft-tk.clientWidth/2+c.clientWidth/2)}}
@@ -312,12 +317,12 @@ const TABS=['collection','shop','ouvrir','saison','profil'];
 function setTab(t){const d=TABS.indexOf(t)-TABS.indexOf(tab);main.style.setProperty('--dx',(d>0?28:d<0?-28:0)+'px');clearTimeout(setTab.t);setTab.t=setTimeout(()=>main.style.setProperty('--dx','0px'),400);tab=t;try{localStorage.setItem(KEY+'-t8',t)}catch(_){}render()}
 function shopItems(){
   if(jetSub==='jetons')return SHOP.map((p,i)=>`<button class="pk glass cpk cpk${i}" data-act="buy" data-k="${p.k}">${i===1?'<span class="rib">Populaire</span>':i===3?'<span class="rib best">Meilleure offre</span>':''}${p.tag?`<em>${p.tag}</em>`:''}<span class="cstack" aria-hidden="true">${Array.from({length:i+2},(_,k)=>`<i style="--k:${k}"></i>`).join('')}<s></s><s></s><s></s></span><b>${p.n.toLocaleString('fr-FR')}</b><small class="cpb">${p.tag?`dont ${Math.round(p.n-p.n/(1+parseInt(p.tag.replace(/\D/g,''))/100)).toLocaleString('fr-FR')} offerts`:'Pour bien démarrer'}</small><span class="price">${p.p}</span></button>`);
-  const pk=(k,cls,name,tag,price,act)=>`<button class="pk glass pk-${cls}" data-act="${act||'buyc'}" data-k="${k}">${tag?`<em>${tag}</em>`:''}<span class="mini ${cls}"></span><b>${name}</b><span class="price">${price}</span></button>`;
-  return [pk('diamant','diam','Maxi Diamant','Mythique garanti',`${PK.diamant.p.toLocaleString('fr-FR')} ${coinI}`),
-    pk('nacre','nacre','Maxi Nacre','Légendaire garanti',`${PK.nacre.p} ${coinI}`),
-    pk('gold','gold','Maxi Or','Ultra rare garanti',`${GOLD_COST} ${coinI}`),
-    pk('lot5','','5 maxis','−10 %',`450 ${coinI}`),
-    `<button class="pk glass" data-act="buyc" data-k="dust"><span class="stack">${dustI}${dustI}</span><b>200 poussière</b><span class="price">300 ${coinI}</span></button>`]}
+  const pk=(k,cls,name,r,odds,price,act)=>`<button class="pk pkx pk-${cls}" style="--rc:${RAR[r].c}" data-act="${act||'buyc'}" data-k="${k}"><span class="pkglow"></span><span class="mini ${cls}"></span><span class="pkg"><i style="background:${RAR[r].c}"></i>${RAR[r].n} garanti</span><b>${name}</b><small class="pko">${odds}</small><span class="price">${price}</span></button>`;
+  return [pk('diamant','diam','Maxi Diamant',4,'Divin ×2',`${PK.diamant.p.toLocaleString('fr-FR')} ${coinI}`),
+    pk('gold','gold','Maxi Or',3,'Mythique et Divin ×2',`${GOLD_COST} ${coinI}`),
+    pk('nacre','nacre','Maxi Nacre',2,'5 sons dont 1 Ultra rare',`${PK.nacre.p} ${coinI}`),
+    `<button class="pk pkx pk-lot" data-act="buyc" data-k="lot5"><span class="pkglow"></span><span class="lotst"><i class="mini"></i><i class="mini"></i><i class="mini"></i></span><span class="pkg pkd">−10 %</span><b>5 maxis</b><small class="pko">À ouvrir quand tu veux</small><span class="price">450 ${coinI}</span></button>`,
+    `<button class="pk pkx pk-dust" data-act="dusthelp"><span class="pkglow"></span><span class="stack">${dustI}${dustI}${dustI}</span><span class="pkg pkd">C’est quoi ?</span><b>200 poussière</b><small class="pko">Fabrique les sons qui te manquent</small><span class="price" data-act="buyc" data-k="dust">300 ${coinI}</span></button>`]}
 
 /* ================= PILE : catalogue → artiste → album ================= */
 function pushPage(p){stack.push(p);renderStack()}
@@ -382,7 +387,7 @@ function pull(kind){
   if(window.SRV&&kind!=='drop')cards=SRV.cards.map(id=>C[id]).sort((a,b)=>a.r-b.r);
   const seen=new Set();
   const res=cards.map(c=>{const isNew=!own(c.id)&&!seen.has(c.id);seen.add(c.id);S.owned[c.id]=(S.owned[c.id]||0)+1;
-    let sp=null;if(c.r>=3&&Math.random()<[0,0,0,.6,.85,1][c.r]){const at=c.r-1-(c.r>=4&&Math.random()<.4?1:0);const opts=['scratch','pulse','fake'];if(c.r>=4)opts.push('faceb','blackout');if(at+2<=c.r)opts.push('rewind');if(c.r===5)opts.push('blackout','pulse');sp={at,kind:opts[Math.floor(Math.random()*opts.length)]}}
+    let sp=null;if(c.r>=3&&Math.random()<[0,0,0,.6,.85,1][c.r]){const at=c.r-1-(c.r>=4&&Math.random()<.4?1:0);const opts=['scratch','pulse','fake','needle','glitch','bass'];if(c.r>=4)opts.push('faceb','blackout');if(at+2<=c.r)opts.push('rewind');if(c.r===5)opts.push('blackout','pulse');sp={at,kind:opts[Math.floor(Math.random()*opts.length)]}}
     return{c,isNew,sp}});
   const secret=!!PK[kind]||(window.SRV?SRV.secret:(kind!=='drop'&&Math.random()<1/40));const gain=window.SRV?SRV.gain:(secret&&kind==='std'?100:0);
   const nn=res.filter(x=>x.isNew).length;const d=day();d.open++;d.newT+=nn;addXP(20+10*nn);
@@ -411,8 +416,16 @@ function finish(skip){
 function hardStop(){A.t.forEach(clearTimeout);A.t=[];A.busy=false;A.fin=null;A.q=0}
 function snap(){const op=$('op');if(!op)return;op.classList.add('snap');void op.offsetWidth;requestAnimationFrame(()=>requestAnimationFrame(()=>{const o=$('op');if(o)o.classList.remove('snap')}))}
 function kick(zoom){const op=$('op');if(!op)return;op.classList.remove('kick','kz');void op.offsetWidth;op.classList.add('kick');if(zoom)op.classList.add('kz')}
-const D=[0,750,1050,1600,2200,2700];const LZ=[1,1.06,1.12,1.2,1.28,1.34],TURNS=[0,540,900,1440,2160,2880];
-function hype(to){const op=$('op');if(!op)return;op.classList.remove('kick','kz','hype');op.style.setProperty('--hd',D[to]+'ms');op.style.setProperty('--lz',LZ[to]);op.style.setProperty('--turns',TURNS[to]+'deg');void op.offsetWidth;op.classList.add('hype');after(D[to],()=>op.classList.remove('hype'))}
+const D=[0,750,1050,1700,2300,2900];const LZ=[1,1.06,1.12,1.22,1.3,1.38],TURNS=[0,540,900,4320,7200,11520];
+function hype(to){const op=$('op');if(!op)return;op.classList.remove('kick','kz','hype');op.style.setProperty('--hd',D[to]+'ms');op.style.setProperty('--lz',LZ[to]);op.style.setProperty('--turns',TURNS[to]+'deg');void op.offsetWidth;op.classList.add('hype');op.classList.toggle('blur',to>=3);after(D[to],()=>op.classList.remove('hype','blur'))}
+function boom(L){const op=$('op');if(!op||L<3)return;const c=RAR[L].c,lite=S.set.lite;
+  let h=`<i class="bm" style="--c:${c}"></i>`;const rings=L>=5?5:L>=4?3:2;for(let k=0;k<rings;k++)h+=`<i class="rg" style="--c:${L>=4?COLS[L][k%COLS[L].length]:c};animation-delay:${k*.11}s"></i>`;
+  const n=(L>=5?60:L>=4?44:30)>>(lite?1:0);for(let k=0;k<n;k++){const a=Math.random()*360,d=40+Math.random()*(L>=4?70:50);h+=`<i class="ex" style="--a:${a.toFixed(0)}deg;--d:${d.toFixed(0)}cqw;--c:${COLS[L][k%COLS[L].length]};--s:${(4+Math.random()*(L>=4?9:6)).toFixed(1)}px;animation-delay:${(Math.random()*.12).toFixed(2)}s"></i>`}
+  fxAdd(h,2000);op.classList.remove('quake','quake2');void op.offsetWidth;op.classList.add(L>=4?'quake2':'quake');after(L>=4?900:600,()=>op.classList.remove('quake','quake2'));
+  if(L>=4){op.classList.add('chroma');after(700,()=>op.classList.remove('chroma'))}
+  buzz(L>=5?[60,40,120,40,200]:L>=4?[40,30,90]:[35,25,50])}
+function divine(){const op=$('op');if(!op)return;let p='';for(let k=0;k<(S.set.lite?18:40);k++)p+=`<i style="--x:${(Math.random()*100).toFixed(1)}%;--d:${(Math.random()*2.4).toFixed(2)}s;--s:${(3+Math.random()*6).toFixed(1)}px;--t:${(2.2+Math.random()*1.6).toFixed(2)}s"></i>`;
+  fxAdd(`<div class="dvn"><i class="dvr"></i><i class="dvr r2"></i><i class="dvb"></i><div class="dvp">${p}</div><b class="dvt">${'DIVIN'.split('').map((ch,k)=>`<span style="--k:${k}">${ch}</span>`).join('')}</b></div>`,4200,op);coins(26)}
 function twins(L){if(S.set.lite||L<3)return;const n=L>=5?6:L>=4?4:2;let h='';for(let k=0;k<n;k++){const a=k/n*360+(n===2?0:45);h+=`<i class="twin" style="--a:${a}deg;--c:${RAR[L].c};animation-delay:${(k*.06).toFixed(2)}s"></i>`}fxAdd(h,1800)}
 const COLS=[['#fff'],['#5aa9ff','#cfe5ff'],['#c27dff','#f0d8ff'],['#ffc23d','#fff1c4','#e09a12'],['#ff4f72','#ffc53d','#5dffb0','#4aa8ff','#c56bff'],['#ffffff','#ffe7a8','#ffcf6b']];
 function fxAdd(html,ms,host){const h=host||$('fxl');if(!h)return;const d=document.createElement('div');d.className='tfx';d.innerHTML=html;h.appendChild(d);setTimeout(()=>d.remove(),ms)}
@@ -449,7 +462,7 @@ function opTap(){
   else if(R.stage==='shown')nextCard();
 }
 function tapPing(){const op=$('op');if(!op)return;op.classList.remove('ping');void op.offsetWidth;op.classList.add('ping');buzz(6)}
-function unwrap(){const R=reveal;R.stage='spin';R.i=0;R.lv=0;stamp('');$('op').classList.add('play');hint('');trayFill();run(850,()=>hint('Touche le vinyle'))}
+function unwrap(){const R=reveal;const best=Math.max(...R.res.map(x=>x.c.r));if(best>=2&&Math.random()<(best>=4?.6:best>=3?.4:.15)){const op=$('op');if(op){op.style.setProperty('--aura',RAR[best].c);op.classList.add('aura');setTimeout(()=>{const o=$('op');if(o)o.classList.remove('aura')},2200)}}R.stage='spin';R.i=0;R.lv=0;stamp('');$('op').classList.add('play');hint('');trayFill();run(850,()=>hint('Touche le vinyle'))}
 function applyLevel(L,fx){
   const op=$('op');if(!op)return;
   for(let k=0;k<6;k++)op.classList.toggle('lv-'+k,k===L);
@@ -471,10 +484,19 @@ function levelUp(){
   let to=from+1;if(sp==='rewind')to=Math.min(x.c.r,from+2);
   R.lv=to;hint('');const op=$('op');if(sp&&sp!=='scratch'&&sp!=='fake')kick(true);
   const fin=()=>{op.classList.remove('shake','scr','rw','fake','fb','go4','go5','pulse','bo');applyLevel(to,false);if(sp==='rewind')stamp('Double',false);hint('Touche')};
-  if(!sp){hype(to);applyLevel(to,true);after(Math.min(500,D[to]*.3),()=>twins(to));run(D[to],fin);return}
+  if(!sp){
+    if(to<3){hype(to);applyLevel(to,true);run(D[to],fin);return}
+    /* légendaire et plus : le vinyle s'emballe, puis explose */
+    hype(to);op.classList.add('charge');op.style.setProperty('--cc',RAR[to].c);hint('');
+    const tB=Math.round(D[to]*.82);
+    if(to===5){after(tB,()=>{op.classList.remove('charge');op.classList.add('void')});after(tB+650,()=>{op.classList.remove('void');applyLevel(5,true);after(1150,()=>{boom(5);divine()})});run(tB+650+1150+2600,fin);return}
+    after(tB,()=>{op.classList.remove('charge');applyLevel(to,true);boom(to)});run(tB+(to>=4?1400:1000),fin);return}
   if(sp==='scratch'){op.classList.add('scr');stamp('Scratch',true);after(700,()=>{op.classList.remove('scr');kick(true);applyLevel(to,true)});run(700+D[to],fin)}
   else if(sp==='rewind'){op.classList.add('rw');stamp('Rewind',true);after(850,()=>{op.classList.remove('rw');applyLevel(to,true)});run(850+D[to],fin)}
   else if(sp==='fake'){op.classList.add('fake');stamp('',false);after(1000,()=>stamp('Encore',true));after(1350,()=>{op.classList.remove('fake');kick(true);applyLevel(to,true)});run(1350+D[to],fin)}
+  else if(sp==='needle'){op.classList.add('ndl');stamp('Rayure',true);buzz([10,40,10]);after(1100,()=>{op.classList.remove('ndl');kick(true);applyLevel(to,true);if(to>=3)boom(to)});run(1100+D[to],fin)}
+  else if(sp==='glitch'){op.classList.add('glt');stamp('Bug',true);after(900,()=>{op.classList.remove('glt');flash(RAR[to].c);kick(true);applyLevel(to,true);if(to>=3)boom(to)});run(900+D[to],fin)}
+  else if(sp==='bass'){op.classList.add('bss');stamp('Drop',true);after(250,()=>buzz([20,60,20,60,40]));after(1300,()=>{op.classList.remove('bss');flash('#fff');kick(true);applyLevel(to,true);if(to>=3)boom(to)});run(1300+D[to],fin)}
   else if(sp==='pulse'){op.classList.add('pulse');stamp('',false);buzz(20);after(1150,()=>{op.classList.remove('pulse');kick(true);applyLevel(to,true)});run(1150+D[to],fin)}
   else if(sp==='blackout'){op.classList.add('bo');stamp('',false);after(700,()=>buzz(15));after(1350,()=>{op.classList.remove('bo');flash('#fff');kick(true);applyLevel(to,true)});run(1350+D[to],fin)}
   else{op.classList.add('fb');stamp('Face B',true);after(350,()=>applyLevel(to,true));after(960,()=>op.classList.remove('fb'));run(Math.max(980,350+D[to]),fin)}
@@ -766,6 +788,7 @@ document.addEventListener('click',e=>{
     case 'prs':profSub=t.dataset.v;render();break;
     case 'seas':seaSub=t.dataset.v;render();break;
     case 'mall':{const d=day();if(d.cl.all||todayMissions().some(m=>!d.cl[m.k]))break;if(window.ECO)ECO.op('mission_all').then(r=>{if(r){toast('+1 maxi · +50 XP');render()}});break}
+    case 'dusthelp':if(e.target.closest('.price')){buyCoins('dust');break}dustHelp();break;
     case 'passinfo':closeMenu();closeDD();shopSub='pass';setTab('shop');break;
     case 'seahelp':closeMenu();menuPage='seah';sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Le pass de saison"><div class="grab"></div><div class="shh"><h2>Le pass de saison</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div><ol class="howl"><li><b>Gagne de l’XP</b><span>Chaque maxi ouvert, chaque nouveau son, chaque mission et chaque album complété te donnent de l’XP.</span></li><li><b>Monte de palier</b><span>Tous les ${TIER_XP} XP, tu passes au palier suivant. Il y a ${TIERS} paliers jusqu’au ${new Date(SEASON_END).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}.</span></li><li><b>Récupère tes récompenses</b><span>Chaque palier débloque une récompense gratuite : jetons, poussière, maxis ou Maxi Or. Avec le Pass, tu en as une deuxième à chaque palier.</span></li></ol><button class="pbtn" data-act="mclose">Compris</button></div>`;break;
     case 'gocoins':closeMenu();closeDD();tab='shop';shopSub='jetons';jetSub='jetons';setTab('shop');break;

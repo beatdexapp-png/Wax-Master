@@ -103,8 +103,8 @@ const RAR=[
  {k:'rare',n:'Rare',min:50,drop:30,dup:20,c:'#5aa9ff',d:'50 à 200 M',v:45},
  {k:'ultra',n:'Ultra rare',min:200,drop:17,dup:40,c:'#c27dff',d:'200 à 500 M',v:100},
  {k:'legendaire',n:'Légendaire',min:500,drop:8,dup:80,c:'#ffc23d',d:'500 M à 1 Md',v:220},
- {k:'mythique',n:'Mythique',min:1000,drop:4,dup:150,c:'#ff5f86',d:'Plus d’1 Md',v:480},
- {k:'divin',n:'Divin',min:Infinity,drop:1,dup:300,c:'#f3e3b5',d:'Classiques fondateurs',v:1000},
+ {k:'mythique',n:'Mythique',min:1000,drop:3,dup:150,c:'#ff5f86',d:'Plus d’1 Md',v:480},
+ {k:'divin',n:'Divin',min:Infinity,drop:.25,dup:300,c:'#f3e3b5',d:'Classiques fondateurs',v:1000},
 ];
 const GEN={FR:'Rap FR',US:'Rap US',UK:'Rap UK'};
 const GW={FR:1.6,US:1,UK:1};
