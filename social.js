@@ -36,7 +36,8 @@
   SOC.body=function(){
     var u=me(),nf=SOC.friends().length,dem=SOC.fr.filter(function(f){return f.status==='pending'&&f.dir==='in'}).length,
       tr=SOC.list.filter(function(t){return t.to_id===u&&t.status==='pending'}).length;
-    return '<button class="addf" data-act="fradd"><span class="addfi">'+ICON.plus+'</span><span><b>Ajouter des amis</b><small>'+(nf?'Par pseudo ou avec ton lien':'Envoie ton lien d’invitation')+'</small></span></button>'+
+    return '<div class="frbox"><form class="frs" id="frf" autocomplete="off"><span class="frsi">'+ICON.search+'</span><input id="frq" type="search" placeholder="Chercher un joueur par pseudo" maxlength="20" aria-label="Pseudo" value="'+esc(SOC.q||'')+'"><button class="pbtn" type="submit">Ajouter</button></form><div class="frres" id="frres"></div><p class="msg" id="frmsg"></p>'+
+      '<button class="addf" data-act="frshare"><span class="addfi">'+ICON.share+'</span><span><b>Inviter des amis</b><small>Envoie ton lien d’invitation</small></span></button></div>'+
       '<div class="chips">'+[['amis','Amis'+(nf?' · '+nf:'')],['demandes','Demandes'+(dem?' · '+dem:'')],['echanges','Échanges'+(tr?' · '+tr:'')]].map(function(x){return '<button class="chip" data-act="trsub" data-v="'+x[0]+'" aria-pressed="'+(SOC.sub===x[0])+'">'+x[1]+'</button>'}).join('')+'</div><div class="pgr" id="pgr"></div>';
   };
   function thumb(id){var c=C[id];return c?'<button class="lth" data-act="see" data-id="'+id+'" aria-label="'+esc(c.t)+'">'+tileHTML(c,{nocount:1,lock:false})+'</button>':''}
@@ -84,11 +85,24 @@
       '<p class="msg" id="frmsg"></p><div class="orl"><span>ou</span></div><button class="gbtn wide" data-act="frshare">'+ICON.share+'Partager mon lien d’invitation</button></div>';
     setTimeout(function(){var q=$('frq');if(q)q.focus()},250);
   }
+  var sT=0;
+  async function search(q){
+    SOC.q=q;var box=$('frres');if(!box)return;
+    if(q.trim().length<2){box.innerHTML='';return}
+    var r=await sb.rpc('search_players',{p_q:q.trim()});
+    box=$('frres');if(!box||SOC.q!==q)return;
+    if(r.error){box.innerHTML='';return}
+    var L=r.data||[];
+    box.innerHTML=L.length?L.map(function(p){
+      var b=p.rel==='accepted'?'<span class="st">Ami</span>':p.rel==='pending:out'?'<span class="st">Demande envoyée</span>':p.rel==='pending:in'?'<button class="lbtn on" data-act="frreq" data-p="'+esc(p.pseudo)+'">Accepter</button>':'<button class="lbtn" data-act="frreq" data-p="'+esc(p.pseudo)+'">'+ICON.plus+'Ajouter</button>';
+      return '<div class="prow fr">'+avH(p.avatar,p.pseudo)+'<b>'+esc(p.pseudo)+'</b><em>'+(p.score||0).toLocaleString('fr-FR')+' pts</em>'+b+'</div>'}).join(''):'<p class="cap">Aucun joueur trouvé</p>';
+  }
+  document.addEventListener('input',function(ev){if(ev.target&&ev.target.id==='frq'){var q=ev.target.value;clearTimeout(sT);sT=setTimeout(function(){search(q)},250)}});
   async function request(ps){
     var m=$('frmsg');if(!ps||ps.length<3){if(m)m.textContent='Entre un pseudo';return}
     var r=await sb.rpc('friend_request',{p_pseudo:ps});
     if(r.error){if(m)m.textContent=r.error.message;return}
-    closeMenu();toast(r.data==='accepted'?'Vous êtes maintenant amis':'Demande envoyée à '+ps);SOC.sub=r.data==='accepted'?'amis':'demandes';await load();render();
+    closeMenu();SOC.q='';toast(r.data==='accepted'?'Vous êtes maintenant amis':'Demande envoyée à '+ps);SOC.sub=r.data==='accepted'?'amis':'demandes';await load();render();
   }
   async function frAct(fn,args,msg){var r=await sb.rpc(fn,args);if(r.error){toast(r.error.message);return}if(msg)toast(msg);await load();render()}
   /* lien d'invitation reçu */
@@ -190,6 +204,7 @@
     else if(a==='trcancel')cancel(t.dataset.id);
     else if(a==='pfsave')savePseudo();
     else if(a==='fradd')addSheet();
+    else if(a==='frreq')request(t.dataset.p);
     else if(a==='frshare')share();
     else if(a==='fracc')frAct('friend_respond',{p_id:+t.dataset.id,p_accept:true},'Nouvel ami ajouté');
     else if(a==='frdec')frAct('friend_respond',{p_id:+t.dataset.id,p_accept:false});

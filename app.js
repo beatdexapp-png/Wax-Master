@@ -151,6 +151,10 @@ function pager(host,items,fn,o){
 }
 
 
+/* récompenses récupérées */
+function rewardPop(g,n){const L=[g.coins>0&&[coinI,'+'+g.coins.toLocaleString('fr-FR'),'jetons'],g.maxi>0&&['<i class="mini"></i>','+'+g.maxi,'maxi'+(g.maxi>1?'s':'')],g.gold>0&&['<i class="mini gold"></i>','+'+g.gold,'Maxi Or'],g.dust>0&&[dustI,'+'+g.dust,'poussière']].filter(Boolean);
+  dd.innerHTML=popHTML(`<div class="rwp"><div class="rwrays" aria-hidden="true"></div><span class="lbl">Pass de saison</span><h2>${n} récompense${n>1?'s':''} récupérée${n>1?'s':''}</h2><div class="rwl">${L.map(([i,v,t],k)=>`<div class="rwi" style="--k:${k}"><span class="rwic">${i}</span><b>${v}</b><small>${t}</small></div>`).join('')}</div><button class="pbtn" data-act="ddclose">Super</button></div>`);
+  buzz([20,40,20])}
 /* illustrations du Shop */
 const ART={
  bourse:`<svg class="hart ha-b" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="hab" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#30c07a" stop-opacity=".45"/><stop offset="1" stop-color="#30c07a" stop-opacity="0"/></linearGradient></defs><g class="hgr">${[30,60,90,120,150].map(y=>`<line x1="0" x2="320" y1="${y}" y2="${y}"/>`).join('')}${[40,80,120,160,200,240,280].map(x=>`<line y1="0" y2="180" x1="${x}" x2="${x}"/>`).join('')}</g>${[[24,96,120,82,128],[44,90,104,70,118],[64,98,110,86,122],[84,76,94,60,104],[104,82,100,70,112],[124,64,86,52,94],[144,72,80,58,92],[164,50,70,40,80],[184,58,66,44,76],[204,40,56,30,64],[224,46,52,32,62],[244,30,44,20,52],[264,34,40,24,50],[284,22,30,12,38]].map(([x,o,c,h,l],k)=>`<g class="${k%3===1?'cd':'cu'}" style="--k:${k}"><line x1="${x+5}" x2="${x+5}" y1="${h}" y2="${l}"/><rect x="${x}" y="${Math.min(o,c)}" width="10" height="${Math.max(3,Math.abs(c-o))}" rx="1.5"/></g>`).join('')}<path class="hl" d="M0 128 C40 120 60 112 90 100 S150 80 180 66 S250 40 320 22"/><path d="M0 128 C40 120 60 112 90 100 S150 80 180 66 S250 40 320 22 V180 H0Z" fill="url(#hab)"/><circle class="hdot" cx="320" cy="22" r="5"/></svg>`,
@@ -204,9 +208,16 @@ function vShop(){
     body=`${tickHTML()}<div class="chips">${[['live','Marché'],['mine',`Mes ventes ${mine}/${mkMax()}`],['sell',`Vendre · ${dups}`]].map(([k,n])=>`<button class="chip" data-act="mks" data-v="${k}" aria-pressed="${mkSub===k}">${n}</button>`).join('')}</div><div class="pgr" id="pgr"></div>`}
   else if(shopSub==='echanges'){head=subHead('Amis');body=window.SOC?SOC.body():'<p class="cap">Connexion requise</p>'}
   else if(shopSub==='pass'){const on=hasPass();head=subHead('TrackDex Pass');
-    body=`<div class="passc glass"><div class="ph2"><span class="pico">${ICON.star}</span><div><b>TrackDex Pass</b><small>${on?'Actif':PASS_PRICE}</small></div></div>
-     <ul class="perks">${['Maxi gratuit toutes les 5 min','+1 maxi offert chaque jour','1 Maxi Or chaque lundi','Pass de saison premium','Thèmes Minuit et Nacre'].map(t=>`<li>${ICON.check}${t}</li>`).join('')}</ul>
-     ${on?`<div class="row">${!day().pd?'<button class="pbtn" data-act="claim">Maxi du jour</button>':'<button class="pbtn" disabled>Récupéré</button>'}<button class="gbtn" data-act="passmanage">Gérer l’abonnement</button></div>`:`<button class="pbtn wide" data-act="buy" data-k="pass">S’abonner · ${PASS_PRICE}</button>`}</div><p class="cap">Paiement sécurisé par Stripe. Résiliable à tout moment.</p>`}
+    let pc=0,pm=0,pg=0;for(let i=1;i<=TIERS;i++){const p=seasonRewards(i).p;if(p.gold)pg++;else if(p.maxi)pm+=p.maxi;else pc+=p.coins}
+    const perks=[['clock','Maxi gratuit toutes les 5 min','Deux fois plus souvent que sans le Pass'],['gift','1 maxi offert chaque jour','À récupérer ici, tous les jours'],['gold','1 Maxi Or chaque lundi','Ultra rare garanti à chaque fois'],['star','Récompenses premium','Une 2e récompense à chaque palier de la saison'],['theme','Thèmes Minuit et Nacre','Pour personnaliser ton app']];
+    const PI={clock:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 3h6"/>',gift:'<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18M12 8v13M12 8c-2-4-6-4-6-1.5S9 8 12 8c3 0 6-.5 6-1.5S14 4 12 8"/>',gold:'<circle cx="12" cy="12" r="8"/><path d="M12 7l1.5 3 3.3.5-2.4 2.3.6 3.3-3-1.6-3 1.6.6-3.3-2.4-2.3 3.3-.5z"/>',star:'<path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/>',theme:'<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/>'};
+    body=`<div class="psp"><div class="psh"><div class="psart">${ART.pass}</div><div class="psht"><span class="psk">Saison 1 · Premiers sillons</span><b>Double tout.<br>Plus de maxis, plus de sons.</b>${on?`<span class="pson">${ICON.check}Actif jusqu’au ${new Date(S.passUntil).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}</span>`:`<span class="psprice"><b>5,99 €</b> / mois</span>`}</div></div>
+     <div class="pstot"><div><b>+${pc.toLocaleString('fr-FR')}</b><span>${coinI} jetons</span></div><div><b>+${pm}</b><span><i class="mini"></i> maxis</span></div><div><b>+${pg}</b><span><i class="mini gold"></i> Maxi Or</span></div></div>
+     <p class="cap pstcap">En plus, sur la saison, avec les récompenses premium</p>
+     <div class="psl">${perks.map(([k,t,d],n)=>`<div class="psi" style="--i:${n}"><span class="psic psic-${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${PI[k]}</svg></span><span><b>${t}</b><small>${d}</small></span></div>`).join('')}</div>
+     <div class="pscmp"><div class="pch"><span></span><b>Gratuit</b><b class="pp">Pass</b></div>${[['Maxi gratuit','10 min','5 min'],['Maxi offert / jour','–','1'],['Maxi Or / semaine','–','1'],['Récompenses / palier','1','2'],['Thèmes exclusifs','–','2']].map(([a,b,c])=>`<div class="pcr"><span>${a}</span><em>${b}</em><em class="pp">${c}</em></div>`).join('')}</div>
+     <div class="psbar">${on?`${!day().pd?'<button class="pbtn" data-act="claim">Maxi du jour</button>':'<button class="pbtn" disabled>Maxi du jour récupéré</button>'}<button class="gbtn" data-act="passmanage">Gérer</button>`:`<button class="pbtn pscta" data-act="buy" data-k="pass">S’abonner · 5,99 € / mois</button>`}</div>
+     <p class="cap">Paiement sécurisé par Stripe. Sans engagement, résiliable à tout moment.</p></div>`}
   else{head=subHead('Packs & jetons');body=`<div class="chips">${[['packs','Packs'],['jetons','Jetons']].map(([k,n])=>`<button class="chip" data-act="jts" data-v="${k}" aria-pressed="${jetSub===k}">${n}</button>`).join('')}</div><div class="pgr" id="pgr"></div>${jetSub==='jetons'?'<p class="cap">Paiement sécurisé par Stripe · jetons ajoutés en quelques secondes</p>':''}`}
   return `<div class="view v-shop">${head}${body}</div>`;
 }
@@ -280,7 +291,7 @@ function stopBub(){if(BB.raf)cancelAnimationFrame(BB.raf);BB.raf=0;BB.nodes=[];B
 /* ================= RENDU ================= */
 const main=$('main'),ov=$('ov'),dt=$('dt'),sh=$('sh'),dd=$('dd');
 function applySkin(){const sk=SKINS.find(s=>s[0]===S.set.skin);if(sk&&sk[2]&&!hasPass())S.set.skin='auto';if(S.set.skin==='auto')delete document.body.dataset.skin;else document.body.dataset.skin=S.set.skin;document.body.classList.toggle('lite',!!S.set.lite)}
-let coinShown=null,coinRaf=0;function setCoins(){const el=$('coins');if(!el)return;const to=S.coins;if(coinShown===null||S.set.lite||Math.abs(to-coinShown)>100000){coinShown=to;el.innerHTML=`${coinI}${to.toLocaleString('fr-FR')}`;return}if(to===coinShown)return;const from=coinShown,t0=performance.now();coinShown=to;el.classList.toggle('up',to>from);el.classList.toggle('dn',to<from);cancelAnimationFrame(coinRaf);const step=t=>{const k=Math.min(1,(t-t0)/450),v=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));el.innerHTML=`${coinI}${v.toLocaleString('fr-FR')}`;if(k<1)coinRaf=requestAnimationFrame(step);else el.classList.remove('up','dn')};coinRaf=requestAnimationFrame(step)}
+let coinShown=null,coinRaf=0;function setCoins(){const el=$('coins');if(!el)return;const to=S.coins;if(coinShown===null||S.set.lite||Math.abs(to-coinShown)>100000){coinShown=to;el.innerHTML=`${coinI}${to.toLocaleString('fr-FR')}`;return}if(to===coinShown)return;const from=coinShown,t0=performance.now();coinShown=to;if(to>from){const r=el.getBoundingClientRect(),f=document.createElement('div');f.className='cfly';f.innerHTML=`+${(to-from).toLocaleString('fr-FR')} ${coinI}`;f.style.top=(r.bottom+4)+'px';f.style.right=(innerWidth-r.right)+'px';document.body.appendChild(f);setTimeout(()=>f.remove(),1500)}el.classList.toggle('up',to>from);el.classList.toggle('dn',to<from);cancelAnimationFrame(coinRaf);const step=t=>{const k=Math.min(1,(t-t0)/450),v=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));el.innerHTML=`${coinI}${v.toLocaleString('fr-FR')}`;if(k<1)coinRaf=requestAnimationFrame(step);else el.classList.remove('up','dn')};coinRaf=requestAnimationFrame(step)}
 function render(){
   stopBub();applySkin();setCoins();
   $('pdot').hidden=!(missReady()||seasonReady());const od=$('odot');if(od)od.hidden=!canFree();const sd=$('shdot');if(sd)sd.hidden=!(window.SOC&&SOC.pending()>0);
@@ -395,11 +406,14 @@ function finish(skip){
   const op=$('op');
   if(op&&skip){op.querySelectorAll('.tfx').forEach(x=>x.remove());op.classList.remove('shake','scr','rw','fake','fb','go4','go5','rush','crack','pulse','bo');op.querySelectorAll('.shards').forEach(e=>e.remove());const bv=op.querySelector('.bvr');if(bv)bv.style.animationPlayState=''}
   const f=A.fin;A.fin=null;A.busy=false;if(f)f();
+  if(A.q){A.q=0;if(reveal&&reveal.stage==='spin'&&!A.busy)setTimeout(opTap,0)}
 }
-function hardStop(){A.t.forEach(clearTimeout);A.t=[];A.busy=false;A.fin=null}
+function hardStop(){A.t.forEach(clearTimeout);A.t=[];A.busy=false;A.fin=null;A.q=0}
 function snap(){const op=$('op');if(!op)return;op.classList.add('snap');void op.offsetWidth;requestAnimationFrame(()=>requestAnimationFrame(()=>{const o=$('op');if(o)o.classList.remove('snap')}))}
 function kick(zoom){const op=$('op');if(!op)return;op.classList.remove('kick','kz');void op.offsetWidth;op.classList.add('kick');if(zoom)op.classList.add('kz')}
-const D=[0,550,700,900,1100,1900];
+const D=[0,750,1050,1600,2200,2700];const LZ=[1,1.06,1.12,1.2,1.28,1.34],TURNS=[0,540,900,1440,2160,2880];
+function hype(to){const op=$('op');if(!op)return;op.classList.remove('kick','kz','hype');op.style.setProperty('--hd',D[to]+'ms');op.style.setProperty('--lz',LZ[to]);op.style.setProperty('--turns',TURNS[to]+'deg');void op.offsetWidth;op.classList.add('hype');after(D[to],()=>op.classList.remove('hype'))}
+function twins(L){if(S.set.lite||L<3)return;const n=L>=5?6:L>=4?4:2;let h='';for(let k=0;k<n;k++){const a=k/n*360+(n===2?0:45);h+=`<i class="twin" style="--a:${a}deg;--c:${RAR[L].c};animation-delay:${(k*.06).toFixed(2)}s"></i>`}fxAdd(h,1800)}
 const COLS=[['#fff'],['#5aa9ff','#cfe5ff'],['#c27dff','#f0d8ff'],['#ffc23d','#fff1c4','#e09a12'],['#ff4f72','#ffc53d','#5dffb0','#4aa8ff','#c56bff'],['#ffffff','#ffe7a8','#ffcf6b']];
 function fxAdd(html,ms,host){const h=host||$('fxl');if(!h)return;const d=document.createElement('div');d.className='tfx';d.innerHTML=html;h.appendChild(d);setTimeout(()=>d.remove(),ms)}
 function burst(r){const cs=COLS[r],n=(r>=4?22:r>=2?16:10)>>(S.set.lite?1:0);let s='';for(let i=0;i<n;i++)s+=`<i class="pt" style="--a:${(i*360/n+Math.random()*14).toFixed(0)}deg;--d:${(38+Math.random()*34).toFixed(0)}cqw;--c:${cs[i%cs.length]}"></i>`;fxAdd(s,1200)}
@@ -429,11 +443,12 @@ function showOpening(){
 }
 function opTap(){
   const R=reveal;if(!R||R.stage==='sum'||!$('op'))return;
-  if(A.busy){snap();finish(true);return}
+  if(A.busy){if(R.stage==='spin'){A.q=1;tapPing();return}snap();finish(true);return}
   if(R.stage==='seal')unwrap();
   else if(R.stage==='spin'){if(R.lv<R.res[R.i].c.r)levelUp();else revealCard()}
   else if(R.stage==='shown')nextCard();
 }
+function tapPing(){const op=$('op');if(!op)return;op.classList.remove('ping');void op.offsetWidth;op.classList.add('ping');buzz(6)}
 function unwrap(){const R=reveal;R.stage='spin';R.i=0;R.lv=0;stamp('');$('op').classList.add('play');hint('');trayFill();run(850,()=>hint('Touche le vinyle'))}
 function applyLevel(L,fx){
   const op=$('op');if(!op)return;
@@ -454,9 +469,9 @@ function applyLevel(L,fx){
 function levelUp(){
   const R=reveal,x=R.res[R.i],from=R.lv;const sp=x.sp&&x.sp.at===from?x.sp.kind:null;
   let to=from+1;if(sp==='rewind')to=Math.min(x.c.r,from+2);
-  R.lv=to;hint('');const op=$('op');if(sp!=='scratch'&&sp!=='fake')kick(true);
+  R.lv=to;hint('');const op=$('op');if(sp&&sp!=='scratch'&&sp!=='fake')kick(true);
   const fin=()=>{op.classList.remove('shake','scr','rw','fake','fb','go4','go5','pulse','bo');applyLevel(to,false);if(sp==='rewind')stamp('Double',false);hint('Touche')};
-  if(!sp){applyLevel(to,true);run(D[to],fin);return}
+  if(!sp){hype(to);applyLevel(to,true);after(Math.min(500,D[to]*.3),()=>twins(to));run(D[to],fin);return}
   if(sp==='scratch'){op.classList.add('scr');stamp('Scratch',true);after(700,()=>{op.classList.remove('scr');kick(true);applyLevel(to,true)});run(700+D[to],fin)}
   else if(sp==='rewind'){op.classList.add('rw');stamp('Rewind',true);after(850,()=>{op.classList.remove('rw');applyLevel(to,true)});run(850+D[to],fin)}
   else if(sp==='fake'){op.classList.add('fake');stamp('',false);after(1000,()=>stamp('Encore',true));after(1350,()=>{op.classList.remove('fake');kick(true);applyLevel(to,true)});run(1350+D[to],fin)}
@@ -466,7 +481,7 @@ function levelUp(){
 }
 function waveBars(c){const R=rng('wb'+c.id);let s='';for(let k=0;k<26;k++){const v=.2+.8*Math.abs(Math.sin(k*.43+R()*2))*(.5+.5*R());s+=`<i style="--h:${v.toFixed(2)};--d:-${(R()*.8).toFixed(2)}s;--u:${(.5+R()*.4).toFixed(2)}s"></i>`}return s}
 function sqHTML(x){const c=x.c,B=c.alk&&RW[c.alk];const ser=S.ser[c.id];
-  return `<div class="rsq${c.r===5?' dv':''}" style="--art:${B&&B.art||c.bg};--wc:${WCOL[c.r]};--rc:${RAR[c.r].c}"><div class="sqa"></div><div class="sqw">${waveBars(c)}</div><div class="sqt"><span class="sqr"><i></i>${RAR[c.r].n}</span><b>${esc(c.t)}</b><span>${esc(c.a)}</span></div>${ser?`<em class="sn">#${String(ser).padStart(3,'0')}</em>`:''}</div>`}
+  return `<div class="rsq${c.r===5?' dv':''}" style="--art:${esc(c.img?`url("${c.img}") center/cover no-repeat,${c.bg}`:(B&&B.art||c.bg))};--wc:${WCOL[c.r]};--rc:${RAR[c.r].c}"><div class="sqa"></div><div class="sqw">${waveBars(c)}</div><div class="sqt"><span class="sqr"><i></i>${RAR[c.r].n}</span><b>${esc(c.t)}</b><span>${esc(c.a)}</span></div>${ser?`<em class="sn">#${String(ser).padStart(3,'0')}</em>`:''}</div>`}
 function crackSVG(){const R=Math.random;let d='';for(let k=0;k<7;k++){const a=k/7*Math.PI*2+R()*.5;let x=50,y=50,r=0;d+=`M50 50`;while(r<48){r+=8+R()*9;const b=a+(R()-.5)*.6;x=50+Math.cos(b)*Math.min(r,48);y=50+Math.sin(b)*Math.min(r,48);d+=`L${x.toFixed(1)} ${y.toFixed(1)}`}}
   return `<svg class="crk" viewBox="0 0 100 100" aria-hidden="true"><path d="${d}"/></svg>`}
 function shatter(){const op=$('op');if(!op)return;const pl=op.querySelector('.pl'),bvr=op.querySelector('.bv .bvr');if(!pl||!bvr)return;const inner=bvr.innerHTML;const n=S.set.lite?6:9;let h='';
@@ -618,7 +633,7 @@ function needCoins(miss){miss=Math.max(1,miss|0);closeMenu();menuPage='need';
    <div class="offers">${SHOP.map(p=>`<button class="offer${p===best?' best':''}" data-act="buy" data-k="${p.k}">${p===best?'<em>Conseillé</em>':p.tag?`<em>${p.tag}</em>`:''}<span class="stack">${coinI}${coinI}${coinI}</span><b>${p.n.toLocaleString('fr-FR')}</b><span class="price">${p.p}</span></button>`).join('')}</div>
    <p class="cap" style="text-align:left">${freeReady()||S.bonus>0?'Tu as un maxi gratuit à ouvrir.':`Prochain maxi gratuit dans <b data-clock="${S.freeAt}">${clock(S.freeAt-now())}</b>.`} Les missions et la saison donnent aussi des jetons.</p>
    <button class="gbtn" data-act="gocoins">Voir toutes les offres</button></div>`}
-function passSheet(){closeMenu();menuPage='pass';
+function passSheet(){closeMenu();closeDD();shopSub='pass';setTab('shop');return;menuPage='pass';
   sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass passsh" role="dialog" aria-label="Pass Premium"><div class="grab"></div><div class="shh"><h2>Pass Premium</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
    <ul class="perks">${['Une 2e récompense à chaque palier de la saison','Maxi gratuit toutes les 5 min au lieu de 10','+1 maxi offert chaque jour','1 Maxi Or chaque lundi','Thèmes Minuit et Nacre'].map(t=>`<li>${ICON.check}${t}</li>`).join('')}</ul>
    ${hasPass()?`<p class="cap">Actif jusqu’au ${new Date(S.passUntil).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}, renouvelé automatiquement.</p><div class="row">${day().pd?'<button class="pbtn" disabled>Maxi du jour récupéré</button>':'<button class="pbtn" data-act="claim">Maxi du jour</button>'}<button class="gbtn" data-act="passmanage">Gérer</button></div>`:`<button class="pbtn" data-act="buy" data-k="pass">S’abonner · ${PASS_PRICE}</button><p class="cap">Paiement sécurisé par Stripe. Résiliable à tout moment.</p>`}</div>`}
@@ -751,12 +766,12 @@ document.addEventListener('click',e=>{
     case 'prs':profSub=t.dataset.v;render();break;
     case 'seas':seaSub=t.dataset.v;render();break;
     case 'mall':{const d=day();if(d.cl.all||todayMissions().some(m=>!d.cl[m.k]))break;if(window.ECO)ECO.op('mission_all').then(r=>{if(r){toast('+1 maxi · +50 XP');render()}});break}
-    case 'passinfo':passSheet();break;
+    case 'passinfo':closeMenu();closeDD();shopSub='pass';setTab('shop');break;
     case 'seahelp':closeMenu();menuPage='seah';sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Le pass de saison"><div class="grab"></div><div class="shh"><h2>Le pass de saison</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div><ol class="howl"><li><b>Gagne de l’XP</b><span>Chaque maxi ouvert, chaque nouveau son, chaque mission et chaque album complété te donnent de l’XP.</span></li><li><b>Monte de palier</b><span>Tous les ${TIER_XP} XP, tu passes au palier suivant. Il y a ${TIERS} paliers jusqu’au ${new Date(SEASON_END).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}.</span></li><li><b>Récupère tes récompenses</b><span>Chaque palier débloque une récompense gratuite : jetons, poussière, maxis ou Maxi Or. Avec le Pass, tu en as une deuxième à chaque palier.</span></li></ol><button class="pbtn" data-act="mclose">Compris</button></div>`;break;
     case 'gocoins':closeMenu();closeDD();tab='shop';shopSub='jetons';jetSub='jetons';setTab('shop');break;
     case 'mclaim':mClaim(t.dataset.k);break;
     case 'sclaim':sClaim(t.dataset.i,t.dataset.t);break;
-    case 'sall':if(window.ECO){t.disabled=true;ECO.op('season_all').then(r=>{if(r){toast(`${r.n} récompense${r.n>1?'s':''} ajoutée${r.n>1?'s':''}`)}render()})}break;
+    case 'sall':if(window.ECO){t.disabled=true;const b0={c:S.coins,g:S.gold,m:S.bonus,d:S.dust};ECO.op('season_all').then(r=>{render();if(r)rewardPop({coins:S.coins-b0.c,gold:S.gold-b0.g,maxi:S.bonus-b0.m,dust:S.dust-b0.d},r.n)})}break;
     case 'menu':openMenu(t.dataset.p);break;
     case 'mclose':closeMenu();break;
     case 'mpage':menuPage=t.dataset.p||'';resetArm=false;renderMenu();break;
