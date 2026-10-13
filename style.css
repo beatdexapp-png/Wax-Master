@@ -1350,3 +1350,21 @@ body.lite .op.charge .stage,body.lite .op.quake .opmid,body.lite .op.quake2 .opm
 .tplock{display:flex;align-items:center;justify-content:center;gap:6px;font:600 13px var(--mono);color:var(--fg2)}
 .tplock svg{width:15px;height:15px}
 .hb-tr .hbt b{font-size:clamp(19px,5.6vw,24px);line-height:1.05}
+
+/* ===== style net façon shadcn ===== */
+body.mo .sheet{animation:none}
+body.mo #main .view{animation:none}
+.pbtn,.gbtn{border-radius:14px;letter-spacing:-.01em}
+.pbtn{font-weight:650;box-shadow:0 1px 2px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.1)}
+.gbtn{box-shadow:inset 0 0 0 1px rgba(127,127,127,.22)}
+.gbtn.sq{border-radius:14px}
+.chip{border-radius:11px;box-shadow:inset 0 0 0 1px rgba(127,127,127,.14)}
+.chip[aria-pressed=true]{box-shadow:none}
+.seg{border-radius:16px}.seg button{border-radius:12px}
+.sheet{border-radius:26px;box-shadow:0 0 0 1px rgba(127,127,127,.16),0 24px 60px rgba(0,0,0,.28)}
+.tin:focus,.bxs input:focus,.frs:focus-within{outline:none;box-shadow:0 0 0 2px var(--bg),0 0 0 4px rgba(120,120,255,.45)}
+.lr,.arow,.prow.fr,.psi,.mcard{box-shadow:inset 0 0 0 1px rgba(127,127,127,.12)}
+.v-bx .lr{box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.toast{border-radius:14px}
+.lbtn{border-radius:12px}
+.pkx .price,.price{border-radius:10px}
