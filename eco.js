@@ -54,7 +54,7 @@
   window.craft=async function(id){
     var c=C[id];if(!c)return;if(own(id)||S.dust<DUST_COST[c.r]){toast('Pas assez de poussière');return}
     var r=await ECO.op('craft',{id:id});if(!r)return;
-    toast(c.t+' fabriqué'+(r.ul&&r.ul.length?' · récompense !':''));see(id);render();
+    render();if(window.craftAnim)craftAnim(c);else see(id);if(r.ul&&r.ul.length)toast('Album complété · récompense !');
   };
   window.mClaim=async function(k){var m=MISS.find(function(x){return x.k===k});var r=await ECO.op('mission',{k:k});if(!r)return;toast('+'+m.c+' jetons · +'+m.x+' XP');render()};
   window.sClaim=async function(i,t){if(t==='p'&&!hasPass()){passSheet();return}var r=await ECO.op('season',{i:+i,t:t==='p'?'p':'f'});if(!r)return;toast('Récompense ajoutée');render()};

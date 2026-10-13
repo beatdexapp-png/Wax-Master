@@ -3,7 +3,7 @@ const SKPV={auto:'linear-gradient(135deg,#e8ebf1 50%,#0e0f12 50%)',graphite:'rad
 const COST=100,ALB_BONUS=250,ART_BONUS=500,GOLD_COST=900,DROP_COST=250,DROP_LIMIT=500;
 const CODES={UNDERGROUND:500,TRACKDEX:300,ZARMA:200};
 const SHOP=[{k:'c500',n:500,p:'1,99 €'},{k:'c1200',n:1200,p:'4,99 €',tag:'+20 %'},{k:'c2600',n:2600,p:'9,99 €',tag:'+30 %'},{k:'c6500',n:6500,p:'19,99 €',tag:'+60 %'}];
-const PK={gold:{n:'Maxi Or',p:GOLD_COST,min:1,last:3,b:{3:2,4:2,5:2},g:'Légendaire garanti'},nacre:{n:'Maxi Nacre',p:400,min:1,last:2,b:{},g:'Ultra rare garanti'},diamant:{n:'Maxi Diamant',p:2000,min:2,last:4,b:{4:2,5:2},g:'Mythique garanti'}};
+const PK={gold:{n:'Maxi Or',p:GOLD_COST,min:1,last:3,b:{3:2,4:2,5:2},g:'Légendaire garanti'},nacre:{n:'Maxi Ultra',p:400,min:1,last:2,b:{},g:'Ultra rare garanti'},diamant:{n:'Maxi Diamant',p:2000,min:2,last:4,b:{4:2,5:2},g:'Mythique garanti'}};
 const PASS_PRICE='5,99 € / mois';
 const PSEUDOS=['zayn.93','lunatic_k','dalida.wav','mvp_sinna','yaya.prod','nekfan','oz.92i','soso.lune','ritchie.mp3','k.dot.fr','bbf_only','cramé.exe','mel_zer','djadja94','wave.95','rodé.x','ninho.lt','sch.akimbo','jvlivs','nuit.blanche'];
 const FRIENDS=['soso.lune','mvp_sinna','oz.92i','wave.95','mel_zer'];
@@ -151,6 +151,24 @@ function pager(host,items,fn,o){
 }
 
 
+/* atelier : créer un son qui manque avec la poussière */
+let atR=-1;
+function atelier(){closeMenu();menuPage='atelier';
+  const miss=CARDS.filter(c=>!own(c.id)&&(atR<0||c.r===atR)).sort((a,b)=>DUST_COST[a.r]-DUST_COST[b.r]||a.a.localeCompare(b.a)).slice(0,90);
+  sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass atsh" role="dialog" aria-label="Atelier"><div class="grab"></div><div class="shh"><h2>Atelier</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
+   <div class="atd"><span class="dsi">${dustI}</span><div><b>${S.dust.toLocaleString('fr-FR')} poussière</b><small>Crée un son qui te manque. Recycle tes doubles pour en gagner.</small></div><button class="gbtn" data-act="dusthelp">?</button></div>
+   <div class="chips">${[[-1,'Tous'],[0,'Commun'],[1,'Rare'],[2,'Ultra rare'],[3,'Légendaire'],[4,'Mythique'],[5,'Divin']].map(([v,n])=>`<button class="chip" data-act="atr" data-v="${v}" aria-pressed="${atR===v}">${n}</button>`).join('')}</div>
+   <div class="atl">${miss.length?miss.map(c=>{const k=DUST_COST[c.r],ok=S.dust>=k;return `<button class="atc${ok?'':' no'}" data-act="atc" data-id="${c.id}">${tileHTML(c,{nocount:1,lock:false})}<span class="atp">${k} ${dustI}</span></button>`}).join(''):'<p class="cap">Tu as tous les sons de cette rareté</p>'}</div></div>`}
+function craftAnim(c){closeMenu();let p='';for(let k=0;k<26;k++){const a=k/26*360,d=38+Math.random()*30;p+=`<i style="--a:${a}deg;--d:${d}vw;animation-delay:${(Math.random()*.25).toFixed(2)}s"></i>`}
+  dd.innerHTML=`<div class="scrim" data-act="ddclose"></div><div class="crf" style="--rc:${RAR[c.r].c}"><div class="crp">${p}</div><div class="crc">${tileHTML(c,{nocount:1,lock:false})}</div><div class="crt"><span class="lbl">Son créé</span><b>${esc(c.t)}</b><small>${esc(c.a)} · ${RAR[c.r].n}</small><button class="pbtn" data-act="ddclose">Super</button></div></div>`;
+  buzz([15,30,60])}
+/* événements */
+function evSheet(){closeMenu();menuPage='events';
+  sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Événements"><div class="grab"></div><div class="shh"><h2>Événements</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
+   <p class="cap" style="text-align:left">Pendant un événement, certains sons tombent plus souvent dans les maxis. Touche un événement pour le détail.</p>
+   <div class="evl">${EVENTS.filter(x=>evState(x)!=='past').sort((a,b)=>new Date(a.s)-new Date(b.s)).map((x,i)=>{const st=evState(x),f=x.fx;
+     const det=f.artists?`Les sons de ${f.artists.join(', ')} sortent ${f.mult} fois plus souvent.`:f.genre?`Les sons ${GEN[f.genre]||f.genre} sortent ${f.mult} fois plus souvent.`:f.divin?`Les chances de tomber sur un Divin sont multipliées par ${f.divin}.`:f.cost?`Les maxis coûtent ${f.cost} jetons au lieu de ${COST}.`:'';
+     return `<div class="evc2${st==='live'?' live open':''}" style="--evbg:${x.bg}"><button class="evh" data-act="evx"><i class="sw2"></i><span><b>${x.n}</b><small>${x.d}</small></span><em>${st==='live'?`<i class="ldot"></i>En cours`:fdate(x.s)}</em></button><div class="evd"><p>${det}</p><p class="cap">${st==='live'?`Se termine dans <b data-until="${x.e}">${dur(new Date(x.e)-now())}</b>`:`Du ${fdate(x.s)} au ${fdate(x.e)}`}</p></div></div>`}).join('')}</div></div>`}
 /* poussière : explication */
 function dustHelp(){closeMenu();menuPage='dust';sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="La poussière"><div class="grab"></div><div class="shh"><h2>La poussière</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
   <div class="dsh"><span class="dsi">${dustI}</span><b>Tu en as ${S.dust.toLocaleString('fr-FR')}</b></div>
@@ -171,7 +189,7 @@ const ART={
 /* ================= VUES ================= */
 function vOuvrir(){
   const e=liveEv(),nx=nextEv(),cst=cost(),free=canFree(),can=free||S.coins>=cst;const dp=curDrop();const left=Math.max(0,DROP_LIMIT-(S.drop[dp.w]||0)-((hash('ds'+dp.w)%120)+Math.floor((now()-(dp.w*48*3600e3))/(48*3600e3)*260)));
-  const evp=e?`<button class="evp glass" data-act="menu" data-p="events"><i class="ldot"></i><b>${e.n}</b><span data-until="${e.e}">${dur(new Date(e.e)-now())}</span></button>`:nx?`<button class="evp glass" data-act="menu" data-p="events"><b>${nx.n}</b><span>${fdate(nx.s)}</span></button>`:'';
+  const evp=e?`<button class="evp glass" data-act="events"><span class="evk">Événement</span><i class="ldot"></i><b>${e.n}</b><span data-until="${e.e}">${dur(new Date(e.e)-now())}</span></button>`:nx?`<button class="evp glass" data-act="events"><span class="evk">Prochain</span><b>${nx.n}</b><span>${fdate(nx.s)}</span></button>`:'';
   return `<div class="view v-open">${evp}
    <div class="obg" aria-hidden="true"><i class="og1"></i><i class="og2"></i><i class="og3"></i><span class="ogrid"></span><span class="orays"></span>${Array.from({length:14},(_,i)=>`<b style="--x:${(i*37)%100};--y:${(i*53)%100};--d:${(i%7)*.9}s;--s:${2+(i%3)}px"></b>`).join('')}</div><div class="ofx" aria-hidden="true"><i class="n1">♪</i><i class="n2">♫</i><i class="n3">♪</i><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>
    <div class="mbox" data-act="open" data-m="${free?'free':'pay'}" role="button" tabindex="0" aria-label="Ouvrir un maxi"><div class="maxi"><div class="mv" style="--lc:${e?'#ff5f86':'#c9c3b5'}"></div><div class="ms glass"><b>Track<br>Dex</b><span>Vol. 01</span><em>5 sons</em></div></div></div>
@@ -187,7 +205,7 @@ function vCollection(){
   return `<div class="view v-col"><div class="vh"><button class="gbtn sq" data-act="colv" data-v="${colView==='bulles'?'liste':'bulles'}" aria-label="${colView==='bulles'?'Voir en liste':'Voir en bulles'}">${colView==='bulles'?ICON.list:ICON.bub}</button>
     <div class="seg glass sm">${['Tous','FR','US','UK','Monde'].map(g=>`<button data-act="colg" data-v="${g}" aria-pressed="${colG===g}">${g}</button>`).join('')}</div>
     <button class="gbtn sq" data-act="recy" aria-label="Recycler les doubles" style="margin-left:auto">${ICON.recycle}</button><button class="gbtn sq" data-act="cat" aria-label="Tout le catalogue">${ICON.search}</button></div>
-    <p class="cnt2">${tot} artiste${tot>1?'s':''} · ${CARDS.filter(c=>own(c.id)).length}/${N} sons · ${dustI}${S.dust}</p>
+    <div class="cntr"><p class="cnt2">${tot} artiste${tot>1?'s':''} · ${CARDS.filter(c=>own(c.id)).length}/${N} sons · ${dustI}${S.dust}</p><button class="crb" data-act="atelier" aria-label="Créer un son"><span>${ICON.plus}</span>Créer un son</button></div>
     ${colView==='bulles'?`<div class="bubw glass" id="bub">${L.length?'':'<p class="empty">Ouvre un maxi pour commencer</p>'}</div>`:`<div class="pgr" id="pgr"></div>`}</div>`;
 }
 function tickHTML(){mkInit();const L=S.mk.list.filter(l=>!l.mine).slice().sort((a,b)=>Math.abs(chg(b))-Math.abs(chg(a))).slice(0,8);if(!L.length)return '';
@@ -216,14 +234,14 @@ function vShop(){
   else if(shopSub==='echanges'){head=subHead('Amis');body=window.SOC?SOC.body():'<p class="cap">Connexion requise</p>'}
   else if(shopSub==='pass'){const on=hasPass();head=subHead('TrackDex Pass');
     let pc=0,pm=0,pg=0;for(let i=1;i<=TIERS;i++){const p=seasonRewards(i).p;if(p.gold)pg++;else if(p.maxi)pm+=p.maxi;else pc+=p.coins}
-    const perks=[['clock','Maxi gratuit toutes les 5 min','Deux fois plus souvent que sans le Pass'],['gift','1 maxi offert chaque jour','À récupérer ici, tous les jours'],['gold','1 Maxi Or chaque lundi','Ultra rare garanti à chaque fois'],['star','Récompenses premium','Une 2e récompense à chaque palier de la saison'],['theme','Thèmes Minuit et Nacre','Pour personnaliser ton app']];
+    const perks=[['clock','Maxi gratuit toutes les 5 min','Deux fois plus souvent que sans le Pass'],['gift','1 maxi offert chaque jour','À récupérer ici, tous les jours'],['gold','1 Maxi Or chaque lundi','Légendaire garanti à chaque fois'],['star','Récompenses premium','Une 2e récompense à chaque palier de la saison'],['theme','Thèmes Minuit et Nacre','Pour personnaliser ton app']];
     const PI={clock:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 3h6"/>',gift:'<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18M12 8v13M12 8c-2-4-6-4-6-1.5S9 8 12 8c3 0 6-.5 6-1.5S14 4 12 8"/>',gold:'<circle cx="12" cy="12" r="8"/><path d="M12 7l1.5 3 3.3.5-2.4 2.3.6 3.3-3-1.6-3 1.6.6-3.3-2.4-2.3 3.3-.5z"/>',star:'<path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/>',theme:'<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/>'};
     body=`<div class="psp"><div class="psh"><div class="psart">${ART.pass}</div><div class="psht"><span class="psk">Saison 1 · Premiers sillons</span><b>Double tout.<br>Plus de maxis, plus de sons.</b>${on?`<span class="pson">${ICON.check}Actif jusqu’au ${new Date(S.passUntil).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}</span>`:`<span class="psprice"><b>5,99 €</b> / mois</span>`}</div></div>
      <div class="pstot"><div><b>+${pc.toLocaleString('fr-FR')}</b><span>${coinI} jetons</span></div><div><b>+${pm}</b><span><i class="mini"></i> maxis</span></div><div><b>+${pg}</b><span><i class="mini gold"></i> Maxi Or</span></div></div>
      <p class="cap pstcap">En plus, sur la saison, avec les récompenses premium</p>
+     <div class="psbar">${hasPass()?`${!day().pd?'<button class="pbtn" data-act="claim">Maxi du jour</button>':'<button class="pbtn" disabled>Maxi du jour récupéré</button>'}<button class="gbtn" data-act="passmanage">Gérer</button>`:`<button class="pbtn pscta" data-act="buy" data-k="pass">S’abonner · 5,99 € / mois</button>`}</div>
      <div class="psl">${perks.map(([k,t,d],n)=>`<div class="psi" style="--i:${n}"><span class="psic psic-${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${PI[k]}</svg></span><span><b>${t}</b><small>${d}</small></span></div>`).join('')}</div>
      <div class="pscmp"><div class="pch"><span></span><b>Gratuit</b><b class="pp">Pass</b></div>${[['Maxi gratuit','10 min','5 min'],['Maxi offert / jour','–','1'],['Maxi Or / semaine','–','1'],['Récompenses / palier','1','2'],['Thèmes exclusifs','–','2']].map(([a,b,c])=>`<div class="pcr"><span>${a}</span><em>${b}</em><em class="pp">${c}</em></div>`).join('')}</div>
-     <div class="psbar">${on?`${!day().pd?'<button class="pbtn" data-act="claim">Maxi du jour</button>':'<button class="pbtn" disabled>Maxi du jour récupéré</button>'}<button class="gbtn" data-act="passmanage">Gérer</button>`:`<button class="pbtn pscta" data-act="buy" data-k="pass">S’abonner · 5,99 € / mois</button>`}</div>
      <p class="cap">Paiement sécurisé par Stripe. Sans engagement, résiliable à tout moment.</p></div>`}
   else{head=subHead('Packs & jetons');body=`<div class="chips">${[['packs','Packs'],['jetons','Jetons']].map(([k,n])=>`<button class="chip" data-act="jts" data-v="${k}" aria-pressed="${jetSub===k}">${n}</button>`).join('')}</div><div class="pgr" id="pgr"></div>${jetSub==='jetons'?'<p class="cap">Paiement sécurisé par Stripe · jetons ajoutés en quelques secondes</p>':''}`}
   return `<div class="view v-shop">${head}${body}</div>`;
@@ -274,10 +292,10 @@ const BB={nodes:[],raf:0,drag:null,calm:0,w:0,h:0};
 function initBub(){
   const el=$('bub');if(!el)return;const w=el.clientWidth,h=el.clientHeight;if(!w||!h)return;BB.w=w;BB.h=h;
   const list=colList();if(!list.length)return;
-  const r0=list.map(A=>14+7*Math.sqrt(A.ids.filter(own).length+2));const area=r0.reduce((a,r)=>a+Math.PI*r*r,0)||1;
+  const r0=list.map(A=>16+34*pct(A.ids)/100+3*Math.sqrt(A.ids.filter(own).length));const TOPS=S.top||[];const area=r0.reduce((a,r)=>a+Math.PI*r*r,0)||1;
   const k=Math.min(1.7,Math.sqrt(.45*w*h/area));
   BB.nodes=list.map((A,i)=>{const r=clamp(r0[i]*k,22,86);const p=pct(A.ids);const b=document.createElement('button');
-    b.className='bb'+(S.ul[A.key]?' done':'');b.setAttribute('aria-label',`${A.n}, ${p} %`);
+    b.className='bb'+(S.ul[A.key]?' done':'')+(TOPS.indexOf(A.key)>=0?' tops':'');b.setAttribute('aria-label',`${A.n}, ${p} %`);
     b.style.cssText=`width:${2*r}px;height:${2*r}px;--avg:${A.avg};--p:${p}`;
     b.innerHTML=`<span><b style="font-size:${Math.max(12,r*.4).toFixed(0)}px">${esc(A.ini)}</b>${r>=34?`<em>${p}%</em>`:''}</span>`;
     el.appendChild(b);const a=i*2.4,d=Math.sqrt(i)*17;
@@ -324,7 +342,7 @@ function shopItems(){
   const pk=(k,cls,name,r,odds,price,act)=>`<button class="pk pkx pk-${cls}" style="--rc:${RAR[r].c}" data-act="${act||'buyc'}" data-k="${k}"><span class="pkglow"></span><span class="mini ${cls}"></span><span class="pkg"><i style="background:${RAR[r].c}"></i>${RAR[r].n} garanti</span><b>${name}</b><small class="pko">${odds}</small><span class="price">${price}</span></button>`;
   return [pk('diamant','diam','Maxi Diamant',4,'Divin ×2',`${PK.diamant.p.toLocaleString('fr-FR')} ${coinI}`),
     pk('gold','gold','Maxi Or',3,'Mythique et Divin ×2',`${GOLD_COST} ${coinI}`),
-    pk('nacre','nacre','Maxi Nacre',2,'5 sons dont 1 Ultra rare',`${PK.nacre.p} ${coinI}`),
+    pk('nacre','nacre','Maxi Ultra',2,'5 sons dont 1 Ultra rare',`${PK.nacre.p} ${coinI}`),
     `<button class="pk pkx pk-lot" data-act="buyc" data-k="lot5"><span class="pkglow"></span><span class="lotst"><i class="mini"></i><i class="mini"></i><i class="mini"></i></span><span class="pkg pkd">−10 %</span><b>5 maxis</b><small class="pko">À ouvrir quand tu veux</small><span class="price">450 ${coinI}</span></button>`,
     `<button class="pk pkx pk-dust" data-act="dusthelp"><span class="pkglow"></span><span class="stack">${dustI}${dustI}${dustI}</span><span class="pkg pkd">C’est quoi ?</span><b>200 poussière</b><small class="pko">Fabrique les sons qui te manquent</small><span class="price" data-act="buyc" data-k="dust">300 ${coinI}</span></button>`]}
 
@@ -765,6 +783,11 @@ document.addEventListener('click',e=>{
     case 'vsave':{vitInit();const v=(sh.querySelector('#vname')||{}).value;if(v&&v.trim())S.vits[S.vi].n=v.trim().slice(0,18);save();closeMenu();render();break}
     case 'vdel':{vitInit();if(S.vits.length>1){S.vits.splice(S.vi,1);S.vi=0;S.fav=S.vits[0].ids;save()}closeMenu();render();break}
     case 'craft':craft(t.dataset.id);break;
+    case 'atelier':atelier();break;
+    case 'atr':atR=+t.dataset.v;atelier();break;
+    case 'atc':{const c=C[t.dataset.id];if(c&&S.dust>=DUST_COST[c.r])craft(c.id);else toast('Pas assez de poussière');break}
+    case 'events':evSheet();break;
+    case 'evx':{const el=t.closest('.evc2');if(el)el.classList.toggle('open');break}
     case 'recy1':recyOne(t.dataset.id);break;
     case 'recy':recySheet();break;
     case 'recyall':recyAll();break;
