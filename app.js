@@ -205,7 +205,7 @@ function vCollection(){
   return `<div class="view v-col"><div class="vh"><button class="gbtn sq" data-act="colv" data-v="${colView==='bulles'?'liste':'bulles'}" aria-label="${colView==='bulles'?'Voir en liste':'Voir en bulles'}">${colView==='bulles'?ICON.list:ICON.bub}</button>
     <div class="seg glass sm">${['Tous','FR','US','UK','Monde'].map(g=>`<button data-act="colg" data-v="${g}" aria-pressed="${colG===g}">${g}</button>`).join('')}</div>
     <button class="gbtn sq" data-act="recy" aria-label="Recycler les doubles" style="margin-left:auto">${ICON.recycle}</button><button class="gbtn sq" data-act="cat" aria-label="Tout le catalogue">${ICON.search}</button></div>
-    <div class="cntr"><p class="cnt2">${tot} artiste${tot>1?'s':''} · ${CARDS.filter(c=>own(c.id)).length}/${N} sons · ${dustI}${S.dust}</p><button class="crb" data-act="atelier" aria-label="Créer un son"><span>${ICON.plus}</span>Créer un son</button></div>
+    <div class="cntr"><p class="cnt2">${tot} artiste${tot>1?'s':''} · ${CARDS.filter(c=>own(c.id)).length}/${N} sons · ${dustI}${S.dust}</p><button class="crb" data-act="atelier" aria-label="Créer un son"><span>${ICON.plus}</span>Créer<small class="crx">&nbsp;un son</small></button></div>
     ${colView==='bulles'?`<div class="bubw glass" id="bub">${L.length?'':'<p class="empty">Ouvre un maxi pour commencer</p>'}</div>`:`<div class="pgr" id="pgr"></div>`}</div>`;
 }
 function tickHTML(){mkInit();const L=S.mk.list.filter(l=>!l.mine).slice().sort((a,b)=>Math.abs(chg(b))-Math.abs(chg(a))).slice(0,8);if(!L.length)return '';
@@ -692,7 +692,7 @@ function popHTML(inner){return `<div class="scrim" data-act="ddclose"></div><div
 function see(id){const c=C[id];if(!c)return;const n=S.owned[id]||0;const fav=S.fav.includes(id);
   const acts=reveal?'':`<div class="row"><a class="gbtn" href="https://open.spotify.com/search/${encodeURIComponent(c.t+' '+c.a)}" target="_blank" rel="noopener">${ICON.play}Écouter</a><button class="gbtn" data-act="goartist" data-k="${c.ak}">${esc(c.a)}</button>${c.alk&&!RW[c.alk].single?`<button class="gbtn" data-act="goalbum" data-k="${c.alk}">Album</button>`:''}</div>
    <div class="row">${n?`<button class="gbtn" data-act="fav" data-id="${id}">${ICON.pin}${fav?'Retirer':'Mettre en vitrine'}</button>`:`<button class="gbtn" data-act="craft" data-id="${id}" ${S.dust>=DUST_COST[c.r]?'':'disabled'}>Fabriquer · ${DUST_COST[c.r]} ${dustI}</button>`}${n>1?`<button class="gbtn" data-act="sellfrom" data-id="${id}">Vendre</button><button class="gbtn" data-act="recy1" data-id="${id}">${ICON.recycle}+${DUST_GET[c.r]}</button>`:''}</div>`;
-  dd.innerHTML=popHTML(`<div class="big">${tileHTML(c,{nocount:1})}</div><div class="info glass" style="--rc:${RAR[c.r].c}"><span><i></i>${RAR[c.r].n}</span><span>${fmtS(c.s)}</span>${c.y?`<span>${c.y}</span>`:''}<span>×${n}</span>${TREND.has(id)?'<span class="upt">↑ En hausse</span>':''}</div><p class="cap">${esc(c.al||'Single')}</p>${acts}`)}
+  dd.innerHTML=popHTML(`<div class="big">${tileHTML(c,{nocount:1})}</div><div class="info glass" style="--rc:${RAR[c.r].c}"><span><i></i>${RAR[c.r].n}</span><button class="qte" id="qte" data-act="quote" data-id="${id}" aria-label="Voir à la Bourse"><span class="qld">Cours…</span></button>${c.y?`<span>${c.y}</span>`:''}<span>×${n}</span></div><p class="cap">${esc(c.al||'Single')}</p>${acts}`);if(window.ECO&&ECO.quote)ECO.quote(id)}
 function seeAl(k){const B=RW[k];if(!B)return;
   dd.innerHTML=popHTML(`<div class="big shine">${albumHTML(B)}</div><div class="trk glass">${B.ids.slice(0,9).map(id=>{const c=C[id];return `<div class="${own(id)?'':'no'}" style="--rc:${RAR[c.r].c}"><i></i><span>${esc(c.t)}</span><em>${own(id)?'✓':''}</em></div>`}).join('')}${B.ids.length>9?`<div><span class="muted">+ ${B.ids.length-9} autres</span></div>`:''}</div>
    <p class="cap">${B.single?'Singles':S.ul[k]?'Complété':`+${ALB_BONUS} jetons à la clé`}</p>`)}
@@ -784,6 +784,7 @@ document.addEventListener('click',e=>{
     case 'vdel':{vitInit();if(S.vits.length>1){S.vits.splice(S.vi,1);S.vi=0;S.fav=S.vits[0].ids;save()}closeMenu();render();break}
     case 'craft':craft(t.dataset.id);break;
     case 'atelier':atelier();break;
+    case 'quote':{const id=t.dataset.id;closeDD();closeStack();setTab('bourse');if(window.ECO)setTimeout(()=>ECO.see(id),60);break}
     case 'atr':atR=+t.dataset.v;atelier();break;
     case 'atc':{const c=C[t.dataset.id];if(c&&S.dust>=DUST_COST[c.r])craft(c.id);else toast('Pas assez de poussière');break}
     case 'events':evSheet();break;

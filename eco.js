@@ -143,26 +143,44 @@
     var mn=Math.min.apply(null,a),mx=Math.max.apply(null,a),sp=Math.max(mx-mn,mx*.02,.01);
     return a.map(function(v,i){return (i*W/(a.length-1)).toFixed(1)+','+(H-2-(v-mn)*(H-4)/sp).toFixed(1)}).join(' ');
   }
-  function sparkHTML(id){
-    var L=LIVE[id];if(!L||!L.sp||L.sp.length<2)return '';
-    var up=L.sp[L.sp.length-1]>=L.sp[0];
-    return '<svg class="bxsp'+(up?' bxup':' bxdn')+'" data-sp="'+id+'" viewBox="0 0 64 26" preserveAspectRatio="none" aria-hidden="true"><polyline points="'+sparkPts(L.sp,64,26)+'"/></svg>';
+  function sparkHTML(id,W,H,cls,fill){
+    var L=LIVE[id];if(!L||!L.sp||L.sp.length<2)return '';W=W||64;H=H||26;
+    var up=L.sp[L.sp.length-1]>=L.sp[0],pts=sparkPts(L.sp,W,H);
+    return '<svg class="bxsp '+(cls||'')+(up?' bxup':' bxdn')+'" data-sp="'+id+'" data-w="'+W+'" data-h="'+H+'" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" aria-hidden="true">'+(fill?'<polygon points="0,'+H+' '+pts+' '+W+','+H+'"/>':'')+'<polyline points="'+pts+'"/></svg>';
   }
-  function rowHTML(x,i){
+  function chip(v){return '<span class="bxch2'+cls(v)+'">'+(v>0?'▲ ':v<0?'▼ ':'')+pct(v)+'</span>'}
+  function buyBtn(x,big){return x.can?'<button class="bxb'+(big?' big':'')+'" data-act="bxbuy" data-id="'+x.id+'">'+(big?'Acheter · ':'')+x.buy+' '+coinI+'</button>':'<span class="bxlock">'+ICON.lock+(big?'Packs uniquement':'')+'</span>'}
+  /* carte de la grille */
+  function cardHTML(x,i,rank){
     var c=C[x.id],R=RAR[c.r];
-    var btn=x.can?'<button class="lbtn bxbuy" data-act="bxbuy" data-id="'+x.id+'">'+x.buy+' '+coinI+'</button>'
-      :'<span class="bxl">Packs<br>uniquement</span>';
-    return '<div class="lr bxr" style="--i:'+(i||0)+'" data-act="bxsee" data-id="'+x.id+'"><span class="lth">'+tileHTML(c,{nocount:1,lock:false})+'</span>'
-      +'<div class="li"><b>'+esc(c.t)+'</b><span><i style="background:'+R.c+'"></i>'+esc(c.a)+'</span><small>'+R.n+(x.own?' · ×'+x.own:'')+'</small></div>'
-      +sparkHTML(x.id)
-      +'<div class="lp"><b>'+x.p+' '+coinI+'</b><small class="bxc'+cls(x.chg)+'">'+pct(x.chg)+'</small></div>'+btn+'</div>';
+    return '<div class="bxg" style="--i:'+(i||0)+';--rc:'+R.c+'" data-act="bxsee" data-id="'+x.id+'">'+(rank?'<b class="bxrk2">'+rank+'</b>':'')
+      +'<span class="bxgt">'+tileHTML(c,{nocount:1,lock:false})+'</span>'
+      +'<div class="bxgi"><b>'+esc(c.t)+'</b><span>'+esc(c.a)+'</span></div>'
+      +sparkHTML(x.id,90,26,'bxgs')
+      +'<div class="bxgp"><b>'+x.p+' '+coinI+'</b>'+chip(x.chg)+'</div>'
+      +(x.own?'<em class="bxown">×'+x.own+'</em>':'')+'</div>';
+  }
+  /* carte du carrousel */
+  function moverHTML(x,i){
+    var c=C[x.id];
+    return '<div class="bxm" style="--i:'+i+'" data-act="bxsee" data-id="'+x.id+'"><span class="bxmt">'+tileHTML(c,{nocount:1,lock:false})+chip(x.chg)+'</span><b>'+esc(c.t)+'</b><span>'+esc(c.a)+'</span><div class="bxmp"><b>'+x.p+' '+coinI+'</b>'+sparkHTML(x.id,54,20,'bxms')+'</div></div>';
+  }
+  function heroHTML(x){
+    var c=C[x.id],R=RAR[c.r];
+    return '<div class="bxhero" style="--rc:'+R.c+'" data-act="bxsee" data-id="'+x.id+'"><span class="bxhk"><i class="ldot"></i>Son du moment</span>'
+      +'<div class="bxhm"><span class="bxht">'+tileHTML(c,{nocount:1,lock:false})+'</span><div class="bxhi"><b>'+esc(c.t)+'</b><span>'+esc(c.a)+' · '+R.n+'</span><div class="bxhp"><b>'+x.p+' '+coinI+'</b>'+chip(x.chg)+'</div></div></div>'
+      +sparkHTML(x.id,300,64,'bxhs',1)+'<div class="bxha">'+buyBtn(x,1)+'</div></div>';
+  }
+  function podiumHTML(L){
+    var o=[L[1],L[0],L[2]].filter(Boolean);
+    return '<div class="bxpod">'+o.map(function(x){var k=L.indexOf(x)+1,c=C[x.id];return '<div class="bxpd p'+k+'" data-act="bxsee" data-id="'+x.id+'">'+(k===1?'<span class="bxcrown">'+ICON.star+'</span>':'')+'<span class="bxpt">'+tileHTML(c,{nocount:1,lock:false})+'</span><b>'+esc(c.t)+'</b><span>'+esc(c.a)+'</span><em>'+x.p+' '+coinI+'</em>'+chip(x.chg)+'<i class="bxstep">'+k+'</i></div>'}).join('')+'</div>';
   }
   function pfRowHTML(x,i){
     var c=C[x.id],R=RAR[c.r];
-    var res=x.cost?'<small>Acheté '+x.cost+' · <span class="bxc'+cls(x.sell-x.cost)+'">'+(x.sell-x.cost>=0?'+':'−')+Math.abs(x.sell-x.cost)+'</span></small>':'<small>'+R.n+'</small>';
-    return '<div class="lr bxr" style="--i:'+(i||0)+'" data-act="bxsee" data-id="'+x.id+'"><span class="lth">'+tileHTML(c,{nocount:1,lock:false})+'</span>'
-      +'<div class="li"><b>'+esc(c.t)+'</b><span><i style="background:'+R.c+'"></i>'+esc(c.a)+(x.q>1?' · ×'+x.q:'')+'</span>'+res+'</div>'
-      +'<div class="lp"><b>'+(x.sell*x.q)+' '+coinI+'</b><small class="bxc'+cls(x.chg)+'">'+pct(x.chg)+'</small></div></div>';
+    return '<div class="bxg" style="--i:'+(i||0)+';--rc:'+R.c+'" data-act="bxsee" data-id="'+x.id+'"><span class="bxgt">'+tileHTML(c,{nocount:1,lock:false})+'</span>'
+      +'<div class="bxgi"><b>'+esc(c.t)+'</b><span>'+esc(c.a)+(x.q>1?' · ×'+x.q:'')+'</span></div>'
+      +'<div class="bxgp"><b>'+(x.sell*x.q)+' '+coinI+'</b>'+chip(x.chg)+'</div>'
+      +(x.cost?'<small class="bxcost">Acheté '+x.cost+' · <span class="bxc'+cls(x.sell-x.cost)+'">'+(x.sell-x.cost>=0?'+':'−')+Math.abs(x.sell-x.cost)+'</span></small>':'')+'</div>';
   }
   function tickerHTML(){
     var L=(B.tk||[]).filter(function(x){return x.chg});
@@ -172,24 +190,38 @@
     var one=L.map(function(x){var c=C[x.id];return '<span class="bxti"><b>'+esc(c.t)+'</b><em>'+x.p+'</em><i class="bxc'+cls(x.chg)+'">'+(x.chg>0?'▲ ':x.chg<0?'▼ ':'')+pct(x.chg)+'</i></span>'}).join('');
     return '<div class="bxtk" aria-label="Sons en hausse et en baisse"><div class="bxtr" style="--n:'+L.length+'">'+one+one+'</div></div>';
   }
+  function sec(t,sub){return '<div class="bxsec"><b>'+t+'</b>'+(sub?'<span>'+sub+'</span>':'')+'</div>'}
   function bodyHTML(){
     if(B.sub==='pf'){
       var P=B.pf;if(!P)return '<p class="cap">Chargement…</p>';
       var v=P.total0?(P.total-P.total0)*100/P.total0:0;
-      return '<div class="bxsum"><div><span class="lbl">Valeur de tes sons</span><b>'+P.total.toLocaleString('fr-FR')+' '+coinI+'</b><small class="bxc'+cls(v)+'">'+pct(Math.round(v*10)/10)+' sur 24 h</small></div>'
-        +'<div><span class="lbl">Résultat Bourse</span><b class="bxc'+cls(P.real)+'">'+(P.real>0?'+':P.real<0?'−':'')+Math.abs(P.real).toLocaleString('fr-FR')+'</b><small>ventes moins achats</small></div></div>'
-        +'<p class="cap">Valeur au prix de revente actuel. Touche un son pour voir sa courbe.</p>'
-        +(P.rows.length?P.rows.slice(0,150).map(pfRowHTML).join(''):'<p class="cap">Aucun son</p>');
+      var byR=[0,0,0,0,0,0];P.rows.forEach(function(x){byR[C[x.id].r]+=x.sell*x.q});var tot=byR.reduce(function(a,b){return a+b},0)||1,acc=0;
+      var ring='conic-gradient('+byR.map(function(val,r){var a=acc;acc+=val/tot*360;return RAR[r].c+' '+a.toFixed(1)+'deg '+acc.toFixed(1)+'deg'}).join(',')+')';
+      var sorted=P.rows.slice().sort(function(a,b){return b.chg-a.chg}),best=sorted[0],worst=sorted[sorted.length-1];
+      return '<div class="bxpf"><div class="bxring" style="background:'+ring+'"><span><b>'+P.total.toLocaleString('fr-FR')+'</b><small>jetons</small></span></div>'
+        +'<div class="bxpfi"><span class="lbl">Valeur de tes sons</span>'+chip(Math.round(v*10)/10)+'<small>sur 24 h</small><span class="lbl" style="margin-top:8px">Résultat Bourse</span><b class="bxc'+cls(P.real)+'">'+(P.real>0?'+':P.real<0?'−':'')+Math.abs(P.real).toLocaleString('fr-FR')+' '+coinI+'</b></div>'
+        +'<div class="bxleg">'+byR.map(function(val,r){return val?'<span><i style="background:'+RAR[r].c+'"></i>'+RAR[r].n+' '+Math.round(val/tot*100)+' %</span>':''}).join('')+'</div></div>'
+        +(best&&worst&&best!==worst?'<div class="bxbw"><div class="bxbwc up" data-act="bxsee" data-id="'+best.id+'"><span class="lbl">Meilleur</span>'+tileHTML(C[best.id],{nocount:1,lock:false})+'<b>'+esc(C[best.id].t)+'</b>'+chip(best.chg)+'</div><div class="bxbwc dn" data-act="bxsee" data-id="'+worst.id+'"><span class="lbl">Pire</span>'+tileHTML(C[worst.id],{nocount:1,lock:false})+'<b>'+esc(C[worst.id].t)+'</b>'+chip(worst.chg)+'</div></div>':'')
+        +sec('Tes sons',P.rows.length+' sons')+(P.rows.length?'<div class="bxgrid">'+P.rows.slice(0,120).map(pfRowHTML).join('')+'</div>':'<p class="cap">Aucun son</p>');
     }
     var top='<div class="bxs"><input id="bxq" type="search" placeholder="Chercher un son ou un artiste" value="'+esc(B.q)+'" autocomplete="off"></div>'
-      +'<div class="chips">'+[['hot','Tendances'],['top','Les plus chers'],['mine','Mes sons']].map(function(z){return '<button class="chip" data-act="bxf" data-v="'+z[0]+'" aria-pressed="'+(B.f===z[0]&&!B.q)+'">'+z[1]+'</button>'}).join('')+'</div>'
+      +'<div class="chips">'+[['hot','Tendances'],['top','Les plus chers'],['mine','Mes sons']].map(function(z){return '<button class="chip" data-act="bxf" data-v="'+z[0]+'" aria-pressed="'+(B.f===z[0]&&!B.q)+'">'+z[1]+'</button>'}).join('')+'</div>';
+    return top+'<div id="bxl" class="bxlist">'+listHTML()+'</div>'
       +'<p class="cap bxcap">Achat au cours +5 %, revente −5 %. Encore '+B.meta.buys+' achat'+(B.meta.buys>1?'s':'')+' et '+B.meta.sells+' vente'+(B.meta.sells>1?'s':'')+' aujourd’hui. Mythiques et Divins : packs uniquement.</p>';
-    return top+'<div id="bxl" class="bxlist">'+listHTML()+'</div>';
   }
   function listHTML(){
     if(!B.list)return '<p class="cap">Chargement…</p>';
-    if(!B.list.length)return '<p class="cap">'+(B.q?'Aucun son trouvé':B.f==='mine'?'Aucun son':'Rien pour l’instant')+'</p>';
-    return B.list.map(function(x,i){return B.f==='top'&&!B.q?rowHTML(x,i).replace('<span class="lth">','<span class="bxrk">'+(i+1)+'</span><span class="lth">'):rowHTML(x,i)}).join('');
+    var L=B.list;
+    if(!L.length)return '<p class="cap">'+(B.q?'Aucun son trouvé':B.f==='mine'?'Aucun son':'Rien pour l’instant')+'</p>';
+    if(B.q||B.f==='mine')return '<div class="bxgrid">'+L.map(function(x,i){return cardHTML(x,i)}).join('')+'</div>';
+    if(B.f==='top')return podiumHTML(L.slice(0,3))+sec('Le classement','du 4e au '+L.length+'e')+'<div class="bxgrid">'+L.slice(3).map(function(x,i){return cardHTML(x,i,i+4)}).join('')+'</div>';
+    var s=L.slice().sort(function(a,b){return b.chg-a.chg}),hero=s[0],up=s.filter(function(x){return x.chg>0&&x!==hero}).slice(0,8),dn=s.filter(function(x){return x.chg<0}).reverse().slice(0,8);
+    var used={};[hero].concat(up,dn).forEach(function(x){if(x)used[x.id]=1});
+    var rest=L.filter(function(x){return !used[x.id]});
+    return heroHTML(hero)
+      +(up.length?sec('Ça monte','sur 24 h')+'<div class="bxrow">'+up.map(moverHTML).join('')+'</div>':'')
+      +(dn.length?sec('Ça baisse','sur 24 h')+'<div class="bxrow">'+dn.map(moverHTML).join('')+'</div>':'')
+      +(rest.length?sec('Tout le marché')+'<div class="bxgrid">'+rest.map(function(x,i){return cardHTML(x,i)}).join('')+'</div>':'');
   }
   function ixHTML(){var ix=ECO.ix;return '<span class="wix sm'+(ix>0?' gn':ix===0?' z':'')+'">CAC Son '+(ix>0?'▲':ix<0?'▼':'=')+' '+fr(Math.abs(ix))+' %</span>'}
   var BG='<div class="bxbg" aria-hidden="true"><i class="g1"></i><i class="g2"></i><svg class="bxcand" viewBox="0 0 400 200" preserveAspectRatio="none">'+(function(){var s='',y=120;for(var i=0;i<26;i++){var o=y,c=Math.max(30,Math.min(170,y+(Math.sin(i*1.7)*22+Math.cos(i*.6)*14))),hi=Math.min(o,c)-6-(i*7%11),lo=Math.max(o,c)+5+(i*5%9),up=c<o;s+='<line x1="'+(i*15+8)+'" x2="'+(i*15+8)+'" y1="'+hi+'" y2="'+lo+'" class="'+(up?'u':'d')+'"/><rect x="'+(i*15+4)+'" y="'+Math.min(o,c)+'" width="8" height="'+Math.max(2,Math.abs(c-o))+'" class="'+(up?'u':'d')+'"/>';y=c}return s})()+'</svg></div>';
@@ -219,7 +251,7 @@
       var L=LIVE[el.dataset.sp];if(!L||!L.sp)return;
       var last=L.sp[L.sp.length-1],nx=last+(L.real-last)*.35+gauss()*L.real*.012;
       L.sp=L.sp.slice(1).concat([Math.max(.1,nx)]);
-      var pl=el.querySelector('polyline');if(pl)pl.setAttribute('points',sparkPts(L.sp,64,26));
+      var W=+el.dataset.w||64,H=+el.dataset.h||26,pts=sparkPts(L.sp,W,H),pl=el.querySelector('polyline'),pg=el.querySelector('polygon');if(pl)pl.setAttribute('points',pts);if(pg)pg.setAttribute('points','0,'+H+' '+pts+' '+W+','+H);
       var up=L.sp[L.sp.length-1]>=L.sp[0];el.classList.toggle('bxup',up);el.classList.toggle('bxdn',!up);
     });
     if(F&&!F.scrub)liveTip();
@@ -299,6 +331,9 @@
   }
   function closeFull(){var el=$('bxfull');if(el)el.remove();F=null}
   ECO.see=function(id){bxSee(id)};
+  ECO.quote=async function(id){var el=$('qte');if(!el)return;var r=await sb.rpc('card_quote',{p_id:id});el=$('qte');if(!el)return;
+    if(r.error||!r.data){el.innerHTML='<span>Bourse</span>';return}
+    var v=+r.data.chg||0;el.className='qte'+(v>0?' bxup':v<0?' bxdn':'');el.innerHTML='<b>'+r.data.p+'</b><small>jetons</small><em>'+(v>0?'▲':v<0?'▼':'=')+' '+fr(Math.abs(v))+' %</em>'};
   addEventListener('keydown',function(e){if(e.key==='Escape'&&$('bxfull'))closeFull()});
   addEventListener('resize',function(){if(F)drawChart()});
 
