@@ -1623,3 +1623,53 @@ body.mo #main .view{animation:none}
 @keyframes crtin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .crt{animation:crtin .5s ease-out 1.5s forwards}
 .crx2{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;z-index:2;background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.25)}
+
+/* ===== v27 : wax, drops, succès, Pro ===== */
+/* le wax : un tout petit vinyle doré */
+.coin{border-radius:50%;background:
+  radial-gradient(circle,#2b1d04 0 8%,#fff0b3 9% 20%,#d9a12c 21% 24%,transparent 25%),
+  conic-gradient(from 30deg,rgba(255,255,255,0) 0 10%,rgba(255,250,220,.75) 14%,rgba(255,255,255,0) 20% 58%,rgba(255,250,220,.5) 62%,rgba(255,255,255,0) 68%),
+  repeating-radial-gradient(circle,#f0bd45 0 .7px,#b57d15 .7px 1.4px);
+  box-shadow:inset 0 0 0 1px rgba(110,70,0,.55),0 1px 2px rgba(0,0,0,.25)}
+/* disquaire */
+.v-hub .hgrid{grid-template-rows:1.1fr 1fr 1fr}
+.hb-ach{background:linear-gradient(150deg,#1f2b24,#2f5a43 55%,#7fae5c);color:#fff;justify-content:flex-end}
+.hb-ach .hbt b,.hb-sz .hbt b{font-size:clamp(19px,5.6vw,24px);line-height:1.05}
+.ha-c{position:absolute;inset:0;width:100%;height:100%}
+/* Pro */
+.pro{display:inline-block;font:800 9.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;font-style:normal;padding:3px 6px;border-radius:6px;background:linear-gradient(135deg,#f8e19a,#d2a03a);color:#2b1d02;vertical-align:1px}
+.chip.lk{opacity:.75}
+.bxpro{grid-column:1/-1;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;text-align:left;font-size:12.5px;background:rgba(255,255,255,.08);color:inherit;border:1px dashed rgba(242,193,78,.5)}
+/* succès */
+.v-ach{gap:10px}
+.achh{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:22px;background:linear-gradient(135deg,rgba(127,174,92,.25),rgba(242,193,78,.18))}
+.achh>div:last-child{display:flex;flex-direction:column;gap:2px}
+.achh b{font:800 16px var(--disp);display:inline-flex;align-items:center;gap:6px}
+.achh small{font:500 12px var(--mono);color:var(--fg2)}
+.achr{width:58px;height:58px;border-radius:50%;flex:none;display:grid;place-content:center;text-align:center;background:radial-gradient(circle,var(--bg) 0 64%,transparent 65%),conic-gradient(#7fae5c calc(var(--p)*1%),rgba(127,127,127,.2) 0)}
+.achr b{font:800 18px/1 var(--disp)}.achr small{font:600 10px var(--mono);color:var(--fg2)}
+.achc{margin:8px 2px 0;font:700 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--fg2)}
+.achl{display:flex;flex-direction:column;gap:8px}
+.achi{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:18px;background:var(--soft);box-shadow:inset 0 0 0 1px rgba(127,127,127,.12);animation:cellin .35s ease-out both;animation-delay:calc(var(--i)*.03s)}
+.achic{width:38px;height:38px;flex:none;border-radius:12px;display:grid;place-items:center;background:rgba(127,127,127,.15);color:var(--fg2)}
+.achic svg{width:20px;height:20px}
+.achi.ok .achic{background:linear-gradient(140deg,#ffc23d,#ff8a3d);color:#2a1a00}
+.achi.got .achic{background:linear-gradient(140deg,#7fae5c,#3f7a4a);color:#fff}
+.acht{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.acht b{font:700 14.5px var(--disp)}
+.acht small{font-size:12px;color:var(--fg2);line-height:1.25}
+.achb{display:block;height:4px;border-radius:2px;background:rgba(127,127,127,.2);margin-top:4px;overflow:hidden}
+.achb i{display:block;height:100%;width:calc(var(--p)*1%);background:linear-gradient(90deg,#7fae5c,#ffc23d);border-radius:2px}
+.achi.got .achb{display:none}
+.achv{flex:none;display:flex;flex-direction:column;align-items:flex-end;font:600 12px var(--mono);color:var(--fg2)}
+.achv b{color:var(--fg)}.achv small{display:inline-flex;align-items:center;gap:3px;font-size:11px}
+.achv .coin,.achg .coin{width:12px;height:12px}
+.achg{height:36px;padding:0 12px;font-size:13px;flex:none;gap:5px}
+.achd{width:30px;height:30px;flex:none;border-radius:50%;display:grid;place-items:center;color:#3f7a4a}
+.achd svg{width:18px;height:18px}
+.achi.got{opacity:.7}
+.cstack i{background:
+  radial-gradient(circle,#2b1d04 0 7%,#fff0b3 8% 21%,#d9a12c 22% 25%,transparent 26%),
+  conic-gradient(from 30deg,rgba(255,255,255,0) 0 10%,rgba(255,250,220,.7) 14%,rgba(255,255,255,0) 20% 58%,rgba(255,250,220,.45) 62%,rgba(255,255,255,0) 68%),
+  repeating-radial-gradient(circle,#f0bd45 0 1px,#b57d15 1px 2px)}
+.hb-ach .hbn{position:absolute;top:12px;right:12px;left:auto;bottom:auto;margin:0}

@@ -1,4 +1,4 @@
-/* WaxDrop : économie gérée par le serveur (jetons, cartes, maxis) et Bourse des cours */
+/* WaxDrop : économie gérée par le serveur (wax, cartes, drops) et Bourse des cours */
 (function(){
   if(!window.CL||!CL.sb)return;
   var sb=CL.sb;
@@ -31,8 +31,8 @@
     if(reveal||ECO.busy)return;
     if(['free','pay','gold','drop','nacre','diamant'].indexOf(m)<0)m='pay';
     var need=m==='drop'?DROP_COST:PK[m]?PK[m].p:m==='pay'?cost():0;
-    if(m==='gold'){if(S.gold<1){toast('Pas de Maxi Or');return}}
-    else if(m==='free'){if(!(S.bonus>0||freeReady())){toast('Pas de maxi gratuit');return}}
+    if(m==='gold'){if(S.gold<1){toast('Pas de Drop Or');return}}
+    else if(m==='free'){if(!(S.bonus>0||freeReady())){toast('Pas de drop gratuit');return}}
     else if(S.coins<need){needCoins(need-S.coins);return}
     ECO.busy=true;var r;
     try{r=await sb.rpc('eco',{p_op:'open',p_a:{kind:m==='pay'?'std':m,alk:m==='drop'?curDrop().A.key:null,v:window.CATV}})}
@@ -41,7 +41,7 @@
     if(r.error){toast(/fetch|network/i.test(r.error.message)?'Connexion impossible, réessaie':r.error.message);return}
     if(reveal)return;
     var ids=(r.data.cards||[]).filter(function(id){return C[id]});
-    if(!ids.length){ECO.apply(r.data.w);toast('Maxi ajouté, recharge l’app');return}
+    if(!ids.length){ECO.apply(r.data.w);toast('Drop ajouté, recharge l’app');return}
     window.SRV={cards:ids,gain:r.data.gain||0,secret:!!r.data.secret};
     try{reveal=pull(PK[m]||m==='drop'?m:'std')}finally{window.SRV=null}
     ECO.apply(r.data.w);
@@ -56,34 +56,34 @@
     var r=await ECO.op('craft',{id:id});if(!r)return;
     render();if(window.craftAnim)craftAnim(c);else see(id);if(r.ul&&r.ul.length)toast('Album complété · récompense !');
   };
-  window.mClaim=async function(k){var m=MISS.find(function(x){return x.k===k});var r=await ECO.op('mission',{k:k});if(!r)return;toast('+'+m.c+' jetons · +'+m.x+' XP');render()};
+  window.mClaim=async function(k){var m=MISS.find(function(x){return x.k===k});var r=await ECO.op('mission',{k:k});if(!r)return;toast('+'+m.c+' wax · +'+m.x+' XP');render()};
   window.sClaim=async function(i,t){if(t==='p'&&!hasPass()){passSheet();return}var r=await ECO.op('season',{i:+i,t:t==='p'?'p':'f'});if(!r)return;toast('Récompense ajoutée');render()};
   window.buyCoins=async function(k){
     if(k==='nacre'||k==='diamant'){if(S.coins<PK[k].p){needCoins(PK[k].p-S.coins);return}openPack(k);return}
     var P={gold:GOLD_COST,lot5:450,dust:300}[k];if(!P)return;if(S.coins<P){needCoins(P-S.coins);return}
     var r=await ECO.op('item',{k:k});if(!r)return;
-    toast(k==='gold'?'Maxi Or ajouté':k==='lot5'?'5 maxis ajoutés':'+200 poussière');render();
+    toast(k==='gold'?'Drop Or ajouté':k==='lot5'?'5 drops ajoutés':'+200 poussière');render();
   };
   /* paiements Stripe (liens de paiement, crédités par le serveur après confirmation de Stripe) */
-  var PAY={pass:'https://buy.stripe.com/3cI9ASgU66yOg1Gbqh5AQ00',c500:'https://buy.stripe.com/7sYcN46fs8GW02I8e55AQ01',c1200:'https://buy.stripe.com/5kQ6oGcDQf5k7va8e55AQ02',c2600:'https://buy.stripe.com/28E5kC8nA7CS3eU2TL5AQ03',c6500:'https://buy.stripe.com/14A8wO9rEcXc02I51T5AQ04'};
+  var PAY={pass:'https://buy.stripe.com/3cIcN433ge1g02Ibqh5AQ05',c500:'https://buy.stripe.com/6oU9ASfQ2bT86r6bqh5AQ06',c1200:'https://buy.stripe.com/9B67sKdHU9L0cPu8e55AQ07',c3000:'https://buy.stripe.com/eVqbJ047k2iy16Mamd5AQ08',c7000:'https://buy.stripe.com/5kQ5kCdHUg9og1G7a15AQ09'};
   window.buyFlow=function(k){
     if(!CL.user){toast('Connexion requise');return}
     if(!PAY[k]){toast('Bientôt disponible');return}
     if(k==='pass'&&hasPass()){passSheet();return}
-    var item=k==='pass'?{n:'WaxDrop Pass',p:PASS_PRICE}:(function(){var s=SHOP.find(function(x){return x.k===k});return{n:s.n.toLocaleString('fr-FR')+' jetons',p:s.p}})();
+    var item=k==='pass'?{n:'WaxDrop Pro',p:PASS_PRICE}:(function(){var s=SHOP.find(function(x){return x.k===k});return{n:s.n.toLocaleString('fr-FR')+' wax',p:s.p}})();
     var url=PAY[k]+'?client_reference_id='+encodeURIComponent(CL.user.id)+(CL.user.email?'&prefilled_email='+encodeURIComponent(CL.user.email):'')+'&locale=fr';
     closeMenu();
-    dd.innerHTML=popHTML('<div class="card2 glass paysh"><span class="lbl">Paiement sécurisé · Stripe</span><h2>'+esc(item.n)+'</h2><p class="price2">'+item.p+'</p><p class="cap">Tu vas payer sur la page Stripe, puis revenir dans l’app. '+(k==='pass'?'Le Pass s’active':'Les jetons arrivent')+' en quelques secondes.</p><div class="row"><button class="gbtn" data-act="ddclose">Annuler</button><a class="pbtn" href="'+esc(url)+'" rel="noopener">Payer '+item.p.replace(' / mois','')+'</a></div></div>');
+    dd.innerHTML=popHTML('<div class="card2 glass paysh"><span class="lbl">Paiement sécurisé · Stripe</span><h2>'+esc(item.n)+'</h2><p class="price2">'+item.p+'</p><p class="cap">Tu vas payer sur la page Stripe, puis revenir dans l’app. '+(k==='pass'?'WaxDrop Pro s’active':'Les wax arrivent')+' en quelques secondes.</p><div class="row"><button class="gbtn" data-act="ddclose">Annuler</button><a class="pbtn" href="'+esc(url)+'" rel="noopener">Payer '+item.p.replace(' / mois','')+'</a></div></div>');
   };
   window.buyOk=function(k){buyFlow(k)};
-  window.claim=async function(){var r=await ECO.op('pass_daily');if(!r)return;toast('+1 maxi'+(new Date().getDay()===1?' et 1 Maxi Or':''));closeMenu();render()};
+  window.claim=async function(){var r=await ECO.op('pass_daily');if(!r)return;toast('+1 drop'+(new Date().getDay()===1?' et 1 Drop Or':''));closeMenu();render()};
   /* retour de Stripe */
   var paid=null;try{paid=new URLSearchParams(location.search).get('paye');if(paid)history.replaceState(null,'',location.pathname)}catch(e){}
   ECO.afterLogin=function(){
     if(!paid)return;var k=paid,c0=S.coins,p0=hasPass(),n=0;paid=null;
     toast('Paiement reçu, merci !');
     (function poll(){n++;ECO.sync().then(function(){
-      if(k==='pass'?hasPass()&&!p0:S.coins>c0){toast(k==='pass'?'WaxDrop Pass activé':'+'+(S.coins-c0).toLocaleString('fr-FR')+' jetons');return}
+      if(k==='pass'?hasPass()&&!p0:S.coins>c0){toast(k==='pass'?'WaxDrop Pro activé':'+'+(S.coins-c0).toLocaleString('fr-FR')+' wax');return}
       if(n<10)setTimeout(poll,3000);else toast('Paiement en cours de validation, tes achats arrivent bientôt');
     })})();
   };
@@ -100,9 +100,9 @@
   function topSheet(){
     closeMenu();menuPage='top';var left=topLeft();
     if(left){var L=(S.top||[]).map(function(k){return RW[k]}).filter(Boolean);
-      sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Ton top du moment"><div class="grab"></div><div class="shh"><h2>Ton top du moment</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div><p class="cap" style="text-align:left">Leurs sons sortent 3 fois plus souvent dans tes maxis. La rareté ne change pas.</p><div class="tpl">'+L.map(function(A){return '<div class="tpr on"><span class="av" style="--avg:'+esc(A.avg)+'">'+esc(A.ini)+'</span><b>'+esc(A.n)+'</b><small>×3</small></div>'}).join('')+'</div><p class="tplock">'+ICON.lock+'Modifiable dans '+dur(left)+'</p></div>';return}
+      sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Ton top du moment"><div class="grab"></div><div class="shh"><h2>Ton top du moment</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div><p class="cap" style="text-align:left">Leurs sons sortent 3 fois plus souvent dans tes drops. La rareté ne change pas.</p><div class="tpl">'+L.map(function(A){return '<div class="tpr on"><span class="av" style="--avg:'+esc(A.avg)+'">'+esc(A.ini)+'</span><b>'+esc(A.n)+'</b><small>×3</small></div>'}).join('')+'</div><p class="tplock">'+ICON.lock+'Modifiable dans '+dur(left)+'</p></div>';return}
     TP.sel=(S.top||[]).slice();TP.q='';
-    sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass topsh" role="dialog" aria-label="Ton top du moment"><div class="grab"></div><div class="shh"><h2>Ton top du moment</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div><p class="cap" style="text-align:left">Choisis jusqu’à 5 artistes que tu écoutes en ce moment : leurs sons sortent 3 fois plus souvent dans tes maxis. Tu pourras changer une fois par semaine.</p><div class="bxs"><input id="tpq" type="search" placeholder="Chercher un artiste" autocomplete="off"></div><div class="tpl" id="tpl">'+topRows()+'</div><button class="pbtn" id="tpgo2" data-act="topsave">'+topBtn()+'</button></div>';
+    sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass topsh" role="dialog" aria-label="Ton top du moment"><div class="grab"></div><div class="shh"><h2>Ton top du moment</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div><p class="cap" style="text-align:left">Choisis jusqu’à 5 artistes que tu écoutes en ce moment : leurs sons sortent 3 fois plus souvent dans tes drops. Tu pourras changer une fois par semaine.</p><div class="bxs"><input id="tpq" type="search" placeholder="Chercher un artiste" autocomplete="off"></div><div class="tpl" id="tpl">'+topRows()+'</div><button class="pbtn" id="tpgo2" data-act="topsave">'+topBtn()+'</button></div>';
   }
   function topBtn(){return TP.sel.length?'Valider · '+TP.sel.length+'/5':'Choisis au moins 1 artiste'}
   ECO.topSheet=topSheet;
@@ -198,7 +198,7 @@
       var byR=[0,0,0,0,0,0];P.rows.forEach(function(x){byR[C[x.id].r]+=x.sell*x.q});var tot=byR.reduce(function(a,b){return a+b},0)||1,acc=0;
       var ring='conic-gradient('+byR.map(function(val,r){var a=acc;acc+=val/tot*360;return RAR[r].c+' '+a.toFixed(1)+'deg '+acc.toFixed(1)+'deg'}).join(',')+')';
       var sorted=P.rows.slice().sort(function(a,b){return b.chg-a.chg}),best=sorted[0],worst=sorted[sorted.length-1];
-      return '<div class="bxpf"><div class="bxring" style="background:'+ring+'"><span><b>'+P.total.toLocaleString('fr-FR')+'</b><small>jetons</small></span></div>'
+      return '<div class="bxpf"><div class="bxring" style="background:'+ring+'"><span><b>'+P.total.toLocaleString('fr-FR')+'</b><small>wax</small></span></div>'
         +'<div class="bxpfi"><span class="lbl">Valeur de tes sons</span>'+chip(Math.round(v*10)/10)+'<small>sur 24 h</small><span class="lbl" style="margin-top:8px">Résultat Bourse</span><b class="bxc'+cls(P.real)+'">'+(P.real>0?'+':P.real<0?'−':'')+Math.abs(P.real).toLocaleString('fr-FR')+' '+coinI+'</b></div>'
         +'<div class="bxleg">'+byR.map(function(val,r){return val?'<span><i style="background:'+RAR[r].c+'"></i>'+RAR[r].n+' '+Math.round(val/tot*100)+' %</span>':''}).join('')+'</div></div>'
         +(best&&worst&&best!==worst?'<div class="bxbw"><div class="bxbwc up" data-act="bxsee" data-id="'+best.id+'"><span class="lbl">Meilleur</span>'+tileHTML(C[best.id],{nocount:1,lock:false})+'<b>'+esc(C[best.id].t)+'</b>'+chip(best.chg)+'</div><div class="bxbwc dn" data-act="bxsee" data-id="'+worst.id+'"><span class="lbl">Pire</span>'+tileHTML(C[worst.id],{nocount:1,lock:false})+'<b>'+esc(C[worst.id].t)+'</b>'+chip(worst.chg)+'</div></div>':'')
@@ -241,21 +241,9 @@
     var b=$('bxb');if(b&&quiet())b.innerHTML=bodyHTML();
   }
   window.vBourse=view;
+  window.proLock=function(what){toast(what+' : réservé à WaxDrop Pro');setTimeout(function(){closeFull();shopSub='pass';setTab('shop')},700)};
 
-  /* courbes vivantes : petites variations simulées autour du vrai cours */
-  function gauss(){return (Math.random()+Math.random()+Math.random()-1.5)/1.5}
-  setInterval(function(){
-    if(document.hidden)return;
-    var els=document.querySelectorAll('svg[data-sp]');
-    els.forEach(function(el){
-      var L=LIVE[el.dataset.sp];if(!L||!L.sp)return;
-      var last=L.sp[L.sp.length-1],nx=last+(L.real-last)*.35+gauss()*L.real*.012;
-      L.sp=L.sp.slice(1).concat([Math.max(.1,nx)]);
-      var W=+el.dataset.w||64,H=+el.dataset.h||26,pts=sparkPts(L.sp,W,H),pl=el.querySelector('polyline'),pg=el.querySelector('polygon');if(pl)pl.setAttribute('points',pts);if(pg)pg.setAttribute('points','0,'+H+' '+pts+' '+W+','+H);
-      var up=L.sp[L.sp.length-1]>=L.sp[0];el.classList.toggle('bxup',up);el.classList.toggle('bxdn',!up);
-    });
-    if(F&&!F.scrub)liveTip();
-  },1400);
+  /* plus de variations simulées : les courbes ne bougent qu'avec les vrais achats, ventes et sorties d'albums */
 
   /* ---------- fiche plein écran ---------- */
   var F=null;
@@ -281,12 +269,16 @@
       +'<line class="cur" x1="0" x2="0" y1="0" y2="'+H+'" style="display:none"/><circle class="cdot" r="5" style="display:none"/></svg>'
       +'<div class="bxtt" id="bxtt" hidden></div>';
     var hi=Math.max.apply(null,a),lo=Math.min.apply(null,a),v=(a[a.length-1]-a[0])*100/a[0];
-    var s=$('bxstat');if(s)s.innerHTML='<div><span>Plus haut</span><b>'+money(hi)+'</b></div><div><span>Plus bas</span><b>'+money(lo)+'</b></div><div><span>Chez les joueurs</span><b>'+F.x.held+'</b></div><div><span>Tu en as</span><b>'+F.x.own+'</b></div>';
+    var s=$('bxstat');if(s){var h='<div><span>Plus haut</span><b>'+money(hi)+'</b></div><div><span>Plus bas</span><b>'+money(lo)+'</b></div><div><span>Chez les joueurs</span><b>'+F.x.held+'</b></div><div><span>Tu en as</span><b>'+F.x.own+'</b></div>';
+      var vv=function(k){var q=F.x.pts[k]||[];return q.length>1?(q[q.length-1]-q[0])*100/q[0]:0};
+      var vol=(function(){var q=(F.x.pts.m||a).map(Number),r=[];for(var i=1;i<q.length;i++)r.push(Math.log(q[i]/q[i-1]));if(!r.length)return 0;var m=r.reduce(function(x,y){return x+y},0)/r.length;return Math.sqrt(r.reduce(function(x,y){return x+(y-m)*(y-m)},0)/r.length)*100})();
+      var pro='<div><span>Variation 7 j</span><b class="bxc'+cls(vv('w'))+'">'+pct(Math.round(vv('w')*10)/10)+'</b></div><div><span>Variation 30 j</span><b class="bxc'+cls(vv('m'))+'">'+pct(Math.round(vv('m')*10)/10)+'</b></div><div><span>Volatilité</span><b>'+(vol<1?'Calme':vol<3?'Normale':'Agitée')+'</b></div><div><span>Rareté</span><b>'+RAR[C[F.id]?C[F.id].r:0].n+'</b></div>';
+      s.innerHTML=h+(hasPass()?pro:'<button class="bxpro" data-act="passinfo"><em class="pro">Pro</em> Variations 7 et 30 jours, volatilité, historique complet</button>')}
     var c=$('bxchg');if(c){c.className='bxc'+cls(v);c.textContent=pct(Math.round(v*10)/10)+' sur '+RG[F.rg].n}
   }
   function liveTip(){
     if(!F)return;var real=+F.x.pts[F.rg][F.x.pts[F.rg].length-1];
-    F.live=Math.max(.1,F.live+(real-F.live)*.4+gauss()*real*.01);
+    F.live=real;
     var lv=$('bxlive');if(lv)lv.textContent=money(F.live);
     drawChart();
   }
@@ -313,12 +305,12 @@
     var r=await sb.rpc('bourse_card',{p_id:id});
     var d=$('bxd');if(!d||!el.isConnected)return;
     if(r.error){d.innerHTML='<p class="cap">'+esc(r.error.message)+'</p>';return}
-    var x=r.data;F={id:id,x:x,rg:(F&&F.rg)||'w',live:+x.pts.w[x.pts.w.length-1],scrub:false};
+    var x=r.data;var rg0=hasPass()?((F&&F.rg)||'w'):'d';F={id:id,x:x,rg:rg0,live:+x.pts[rg0][x.pts[rg0].length-1],scrub:false};
     d.innerHTML='<div class="bxp"><b><span id="bxlive">'+money(F.live)+'</span> '+coinI+'</b><span id="bxchg" class="bxc"></span></div>'
-      +'<div class="chips bxrg">'+['d','w','m'].map(function(k){return '<button class="chip" data-act="bxrg" data-v="'+k+'" aria-pressed="'+(F.rg===k)+'">'+RG[k].n+'</button>'}).join('')+'</div>'
+      +'<div class="chips bxrg">'+['d','w','m'].map(function(k){var lk=k!=='d'&&!hasPass();return '<button class="chip'+(lk?' lk':'')+'" data-act="bxrg" data-v="'+k+'" aria-pressed="'+(F.rg===k)+'">'+RG[k].n+(lk?' <em class="pro">Pro</em>':'')+'</button>'}).join('')+'</div>'
       +'<div class="bxch" id="bxch"></div><p class="cap bxhint">Touche la courbe pour voir le prix à une date</p>'
       +'<div class="bxstat" id="bxstat"></div>'
-      +(x.cost?'<p class="cap">Tu l’as acheté '+x.cost+' jetons en moyenne.</p>':'')
+      +(x.cost?'<p class="cap">Tu l’as acheté '+x.cost+' wax en moyenne.</p>':'')
       +'<div class="bxact">'
       +(x.can?'<button class="pbtn" data-act="bxbuy" data-id="'+id+'">Acheter · '+x.buy+' '+coinI+'</button>':'<button class="pbtn" disabled>Packs uniquement</button>')
       +'<button class="gbtn" data-act="bxsell" data-id="'+id+'"'+(x.own?'':' disabled')+'>Vendre · '+x.sell+' '+coinI+'</button></div>'
@@ -333,7 +325,7 @@
   ECO.see=function(id){bxSee(id)};
   ECO.quote=async function(id){var el=$('qte');if(!el)return;var r=await sb.rpc('card_quote',{p_id:id});el=$('qte');if(!el)return;
     if(r.error||!r.data){el.innerHTML='<span>Bourse</span>';return}
-    var v=+r.data.chg||0;el.className='qte'+(v>0?' bxup':v<0?' bxdn':'');el.innerHTML='<b>'+r.data.p+'</b><small>jetons</small><em>'+(v>0?'▲':v<0?'▼':'=')+' '+fr(Math.abs(v))+' %</em>'};
+    var v=+r.data.chg||0;el.className='qte'+(v>0?' bxup':v<0?' bxdn':'');el.innerHTML='<b>'+r.data.p+'</b><small>wax</small><em>'+(v>0?'▲':v<0?'▼':'=')+' '+fr(Math.abs(v))+' %</em>'};
   addEventListener('keydown',function(e){if(e.key==='Escape'&&$('bxfull'))closeFull()});
   addEventListener('resize',function(){if(F)drawChart()});
 
@@ -342,7 +334,7 @@
     var r=await ECO.op(op,{id:id});
     if(btn)btn.disabled=false;
     if(!r)return;
-    toast((op==='bbuy'?'Acheté ':'Vendu ')+r.price+' jetons'+(r.ul&&r.ul.length?' · récompense !':''));
+    toast((op==='bbuy'?'Acheté ':'Vendu ')+r.price+' wax'+(r.ul&&r.ul.length?' · récompense !':''));
     if(btn){btn.classList.remove('bxok');void btn.offsetWidth;btn.classList.add('bxok')}
     B.t=0;B.pf=null;
     if($('bxfull'))bxSee(id);
@@ -359,7 +351,7 @@
     else if(a==='bxf'){B.f=t.dataset.v;B.q='';B.list=null;B.t=0;render()}
     else if(a==='bxsee')bxSee(t.dataset.id);
     else if(a==='bxclose')closeFull();
-    else if(a==='bxrg'){if(!F)return;F.rg=t.dataset.v;F.live=+F.x.pts[F.rg][F.x.pts[F.rg].length-1];t.parentElement.querySelectorAll('.chip').forEach(function(c){c.setAttribute('aria-pressed',c===t)});drawChart()}
+    else if(a==='bxrg'){if(!F)return;if(t.dataset.v!=='d'&&!hasPass()){proLock('Historique sur 7 et 30 jours');return}F.rg=t.dataset.v;F.live=+F.x.pts[F.rg][F.x.pts[F.rg].length-1];t.parentElement.querySelectorAll('.chip').forEach(function(c){c.setAttribute('aria-pressed',c===t)});drawChart()}
     else if(a==='bxbuy')trade('bbuy',t.dataset.id,t);
     else if(a==='bxsell')trade('bsell',t.dataset.id,t);
   },true);
@@ -370,4 +362,32 @@
   });
   setInterval(function(){if(!document.hidden&&tab==='bourse'&&quiet()&&!$('bxfull')){if(B.sub==='pf')loadPf();else loadList()}},60e3);
   setTimeout(function(){if(CL.user)loadList()},4000);
+})();
+
+/* ---------- succès : vérifiés et payés par le serveur ---------- */
+(function(){
+  if(!window.CL||!CL.sb)return;
+  var A=window.ACH={list:null,load:false};
+  var CAT={col:'Collection',rar:'Raretés',alb:'Albums et artistes',soc:'Amis',bx:'Bourse'};
+  var IC={col:'<circle cx="8.5" cy="9" r="4.5"/><circle cx="17" cy="15" r="3.5"/><circle cx="9.5" cy="18.5" r="2"/>',rar:'<path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/>',alb:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/>',soc:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.6c2 .7 3.2 2.6 3.6 5.4"/>',bx:'<path d="M4 19h16"/><path d="M5 15l4-5 3.5 3L19 6"/><path d="M15 6h4v4"/>'};
+  A.ready=function(){return (A.list||[]).filter(function(x){return !x.got&&x.v>=x.n}).length};
+  A.fetch=async function(){if(!CL.user||A.load)return;A.load=true;try{var r=await CL.sb.rpc('ach_list');if(!r.error)A.list=r.data||[]}catch(e){}A.load=false;
+    if(tab==='shop'&&(shopSub==='hub'||shopSub==='succes')&&!sh.innerHTML&&!ov.innerHTML)render();var d=$('shdot');if(d&&A.ready())d.hidden=false};
+  A.view=function(){
+    if(!A.list){A.fetch();return '<div class="view v-ach vs">'+subHead('Succès')+'<p class="cap">Chargement…</p></div>'}
+    var L=A.list,got=L.filter(function(x){return x.got}).length,tot=L.reduce(function(s,x){return s+x.r},0),won=L.filter(function(x){return x.got}).reduce(function(s,x){return s+x.r},0);
+    var g={};L.forEach(function(x){(g[x.cat]=g[x.cat]||[]).push(x)});
+    return '<div class="view v-ach vs">'+subHead('Succès')
+      +'<div class="achh"><div class="achr" style="--p:'+Math.round(got*100/Math.max(1,L.length))+'"><b>'+got+'</b><small>/ '+L.length+'</small></div><div><b>'+won.toLocaleString('fr-FR')+' '+coinI+' gagnés</b><small>'+(tot-won).toLocaleString('fr-FR')+' wax encore à gagner</small></div></div>'
+      +Object.keys(CAT).filter(function(k){return g[k]}).map(function(k){return '<h3 class="achc">'+CAT[k]+'</h3><div class="achl">'+g[k].map(function(x,i){var ok=x.v>=x.n;
+        return '<div class="achi'+(x.got?' got':ok?' ok':'')+'" style="--i:'+i+';--p:'+Math.round(x.v*100/x.n)+'"><span class="achic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+IC[k]+'</svg></span><span class="acht"><b>'+esc(x.t)+'</b><small>'+esc(x.d)+'</small><span class="achb"><i></i></span></span>'
+          +(x.got?'<span class="achd">'+ICON.check+'</span>':ok?'<button class="pbtn achg" data-act="achc" data-k="'+x.k+'">+'+x.r+' '+coinI+'</button>':'<span class="achv"><b>'+x.v.toLocaleString('fr-FR')+'</b>/'+x.n.toLocaleString('fr-FR')+'<small>+'+x.r+' '+coinI+'</small></span>')+'</div>'}).join('')+'</div>'}).join('')
+      +'</div>'};
+  document.addEventListener('click',async function(e){var t=e.target.closest('[data-act="achc"]');if(!t)return;e.stopPropagation();t.disabled=true;
+    var r;try{r=await CL.sb.rpc('ach_claim',{p_k:t.dataset.k})}catch(x){r={error:{message:'Connexion impossible, réessaie'}}}
+    if(r.error){toast(r.error.message);t.disabled=false;return}
+    A.list=r.data.list;var c0=S.coins;await ECO.sync(true);render();if(window.rewardPop)rewardPop({coins:S.coins-c0||r.data.coins},1)},true);
+  /* recharge les succès quand on revient sur le Disquaire */
+  document.addEventListener('click',function(e){var t=e.target.closest('[data-tab="shop"],[data-act="shs"][data-v="succes"],[data-act="shs"][data-v="hub"]');if(t)setTimeout(A.fetch,50)},true);
+  if(window.ECO){var oA=ECO.afterSync;ECO.afterSync=function(){if(oA)oA.apply(this,arguments);A.fetch()}}
 })();

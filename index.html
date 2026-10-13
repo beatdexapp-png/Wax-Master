@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>WaxDrop</title>
-<meta name="description" content="Ouvre des maxis, collectionne les sons de tes artistes préférés, complète les albums.">
+<meta name="description" content="Ouvre des drops, collectionne les sons de tes artistes préférés, complète les albums.">
 <meta name="theme-color" content="#0e0f12">
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" href="/icons/icon-192.png" type="image/png">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="icon" href="/icons/icon-192.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -21,12 +21,12 @@
 <body>
 
 <div id="app">
-  <header class="hd"><div class="wm"><i></i>WaxDrop</div><button class="jet glass" id="coins" data-act="gojet" aria-label="Jetons, ouvrir le shop"></button></header>
+  <header class="hd"><div class="wm"><i></i>WaxDrop</div><button class="jet glass" id="coins" data-act="gojet" aria-label="Wax, ouvrir la boutique"></button></header>
   <main id="main"></main>
   <nav class="tabs glass" id="tabs">
     <button data-tab="collection"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="9" r="4.5"/><circle cx="17" cy="15" r="3.5"/><circle cx="9.5" cy="18.5" r="2"/></svg>Collection</button>
     <button data-tab="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>Disquaire<i class="dot" id="shdot" hidden></i></button>
-    <button data-tab="ouvrir" class="tcen" aria-label="Ouvrir un maxi"><span class="tcv" aria-hidden="true"></span><span class="tcl">Ouvrir</span><i class="dot" id="odot" hidden></i></button>
+    <button data-tab="ouvrir" class="tcen" aria-label="Ouvrir un drop"><span class="tcv" aria-hidden="true"></span><span class="tcl">Ouvrir</span><i class="dot" id="odot" hidden></i></button>
     <button data-tab="bourse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M5 15l4-5 3.5 3L19 6"/><path d="M15 6h4v4"/></svg>Bourse<i class="dot" id="pdot" hidden></i></button>
     <button data-tab="profil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.2-4.2 4.3-6 8-6s6.8 1.8 8 6"/></svg>Profil</button>
   </nav>
@@ -41,7 +41,7 @@
 <div id="inst" hidden role="dialog" aria-label="Installer WaxDrop">
   <div class="ivn" aria-hidden="true"></div>
   <h1>WaxDrop</h1>
-  <p id="itx">Installe l’app sur ton écran d’accueil pour ouvrir tes maxis en plein écran.</p>
+  <p id="itx">Installe l’app sur ton écran d’accueil pour ouvrir tes drops en plein écran.</p>
   <button class="ib" id="ibtn" hidden>Installer WaxDrop</button>
   <ol id="iios" hidden><li>Touche <b>Partager</b> en bas de Safari</li><li>Choisis <b>Sur l’écran d’accueil</b></li><li>Ouvre <b>WaxDrop</b> depuis ton écran</li></ol>
   <button class="il" id="iskip">Continuer dans le navigateur</button>
