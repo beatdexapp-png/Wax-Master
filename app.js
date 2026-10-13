@@ -1,7 +1,7 @@
 const SKINS=[['auto','Auto'],['graphite','Graphite'],['encre','Encre'],['aube','Aube'],['foret','Forêt'],['or','Or'],['brume','Brume'],['sable','Sable'],['lilas','Lilas'],['minuit','Minuit',1],['nacre','Nacre',1]];
 const SKPV={auto:'linear-gradient(135deg,#e8ebf1 50%,#0e0f12 50%)',graphite:'radial-gradient(circle at 20% 20%,rgba(90,110,190,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(40,130,115,.7),transparent 60%),#0e0f12',encre:'radial-gradient(circle at 20% 20%,rgba(70,90,230,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(40,170,220,.7),transparent 60%),#0a0e1c',aube:'radial-gradient(circle at 20% 20%,rgba(230,90,110,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(240,160,80,.7),transparent 60%),#160d10',foret:'radial-gradient(circle at 20% 20%,rgba(60,170,120,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(150,190,80,.6),transparent 60%),#0b120f',or:'radial-gradient(circle at 20% 20%,rgba(210,160,60,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(160,110,40,.7),transparent 60%),#12100a',brume:'radial-gradient(circle at 20% 20%,rgba(150,170,255,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,190,160,.9),transparent 60%),#e8ebf1',sable:'radial-gradient(circle at 20% 20%,rgba(230,150,110,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(150,180,140,.8),transparent 60%),#efe7db',lilas:'radial-gradient(circle at 20% 20%,rgba(170,140,255,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,170,210,.85),transparent 60%),#ebe7f4',minuit:'radial-gradient(circle at 20% 20%,rgba(140,80,255,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,60,140,.6),transparent 60%),#05040a',nacre:'radial-gradient(circle at 20% 20%,rgba(255,220,240,.95),transparent 60%),radial-gradient(circle at 90% 80%,rgba(200,240,255,.95),transparent 60%),#f6f4f1'};
 const COST=100,ALB_BONUS=250,ART_BONUS=500,GOLD_COST=900,DROP_COST=250,DROP_LIMIT=500;
-const CODES={UNDERGROUND:500,TRACKDEX:300,ZARMA:200};
+const CODES={UNDERGROUND:500,WAXDROP:300,ZARMA:200};
 const SHOP=[{k:'c500',n:500,p:'1,99 €'},{k:'c1200',n:1200,p:'4,99 €',tag:'+20 %'},{k:'c2600',n:2600,p:'9,99 €',tag:'+30 %'},{k:'c6500',n:6500,p:'19,99 €',tag:'+60 %'}];
 const PK={gold:{n:'Maxi Or',p:GOLD_COST,min:1,last:3,b:{3:2,4:2,5:2},g:'Légendaire garanti'},nacre:{n:'Maxi Ultra',p:400,min:1,last:2,b:{},g:'Ultra rare garanti'},diamant:{n:'Maxi Diamant',p:2000,min:2,last:4,b:{4:2,5:2},g:'Mythique garanti'}};
 const PASS_PRICE='5,99 € / mois';
@@ -192,7 +192,7 @@ function vOuvrir(){
   const evp=e?`<button class="evp glass" data-act="events"><span class="evk">Événement</span><i class="ldot"></i><b>${e.n}</b><span data-until="${e.e}">${dur(new Date(e.e)-now())}</span></button>`:nx?`<button class="evp glass" data-act="events"><span class="evk">Prochain</span><b>${nx.n}</b><span>${fdate(nx.s)}</span></button>`:'';
   return `<div class="view v-open">${evp}
    <div class="obg" aria-hidden="true"><i class="og1"></i><i class="og2"></i><i class="og3"></i><span class="ogrid"></span><span class="orays"></span>${Array.from({length:14},(_,i)=>`<b style="--x:${(i*37)%100};--y:${(i*53)%100};--d:${(i%7)*.9}s;--s:${2+(i%3)}px"></b>`).join('')}</div><div class="ofx" aria-hidden="true"><i class="n1">♪</i><i class="n2">♫</i><i class="n3">♪</i><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>
-   <div class="mbox" data-act="open" data-m="${free?'free':'pay'}" role="button" tabindex="0" aria-label="Ouvrir un maxi"><div class="maxi"><div class="mv" style="--lc:${e?'#ff5f86':'#c9c3b5'}"></div><div class="ms glass"><b>Track<br>Dex</b><span>Vol. 01</span><em>5 sons</em></div></div></div>
+   <div class="mbox" data-act="open" data-m="${free?'free':'pay'}" role="button" tabindex="0" aria-label="Ouvrir un maxi"><div class="maxi"><div class="mv" style="--lc:${e?'#ff5f86':'#c9c3b5'}"></div><div class="ms glass"><b>Wax<br>Drop</b><span>Vol. 01</span><em>5 sons</em></div></div></div>
    <div class="obar"><button class="pbtn" data-act="open" data-m="${free?'free':'pay'}" ${can?'':'disabled'}>${free?(S.bonus>0?`Ouvrir · ${S.bonus} offert${S.bonus>1?'s':''}`:'Ouvrir · Gratuit'):`Ouvrir · ${cst} ${coinI}`}</button><button class="gbtn sq" data-act="openall" aria-label="Ouverture express" ${can?'':'disabled'}>${ICON.bolt}</button></div>
    <div class="odeco" aria-hidden="true">${Array.from({length:23},(_,i)=>`<i style="--d:${(i*.137%1).toFixed(2)};--h:${(.25+((i*7)%10)/14).toFixed(2)}"></i>`).join('')}</div>
    <p class="cap" id="freecap">${freeReady()?'Maxi gratuit prêt':`Gratuit dans <b data-clock="${S.freeAt}">${clock(S.freeAt-now())}</b>`}</p>
@@ -232,7 +232,7 @@ function vShop(){
     head=subHead('Enchères');
     body=`${tickHTML()}<div class="chips">${[['live','Marché'],['mine',`Mes ventes ${mine}/${mkMax()}`],['sell',`Vendre · ${dups}`]].map(([k,n])=>`<button class="chip" data-act="mks" data-v="${k}" aria-pressed="${mkSub===k}">${n}</button>`).join('')}</div><div class="pgr" id="pgr"></div>`}
   else if(shopSub==='echanges'){head=subHead('Amis');body=window.SOC?SOC.body():'<p class="cap">Connexion requise</p>'}
-  else if(shopSub==='pass'){const on=hasPass();head=subHead('TrackDex Pass');
+  else if(shopSub==='pass'){const on=hasPass();head=subHead('WaxDrop Pass');
     let pc=0,pm=0,pg=0;for(let i=1;i<=TIERS;i++){const p=seasonRewards(i).p;if(p.gold)pg++;else if(p.maxi)pm+=p.maxi;else pc+=p.coins}
     const perks=[['clock','Maxi gratuit toutes les 5 min','Deux fois plus souvent que sans le Pass'],['gift','1 maxi offert chaque jour','À récupérer ici, tous les jours'],['gold','1 Maxi Or chaque lundi','Légendaire garanti à chaque fois'],['star','Récompenses premium','Une 2e récompense à chaque palier de la saison'],['theme','Thèmes Minuit et Nacre','Pour personnaliser ton app']];
     const PI={clock:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 3h6"/>',gift:'<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18M12 8v13M12 8c-2-4-6-4-6-1.5S9 8 12 8c3 0 6-.5 6-1.5S14 4 12 8"/>',gold:'<circle cx="12" cy="12" r="8"/><path d="M12 7l1.5 3 3.3.5-2.4 2.3.6 3.3-3-1.6-3 1.6.6-3.3-2.4-2.3 3.3-.5z"/>',star:'<path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/>',theme:'<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/>'};
@@ -467,8 +467,8 @@ function showOpening(){
     <div class="L blk"></div><div class="L glow"></div><div class="L speed"></div><div class="L grays"><i></i></div><div class="L beam"></div>
     <div class="optop"><div class="lvl" id="lvl">${lvlHTML(0)}</div><button class="skip" data-act="skipall">Passer</button></div>
     <div class="opmid"><div class="stage" id="stage">
-      <div class="pl"><div class="bv"><div class="bvx"><div class="bvr">${[0,1,2,3,4,5].map(i=>`<i class="l${i}"></i>`).join('')}<div class="bvl"><b>TRACKDEX</b></div></div></div><div class="bvs"></div></div></div>
-      <div class="slv"><b>Track<br>Dex</b><span>${sl}</span></div>
+      <div class="pl"><div class="bv"><div class="bvx"><div class="bvr">${[0,1,2,3,4,5].map(i=>`<i class="l${i}"></i>`).join('')}<div class="bvl"><b>WAXDROP</b></div></div></div><div class="bvs"></div></div></div>
+      <div class="slv"><b>Wax<br>Drop</b><span>${sl}</span></div>
       <div class="stamp" id="stamp"></div><div class="rvc" id="rvc"></div><div class="acw" id="acw"></div><div class="fxl" id="fxl"></div>
     </div></div>
     <div class="eq">${Array.from({length:14},(_,i)=>`<i style="animation-delay:${(-i*.13).toFixed(2)}s;animation-duration:${(.4+(i*37%10)/25).toFixed(2)}s"></i>`).join('')}</div>
@@ -698,13 +698,13 @@ function seeAl(k){const B=RW[k];if(!B)return;
    <p class="cap">${B.single?'Singles':S.ul[k]?'Complété':`+${ALB_BONUS} jetons à la clé`}</p>`)}
 function seePl(k){const A=RW[k];if(!A)return;
   dd.innerHTML=popHTML(`<div class="big">${plaqueHTML(A)}</div><div class="info glass"><span>${A.ids.filter(own).length}/${A.ids.length} sons</span><span>${S.ul[k]?'Obtenu':`+${ART_BONUS} jetons`}</span></div>`)}
-function share(){const R=reveal;if(!R)return;const b=R.res.slice().sort((a,b)=>b.c.r-a.c.r)[0].c;const cap=`J'ai tiré ${b.t} de ${b.a} (${RAR[b.r].n}) sur TrackDex #trackdex #rap`;
-  dd.innerHTML=popHTML(`<div class="story" style="--rc:${RAR[b.r].c}"><p>TrackDex</p><div class="sc">${tileHTML(b,{nocount:1,lock:false})}</div><div><h3>${RAR[b.r].n}</h3><p style="margin-top:4px">${esc(b.a)}</p></div></div><div class="row"><button class="pbtn" data-act="copycap" data-cap="${esc(cap)}">Copier la légende</button></div>`)}
+function share(){const R=reveal;if(!R)return;const b=R.res.slice().sort((a,b)=>b.c.r-a.c.r)[0].c;const cap=`J'ai tiré ${b.t} de ${b.a} (${RAR[b.r].n}) sur WaxDrop #trackdex #rap`;
+  dd.innerHTML=popHTML(`<div class="story" style="--rc:${RAR[b.r].c}"><p>WaxDrop</p><div class="sc">${tileHTML(b,{nocount:1,lock:false})}</div><div><h3>${RAR[b.r].n}</h3><p style="margin-top:4px">${esc(b.a)}</p></div></div><div class="row"><button class="pbtn" data-act="copycap" data-cap="${esc(cap)}">Copier la légende</button></div>`)}
 function buyFlow(k){
-  const item=k==='pass'?{n:'TrackDex Pass',p:PASS_PRICE}:k==='starter'?{n:'Pack Starter',p:'2,99 €'}:(()=>{const s=SHOP.find(x=>x.k===k);return{n:`${s.n.toLocaleString('fr-FR')} jetons`,p:s.p}})();
+  const item=k==='pass'?{n:'WaxDrop Pass',p:PASS_PRICE}:k==='starter'?{n:'Pack Starter',p:'2,99 €'}:(()=>{const s=SHOP.find(x=>x.k===k);return{n:`${s.n.toLocaleString('fr-FR')} jetons`,p:s.p}})();
   dd.innerHTML=popHTML(`<div class="card2 glass"><span class="lbl">Paiement · démo</span><h2>${item.n}</h2><p class="price2">${item.p}</p><p class="cap">Aucun paiement réel ici. Dans l’app, le paiement passera par l’App Store, Google Play ou Stripe.</p><div class="row"><button class="gbtn" data-act="ddclose">Annuler</button><button class="pbtn" data-act="buyok" data-k="${k}">Confirmer</button></div></div>`)}
 function buyOk(k){
-  if(k==='pass'){S.pass={on:true,since:today()};toast('TrackDex Pass activé')}
+  if(k==='pass'){S.pass={on:true,since:today()};toast('WaxDrop Pass activé')}
   else if(k==='starter'){if(S.codes._starter){toast('Déjà acheté');closeDD();return}S.codes._starter=1;S.bonus+=3;S.gold+=1;S.coins+=300;toast('Starter ajouté')}
   else{const s=SHOP.find(x=>x.k===k);if(s){S.coins+=s.n;toast(`+${s.n.toLocaleString('fr-FR')} jetons`)}}
   save();closeDD();render()}
@@ -812,7 +812,7 @@ document.addEventListener('click',e=>{
     case 'buyok':buyOk(t.dataset.k);break;
     case 'buyc':buyCoins(t.dataset.k);break;
     case 'passoff':case 'passmanage':window.open('https://billing.stripe.com/p/login/3cI9ASgU66yOg1Gbqh5AQ00','_blank','noopener');break;
-    case 'gopass':case 'needpass':closeMenu();tab='shop';shopSub='pass';render();if(a==='needpass')toast('Réservé au TrackDex Pass');break;
+    case 'gopass':case 'needpass':closeMenu();tab='shop';shopSub='pass';render();if(a==='needpass')toast('Réservé au WaxDrop Pass');break;
     case 'prs':profSub=t.dataset.v;render();break;
     case 'seas':seaSub=t.dataset.v;render();break;
     case 'mall':{const d=day();if(d.cl.all||todayMissions().some(m=>!d.cl[m.k]))break;if(window.ECO)ECO.op('mission_all').then(r=>{if(r){toast('+1 maxi · +50 XP');render()}});break}

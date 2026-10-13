@@ -1,4 +1,4 @@
-/* TrackDex : catalogue Spotify (Supabase). Ajouté au jeu au lancement, mis à jour en arrière-plan.
+/* WaxDrop : catalogue Spotify (Supabase). Ajouté au jeu au lancement, mis à jour en arrière-plan.
    Les identifiants et raretés des sons viennent du serveur, qui s'en sert aussi pour les tirages. */
 (function(){
   var URL='https://ptoncebyqakclxqnmlzk.supabase.co',KEY='sb_publishable_6-9wecVefsCjpqMPnh9Afg_-x-PIjhv',CK='td-catalog-v2';

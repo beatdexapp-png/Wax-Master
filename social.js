@@ -1,4 +1,4 @@
-/* TrackDex : échanges entre joueurs et profil (photo, pseudo) */
+/* WaxDrop : échanges entre joueurs et profil (photo, pseudo) */
 (function(){
   if(!window.CL||!CL.sb)return;
   var sb=CL.sb;
@@ -73,7 +73,7 @@
     if(!SOC.code)await load();
     if(!SOC.code){toast('Connexion requise');return}
     var url=location.origin+'/?ami='+SOC.code;
-    if(navigator.share){try{await navigator.share({title:'TrackDex',text:INV,url:url});return}catch(e){if(e&&e.name==='AbortError')return}}
+    if(navigator.share){try{await navigator.share({title:'WaxDrop',text:INV,url:url});return}catch(e){if(e&&e.name==='AbortError')return}}
     try{await navigator.clipboard.writeText(INV+' '+url);toast('Lien d’invitation copié')}catch(e){toast(url)}
   }
   SOC.share=share;

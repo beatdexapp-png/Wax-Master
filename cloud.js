@@ -1,4 +1,4 @@
-/* TrackDex : comptes joueurs, sauvegarde en ligne, classement (Supabase) */
+/* WaxDrop : comptes joueurs, sauvegarde en ligne, classement (Supabase) */
 (function(){
   var SB_URL='https://ptoncebyqakclxqnmlzk.supabase.co';
   var SB_KEY='sb_publishable_6-9wecVefsCjpqMPnh9Afg_-x-PIjhv';
@@ -51,7 +51,7 @@
   }
 
   /* ---------- écran de connexion (obligatoire) ---------- */
-  var gate=document.createElement('div');gate.id='gate';gate.hidden=true;gate.setAttribute('role','dialog');gate.setAttribute('aria-label','Compte TrackDex');
+  var gate=document.createElement('div');gate.id='gate';gate.hidden=true;gate.setAttribute('role','dialog');gate.setAttribute('aria-label','Compte WaxDrop');
   document.body.appendChild(gate);
   var st=document.createElement('style');st.textContent=
     '#gate{position:fixed;inset:0;z-index:150;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px));background:radial-gradient(120% 80% at 50% 0%,#23263a,#0b0c10 70%);color:#f1f2f6;overflow-y:auto}'+
@@ -73,7 +73,7 @@
   if(!window.supabase||!window.supabase.createClient){showGate('offline');return}
   sb=CL.sb=window.supabase.createClient(SB_URL,SB_KEY);
   function gateHTML(){
-    var top='<div class="gv" aria-hidden="true"></div><h1>TrackDex</h1>';
+    var top='<div class="gv" aria-hidden="true"></div><h1>WaxDrop</h1>';
     var m='<div class="gm" id="gmsg">'+e(CL.msg)+'</div>';
     if(mode==='offline')return top+'<p>Connexion au serveur impossible. Vérifie ta connexion internet puis recharge la page.</p>';
     if(mode==='pseudo')return top+'<p>Choisis ton pseudo. Il apparaît au classement et à la Bourse.</p><form id="gform" data-m="pseudo"><label for="gpseudo">Pseudo</label><input id="gpseudo" maxlength="20" autocomplete="nickname" placeholder="3 à 20 caractères" required><button class="gb" type="submit">Valider</button>'+m+'</form>';

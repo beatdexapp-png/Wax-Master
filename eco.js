@@ -1,4 +1,4 @@
-/* TrackDex : économie gérée par le serveur (jetons, cartes, maxis) et Bourse des cours */
+/* WaxDrop : économie gérée par le serveur (jetons, cartes, maxis) et Bourse des cours */
 (function(){
   if(!window.CL||!CL.sb)return;
   var sb=CL.sb;
@@ -70,7 +70,7 @@
     if(!CL.user){toast('Connexion requise');return}
     if(!PAY[k]){toast('Bientôt disponible');return}
     if(k==='pass'&&hasPass()){passSheet();return}
-    var item=k==='pass'?{n:'TrackDex Pass',p:PASS_PRICE}:(function(){var s=SHOP.find(function(x){return x.k===k});return{n:s.n.toLocaleString('fr-FR')+' jetons',p:s.p}})();
+    var item=k==='pass'?{n:'WaxDrop Pass',p:PASS_PRICE}:(function(){var s=SHOP.find(function(x){return x.k===k});return{n:s.n.toLocaleString('fr-FR')+' jetons',p:s.p}})();
     var url=PAY[k]+'?client_reference_id='+encodeURIComponent(CL.user.id)+(CL.user.email?'&prefilled_email='+encodeURIComponent(CL.user.email):'')+'&locale=fr';
     closeMenu();
     dd.innerHTML=popHTML('<div class="card2 glass paysh"><span class="lbl">Paiement sécurisé · Stripe</span><h2>'+esc(item.n)+'</h2><p class="price2">'+item.p+'</p><p class="cap">Tu vas payer sur la page Stripe, puis revenir dans l’app. '+(k==='pass'?'Le Pass s’active':'Les jetons arrivent')+' en quelques secondes.</p><div class="row"><button class="gbtn" data-act="ddclose">Annuler</button><a class="pbtn" href="'+esc(url)+'" rel="noopener">Payer '+item.p.replace(' / mois','')+'</a></div></div>');
@@ -83,7 +83,7 @@
     if(!paid)return;var k=paid,c0=S.coins,p0=hasPass(),n=0;paid=null;
     toast('Paiement reçu, merci !');
     (function poll(){n++;ECO.sync().then(function(){
-      if(k==='pass'?hasPass()&&!p0:S.coins>c0){toast(k==='pass'?'TrackDex Pass activé':'+'+(S.coins-c0).toLocaleString('fr-FR')+' jetons');return}
+      if(k==='pass'?hasPass()&&!p0:S.coins>c0){toast(k==='pass'?'WaxDrop Pass activé':'+'+(S.coins-c0).toLocaleString('fr-FR')+' jetons');return}
       if(n<10)setTimeout(poll,3000);else toast('Paiement en cours de validation, tes achats arrivent bientôt');
     })})();
   };

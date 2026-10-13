@@ -1,4 +1,4 @@
-/* TrackDex : sons (synthétisés, sans fichier) et animations à ressort (Motion) */
+/* WaxDrop : sons (synthétisés, sans fichier) et animations à ressort (Motion) */
 (function(){
   /* ================= SONS ================= */
   var AC=null,master=null,verb=null;
