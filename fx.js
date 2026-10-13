@@ -6,7 +6,7 @@
   function ctx(){
     if(AC)return AC;
     var C=window.AudioContext||window.webkitAudioContext;if(!C)return null;
-    AC=new C();master=AC.createGain();master.gain.value=.55;
+    try{AC=new C({latencyHint:'interactive'})}catch(e){AC=new C()}master=AC.createGain();master.gain.value=.55;
     var comp=AC.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=4;
     master.connect(comp);comp.connect(AC.destination);
     /* petite réverbération pour les grands moments */
@@ -15,8 +15,13 @@
     verb.buffer=b;var vg=AC.createGain();vg.gain.value=.35;verb.connect(vg);vg.connect(master);
     return AC;
   }
-  function unlock(){var c=ctx();if(c&&c.state==='suspended')c.resume()}
-  addEventListener('pointerdown',unlock,{passive:true});addEventListener('keydown',unlock);
+  /* iOS : laisse la musique de l'utilisateur continuer, et débloque le son au premier toucher */
+  try{if(navigator.audioSession)navigator.audioSession.type='ambient'}catch(e){}
+  var primed=false;
+  function unlock(){var c=ctx();if(!c)return;if(c.state!=='running')c.resume().catch(function(){});
+    if(!primed){primed=true;try{var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}}}
+  ['pointerdown','touchend','click','keydown'].forEach(function(ev){addEventListener(ev,unlock,{passive:true,capture:true})});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden&&AC&&AC.state!=='running')AC.resume().catch(function(){})});
   function out(rev){var g=AC.createGain();g.connect(master);if(rev)g.connect(verb);return g}
   function tone(f,t,dur,o){o=o||{};var c=AC;if(!c)return;
     var os=c.createOscillator(),g=c.createGain();os.type=o.type||'sine';os.frequency.setValueAtTime(f,t);
@@ -29,7 +34,7 @@
     if(o.fto)f.frequency.exponentialRampToValueAtTime(o.fto,t+dur);f.Q.value=o.q||.7;
     var g=c.createGain(),v=o.vol||.15;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(v,t+(o.a||.01));g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
     s.connect(f);f.connect(g);g.connect(out(o.rev));s.start(t);s.stop(t+dur+.05)}
-  function play(fn){if(!on())return;var c=ctx();if(!c)return;if(c.state==='suspended')c.resume();try{fn(c.currentTime+.01)}catch(e){}}
+  function play(fn){if(!on())return;var c=ctx();if(!c)return;var go=function(){try{fn(c.currentTime+.005)}catch(e){}};if(c.state!=='running'){c.resume().then(go,function(){})}else go()}
   var NOTE=function(n){return 440*Math.pow(2,(n-69)/12)};
   var SFX=window.SFX={
     tap:function(){play(function(t){tone(1400,t,.035,{vol:.035,to:900});})},
@@ -105,13 +110,17 @@
   document.body.classList.add('mo');
   /* appui : le bouton s'enfonce puis rebondit */
   var PRESS='button,.chip,.hb,.pk,.lr,.arow,.prow,.tpr,.topc,.mcard,.tcell';
+  /* l'appui attend un peu : si le doigt fait défiler la liste, rien ne bouge */
   document.addEventListener('pointerdown',function(e){if(lite())return;var el=e.target.closest(PRESS);if(!el||el.disabled||el.closest('#op,#bub,.bb'))return;
-    M.animate(el,{scale:.95},{duration:.12});
-    var up=function(){removeEventListener('pointerup',up);removeEventListener('pointercancel',up);if(el.isConnected)M.animate(el,{scale:1},{type:'spring',stiffness:600,damping:14})};
-    addEventListener('pointerup',up);addEventListener('pointercancel',up)},{passive:true});
+    var x0=e.clientX,y0=e.clientY,down=false,done=false;
+    var tm=setTimeout(function(){if(done)return;down=true;M.animate(el,{scale:.96},{duration:.1})},e.pointerType==='touch'?70:0);
+    var end=function(){if(done)return;done=true;clearTimeout(tm);removeEventListener('pointerup',end);removeEventListener('pointercancel',end);removeEventListener('pointermove',mv);
+      if(el.isConnected)M.animate(el,{scale:1},down?{type:'spring',stiffness:600,damping:16}:{duration:.08})};
+    var mv=function(ev){if(Math.abs(ev.clientX-x0)+Math.abs(ev.clientY-y0)>8)end()};
+    addEventListener('pointerup',end);addEventListener('pointercancel',end);addEventListener('pointermove',mv,{passive:true})},{passive:true});
   /* nouvel écran : les blocs arrivent en cascade */
   var main=document.getElementById('main');
-  new MutationObserver(function(){if(lite())return;var v=main.firstElementChild;if(!v||v._mo)return;v._mo=1;
+  new MutationObserver(function(){if(lite())return;var v=main.firstElementChild;if(!v||v._mo)return;v._mo=1;if(v._same)return;
     var kids=Array.prototype.slice.call(v.children,0,8);if(!kids.length)return;
     M.animate(kids,{opacity:[0,1],y:[14,0]},{delay:M.stagger(.035),type:'spring',stiffness:380,damping:30})}).observe(main,{childList:true});
   /* fenêtres du bas et pop-ups : ressort */

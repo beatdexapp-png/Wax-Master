@@ -1522,3 +1522,100 @@ body.mo #main .view{animation:none}
 .cntr .crb{flex:none}
 @media (max-width:360px){.crb{font-size:12px;padding:0 10px 0 4px}.crb span{width:22px;height:22px}}
 .crb small{font:inherit}@media (max-width:370px){.crx{display:none}}
+
+/* ===== v23 : optimisation téléphone ===== */
+:root{padding:0}
+#app{position:fixed;inset:0;height:auto;margin:0 auto;padding-top:env(safe-area-inset-top,0px)}
+.hd{padding:6px 16px 2px}
+.jet{height:34px}
+/* barre d'onglets collée en bas, juste au-dessus de la barre d'accueil */
+.tabs{margin:6px 10px max(6px,calc(env(safe-area-inset-bottom,0px) - 20px));padding:4px;border-radius:24px}
+.tabs button{padding:5px 2px 3px;font-size:10px;gap:1px;border-radius:18px}
+.tabs svg,.tcv{width:22px;height:22px}
+.tcen .dot{top:1px}
+.view{inset:4px 16px 0}
+/* pages qui défilent en entier */
+.view.vs{inset:4px 0 0;padding:0 16px 20px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;scrollbar-width:none}
+.view.vs::-webkit-scrollbar{display:none}
+.view.vs>*{flex:none}
+.view.vs .shd2{position:sticky;top:0;z-index:4;margin:0 -16px;padding:4px 16px 8px;background:linear-gradient(180deg,var(--bg) 70%,transparent)}
+/* listes : défilement vertical */
+.pgv{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding:2px 0 18px;scrollbar-width:none}
+.pgv::-webkit-scrollbar{display:none}
+.pgd{display:grid;align-content:start}
+.pgd>*{min-width:0}
+/* collection */
+.vh .gbtn.sq{width:42px;height:42px}
+.v-col .seg{min-width:0;flex:1 1 auto;overflow-x:auto;scrollbar-width:none}
+.v-col .seg::-webkit-scrollbar{display:none}
+.v-col .seg button{height:34px;padding:0 11px;font-size:13px;flex:none}
+.cntr .cnt2{flex:1 1 auto;min-width:0}
+.crb{height:34px;font-size:13px;padding:0 12px 0 4px}
+.crb span{width:26px;height:26px}
+/* profil plus compact */
+.v-prof{gap:10px}
+.phero{padding:10px 12px;gap:12px;border-radius:22px}
+.phero .av.tbig{width:48px;height:48px;font-size:14px}
+.phero .pn b{font-size:19px}
+.phero .gbtn.sq{width:40px;height:40px}
+.phero::after{width:110px;height:110px;right:-34px;bottom:-50px}
+.topc{padding:8px 12px!important;min-height:0!important;gap:8px!important;flex-direction:row!important;align-items:center!important;flex-wrap:nowrap!important}
+.topc .topk{font-size:10px!important;flex:none;writing-mode:horizontal-tb}
+.topc .topa .av{width:30px!important;height:30px!important;font-size:10px!important}
+.topc .topb{margin-left:auto;font-size:11px!important;padding:4px 9px!important}
+.pq{gap:6px}
+.pqa{padding:8px 10px;border-radius:16px;flex-direction:row;align-items:center;gap:8px}
+.pqa>b,.pqa>small{display:block}
+.pqa{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:8px;row-gap:0}
+.pqa .pqi{grid-row:1/3;width:28px;height:28px;margin:0;border-radius:9px}
+.pqa .pqi svg{width:16px;height:16px}
+.pqa b{font-size:13.5px;line-height:1.15;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pqa small{font-size:10px}
+.kpis3{gap:6px}
+.kpis3 div{padding:7px 4px;border-radius:14px}
+.kpis3 b{font-size:17px}.kpis3 span{font-size:10px}
+.vtabs .chip{height:34px;padding:0 13px;font-size:13px}
+.vitg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.vitg>*{aspect-ratio:1;min-width:0}
+.wall{min-height:0}
+.wall>button{width:76px}
+.plist{display:flex;flex-direction:column;gap:6px}
+.plist>*{min-height:54px}
+/* pass de saison lisible */
+.v-sea{gap:10px}
+.shero{padding:10px 12px;gap:12px}
+.v-sea .seg button{height:36px}
+.passbn{padding:10px 12px;border-radius:18px}
+.passbn .pico{width:34px;height:34px}
+.passbn small{font-size:11px}
+.trkw{flex:none;display:flex;flex-direction:column;gap:6px;min-height:0}
+.trkl{display:none}
+.trh{display:grid;grid-template-columns:38px 1fr 1fr;gap:8px;padding:2px 2px 0;font:700 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--fg2)}
+.trh span:first-child{text-align:center;letter-spacing:0}
+.trh .pr{color:#e9a23b}
+.strk{display:flex;flex-direction:column;gap:6px;overflow:visible;padding:0;scroll-snap-type:none}
+.tcol{display:grid;grid-template-columns:38px 1fr 1fr;gap:8px;align-items:center;width:auto;scroll-snap-align:none}
+.tcol .tnum{width:32px;height:32px;justify-self:center}
+.tcol .tcell{height:50px;max-height:none;flex:none;flex-direction:row;justify-content:flex-start;gap:9px;padding:0 34px 0 12px;border-radius:16px}
+.tcol .tcell b{font:700 14px var(--mono);white-space:nowrap}
+.tcol .tcell .mini{width:26px;height:26px}
+.tcol .tcell .coin{width:22px;height:22px}
+.tcol .tcell .dust{width:20px;height:20px}
+.tcol .tcell u{top:50%;right:10px;transform:translateY(-50%);width:20px;height:20px}
+.tcol.tbig .tcell{box-shadow:inset 0 0 0 1.5px #c27dff}
+/* packs et jetons */
+.v-shop .chips{flex:none}
+/* fluidité : flou moins coûteux sur téléphone */
+@media (hover:none){
+ .glass{-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%)}
+ .pgv,.view.vs{contain:layout paint}
+}
+.topc .topk{width:auto;letter-spacing:.1em}
+.pq{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pqa{padding:8px}
+.pqa b{font-size:13px}
+.pqa{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:9px 4px;text-align:center}
+.pqa .pqi{width:28px;height:28px}
+.pqa small{display:none}
+.pqa b{max-width:100%}
+.tcol .tcell.ready{animation:none;box-shadow:0 4px 14px rgba(255,194,61,.35)}

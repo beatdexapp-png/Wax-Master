@@ -134,20 +134,16 @@ const albBtn=A=>`<button class="it" data-act="album" data-k="${A.key}" aria-labe
 
 /* ================= PAGER ================= */
 function pager(host,items,fn,o){
-  if(!host)return;const gap=o.gap??10;const w=host.clientWidth,h=host.clientHeight-24;if(w<=0||h<=0)return;
+  if(!host)return;const gap=o.gap??10;const w=host.clientWidth;if(w<=0)return;
   if(!items.length){host.innerHTML=`<p class="empty">${o.empty||'Rien ici'}</p>`;return}
-  let cols,cw,ch;
-  if(o.cellH){cols=o.cols||Math.max(1,Math.floor((w+gap)/((o.minW||320)+gap)));cw=(w-gap*(cols-1))/cols;ch=o.cellH}
-  else{cols=Math.max(o.minCols||3,Math.floor((w+gap)/(o.minT+gap)));cw=(w-gap*(cols-1))/cols;ch=cw+(o.extra||0)}
-  const rows=Math.max(1,Math.floor((h+gap)/(ch+gap)));const per=cols*rows;const P=Math.ceil(items.length/per);
-  host.innerHTML=`<div class="pgt">${Array.from({length:P},()=>`<div class="pg" style="grid-template-columns:repeat(${cols},${cw.toFixed(1)}px);grid-auto-rows:${ch.toFixed(1)}px;gap:${gap}px"></div>`).join('')}</div><div class="pgi">${P>1?(P<=12?Array.from({length:P},(_,i)=>`<i class="${i?'':'on'}"></i>`).join(''):`<span>1 / ${P}</span>`):''}</div>`;
-  const pages=host.querySelectorAll('.pg'),done=new Set();
-  const fill=i=>{if(i<0||i>=P||done.has(i))return;done.add(i);pages[i].innerHTML=items.slice(i*per,(i+1)*per).map(fn).join('')};
-  fill(0);fill(1);
-  const tr=host.querySelector('.pgt'),ind=host.querySelector('.pgi');let raf=0,last=0;
-  tr.addEventListener('scroll',()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;const i=Math.round(tr.scrollLeft/Math.max(1,tr.clientWidth));fill(i-1);fill(i);fill(i+1);
-    if(P<=12)ind.querySelectorAll('i').forEach((d,k)=>d.classList.toggle('on',k===i));else if(ind.firstChild)ind.firstChild.textContent=`${i+1} / ${P}`})},{passive:true});
-  tr.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)<=Math.abs(e.deltaX)||P<2)return;e.preventDefault();const t=performance.now();if(t-last<350)return;last=t;tr.scrollBy({left:Math.sign(e.deltaY)*tr.clientWidth,behavior:'smooth'})},{passive:false});
+  let cols,ch;
+  if(o.cellH){cols=o.cols||Math.max(1,Math.floor((w+gap)/((o.minW||320)+gap)));ch=o.cellH}
+  else{cols=Math.max(o.minCols||3,Math.floor((w+gap)/(o.minT+gap)));ch=(w-gap*(cols-1))/cols+(o.extra||0)}
+  host.innerHTML=`<div class="pgv"><div class="pgd" style="grid-template-columns:repeat(${cols},minmax(0,1fr));grid-auto-rows:${ch.toFixed(1)}px;gap:${gap}px"></div></div>`;
+  const sc=host.firstChild,g=sc.firstChild,step=cols*Math.max(4,Math.ceil((host.clientHeight||600)/(ch+gap))+2);let n=0;
+  const add=()=>{if(n>=items.length)return;g.insertAdjacentHTML('beforeend',items.slice(n,n+step).map(fn).join(''));n+=step};
+  add();add();
+  sc.addEventListener('scroll',()=>{if(sc.scrollTop+sc.clientHeight>sc.scrollHeight-(ch+gap)*4)add()},{passive:true});
 }
 
 
@@ -205,7 +201,7 @@ function vCollection(){
   return `<div class="view v-col"><div class="vh"><button class="gbtn sq" data-act="colv" data-v="${colView==='bulles'?'liste':'bulles'}" aria-label="${colView==='bulles'?'Voir en liste':'Voir en bulles'}">${colView==='bulles'?ICON.list:ICON.bub}</button>
     <div class="seg glass sm">${['Tous','FR','US','UK','Monde'].map(g=>`<button data-act="colg" data-v="${g}" aria-pressed="${colG===g}">${g}</button>`).join('')}</div>
     <button class="gbtn sq" data-act="recy" aria-label="Recycler les doubles" style="margin-left:auto">${ICON.recycle}</button><button class="gbtn sq" data-act="cat" aria-label="Tout le catalogue">${ICON.search}</button></div>
-    <div class="cntr"><p class="cnt2">${tot} artiste${tot>1?'s':''} · ${CARDS.filter(c=>own(c.id)).length}/${N} sons · ${dustI}${S.dust}</p><button class="crb" data-act="atelier" aria-label="Créer un son"><span>${ICON.plus}</span>Créer<small class="crx">&nbsp;un son</small></button></div>
+    <div class="cntr"><p class="cnt2">${tot} artiste${tot>1?'s':''} · ${CARDS.filter(c=>own(c.id)).length}/${N} sons · ${dustI}${S.dust}</p><button class="crb" data-act="atelier" aria-label="Créer un son"><span>${ICON.plus}</span>Créer</button></div>
     ${colView==='bulles'?`<div class="bubw glass" id="bub">${L.length?'':'<p class="empty">Ouvre un maxi pour commencer</p>'}</div>`:`<div class="pgr" id="pgr"></div>`}</div>`;
 }
 function tickHTML(){mkInit();const L=S.mk.list.filter(l=>!l.mine).slice().sort((a,b)=>Math.abs(chg(b))-Math.abs(chg(a))).slice(0,8);if(!L.length)return '';
@@ -249,32 +245,31 @@ function vShop(){
 function avHTML(cls){const ph=window.CL&&CL.avatar;const nm=(window.CL&&CL.pseudo)||'Moi';return `<span class="av me ${cls||''}" style="${ph?`--avg:url('${esc(ph)}') center/cover no-repeat,#333`:''}">${ph?'':esc(nm.slice(0,2).toUpperCase())}</span>`}
 function vProfil(){
   const t=tierNow();const nm=(window.CL&&CL.pseudo)||'Ton profil';const nf=window.SOC?SOC.friends().length:0,pend=window.SOC?SOC.pending():0;const x=(S.xp||0)%TIER_XP;
-  return `<div class="view v-prof"><div class="phero"><button class="avb" data-act="pedit" aria-label="Modifier le profil">${avHTML('tbig')}<i class="ped">${ICON.pen}</i></button><div class="pn"><b>${esc(nm)}</b><span>Palier ${t} · ${score().toLocaleString('fr-FR')} pts</span><span class="plv" style="--p:${t>=TIERS?100:x}%"><i></i></span></div><button class="gbtn sq ghost" data-act="menu" aria-label="Réglages">${ICON.gear}</button></div>
+  return `<div class="view v-prof vs"><div class="phero"><button class="avb" data-act="pedit" aria-label="Modifier le profil">${avHTML('tbig')}<i class="ped">${ICON.pen}</i></button><div class="pn"><b>${esc(nm)}</b><span>Palier ${t} · ${score().toLocaleString('fr-FR')} pts</span><span class="plv" style="--p:${t>=TIERS?100:x}%"><i></i></span></div><button class="gbtn sq ghost" data-act="menu" aria-label="Réglages">${ICON.gear}</button></div>
    ${window.ECO?ECO.topHTML():''}
    <div class="pq"><button class="pqa pq-fr" data-act="gofriends"><span class="pqi">${ICON.users}</span><b>Amis</b><small>${nf?nf+' ami'+(nf>1?'s':''):'Aucun'}${pend?' · '+pend+' nouveau'+(pend>1?'x':''):''}</small></button><button class="pqa pq-inv" data-act="invite"><span class="pqi">${ICON.share}</span><b>Inviter</b><small>Partage ton lien</small></button><button class="pqa pq-top" data-act="prs" data-v="${profSub==='top'?'vitrine':'top'}" aria-pressed="${profSub==='top'}"><span class="pqi">${profSub==='top'?ICON.grid:ICON.star}</span><b>${profSub==='top'?'Vitrines':'Classement'}</b><small>${profSub==='top'?'Retour':'Top joueurs'}</small></button></div>
-   ${profSub==='top'?`<div class="pgr" id="pgr"></div>`:vVitrine()}</div>`;
+   ${profSub==='top'?`<div class="plist">${board().map(boardRow).join('')}</div>`:vVitrine()}</div>`;
 }
 function vitInit(){if(!Array.isArray(S.vits)||!S.vits.length)S.vits=[{n:'Ma vitrine',ids:(S.fav||[]).slice(0,6)}];S.vits.forEach(v=>{v.ids=(v.ids||[]).filter(id=>C[id]&&own(id)).slice(0,6)});S.vi=Math.min(S.vi|0,S.vits.length-1);S.fav=S.vits[S.vi].ids}
 function vVitrine(){vitInit();const pl=ARTISTS.filter(A=>S.ul[A.key]);const al=ALBUMS.filter(A=>S.ul[A.key]).length;const V=S.vits[S.vi];
   return `<div class="kpis3"><div class="k1"><b>${CARDS.filter(c=>own(c.id)).length}</b><span>sons</span></div><div class="k2"><b>${al}</b><span>albums</span></div><div class="k3"><b>${pl.length}</b><span>platines</span></div><div class="k4"><b>${POOL[5].filter(c=>own(c.id)).length}</b><span>divins</span></div></div>
    <div class="vtabs">${S.vits.map((v,k)=>`<button class="chip" data-act="vsel" data-i="${k}" aria-pressed="${k===S.vi}">${esc(v.n)}</button>`).join('')}${S.vits.length<3?`<button class="chip add" data-act="vnew" aria-label="Nouvelle vitrine">+</button>`:''}<button class="chip" data-act="vedit" aria-label="Renommer la vitrine">${ICON.pen}</button></div>
-   <div class="pgr vit" id="pgr"></div>
+   <div class="vitg">${(()=>{const F=S.fav.map(id=>C[id]);while(F.length<6)F.push(null);return F.map(c=>c?tileBtn(c):'<button class="fslot" data-act="vpick">'+ICON.plus+'<span>Ajouter</span></button>').join('')})()}</div>
    ${pl.length?`<div class="wall">${pl.map(A=>`<button data-act="seepl" data-k="${A.key}">${plaqueHTML(A)}</button>`).join('')}</div>`:''}`}
 const MI={buy:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',open:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/>',newT:'<path d="M12 3l2.2 5.6L20 9.3l-4.4 3.9L17 19l-5-3-5 3 1.4-5.8L4 9.3l5.8-.7z"/>',bid:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',recycle:'<path d="M7 19H4l3-5M17 19h3l-3-5M12 4l-2 3h4z"/><path d="M9 14l3-5 3 5"/>',sell:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',trade:'<path d="M7 7h12l-3-3M17 17H5l3 3"/>'};
 function vMissions(){const d=day();const L=todayMissions();const tm=new Date();tm.setHours(24,0,0,0);const done=L.filter(m=>d.cl[m.k]).length;
   return `<div class="mhead"><div><b>Missions du jour</b><small>Nouvelles dans <span data-clock="${+tm}">${clock(+tm-now())}</span></small></div><div class="mbonus${done>=L.length?' ok':''}">${done>=L.length&&!d.cl.all?`<button class="pbtn" data-act="mall" style="height:38px">Bonus · 1 maxi</button>`:`<span>${d.cl.all?ICON.check+'Bonus récupéré':`${done}/${L.length} · bonus 1 maxi`}</span>`}</div></div>
    <div class="mlist3">${L.map((m,ix)=>{const v=Math.min(d[m.k]||0,m.n),ok=v>=m.n,cl=d.cl[m.k];return `<div class="mcard${ok?' ok':''}${cl?' cl':''}" style="--p:${v/m.n*100};--i:${ix}"><span class="mring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${MI[m.k]||''}</svg></span><div class="mtx"><b>${m.t}</b><small>${v}/${m.n}</small><span class="mrw"><em>+${m.c} ${coinI}</em><em>+${m.x} XP</em></span></div><button class="mbtn" data-act="mclaim" data-k="${m.k}" ${ok&&!cl?'':'disabled'}>${cl?ICON.check:ok?'Prendre':`${Math.round(v/m.n*100)} %`}</button></div>`}).join('')}</div>`}
 const rwIcon=r=>r.gold?'<i class="mini gold"></i>':r.maxi?'<i class="mini"></i>':r.coins?coinI:dustI;
-const rwShort=r=>r.gold?'Or':r.maxi?`×${r.maxi}`:r.coins?r.coins:r.dust;
-function trackHTML(){const t=tierNow();let h='';for(let i=1;i<=TIERS;i++){const {f,p}=seasonRewards(i);const un=i<=t,fc=S.sfree.includes(i),pc=S.sprem.includes(i);
-    h+=`<div class="tcol${un?' un':''}${i===t+1?' nx':''}${i%10===0?' tbig':''}"><button class="tcell pr" data-act="sclaim" data-i="${i}" data-t="p" ${un&&!pc&&hasPass()?'':'disabled'} aria-label="Palier ${i} premium">${rwIcon(p)}<b>${rwShort(p)}</b>${pc?'<u>'+ICON.check+'</u>':hasPass()?'':'<u>'+ICON.lock+'</u>'}</button><span class="tnum">${i}</span><button class="tcell${un&&!fc?' ready':''}" data-act="sclaim" data-i="${i}" data-t="f" ${un&&!fc?'':'disabled'} aria-label="Palier ${i}">${rwIcon(f)}<b>${rwShort(f)}</b>${fc?'<u>'+ICON.check+'</u>':''}</button></div>`}
+const rwShort=r=>r.gold?'Maxi Or':r.maxi?`×${r.maxi}`:r.coins?r.coins:r.dust;
+function trackHTML(){const t=tierNow(),hp=hasPass();let h='';for(let i=1;i<=TIERS;i++){const {f,p}=seasonRewards(i);const un=i<=t,fc=S.sfree.includes(i),pc=S.sprem.includes(i);
+    h+=`<div class="tcol${un?' un':''}${i===t+1?' nx':''}${i%10===0?' tbig':''}"><span class="tnum">${i}</span><button class="tcell${un&&!fc?' ready':''}" data-act="sclaim" data-i="${i}" data-t="f" ${un&&!fc?'':'disabled'} aria-label="Palier ${i}">${rwIcon(f)}<b>${rwShort(f)}</b>${fc?'<u>'+ICON.check+'</u>':''}</button><button class="tcell pr" data-act="sclaim" data-i="${i}" data-t="p" ${un&&!pc&&hp?'':'disabled'} aria-label="Palier ${i} premium">${rwIcon(p)}<b>${rwShort(p)}</b>${pc?'<u>'+ICON.check+'</u>':hp?'':'<u>'+ICON.lock+'</u>'}</button></div>`}
   return h}
 function vSaisonTab(){const t=tierNow(),x=(S.xp||0)%TIER_XP;const dotM=missReady(),dotS=seasonReady();
-  return `<div class="view v-sea">${subHead('Pass de saison')}<div class="shero"><span class="slv2" style="--p:${t>=TIERS?100:x}"><b>${t}</b><small>palier</small></span><div class="sinfo"><span class="skk">Saison 1 · Premiers sillons</span><b>${t>=TIERS?'Saison terminée, bravo':`${TIER_XP-x} XP avant le palier ${t+1}`}</b><span class="pbar" style="--p:${t>=TIERS?100:x}%"><i></i></span><small>Fin dans ${dur(new Date(SEASON_END)-now())}</small></div></div>
+  return `<div class="view v-sea vs">${subHead('Pass de saison')}<div class="shero"><span class="slv2" style="--p:${t>=TIERS?100:x}"><b>${t}</b><small>palier</small></span><div class="sinfo"><span class="skk">Saison 1 · Premiers sillons</span><b>${t>=TIERS?'Saison terminée, bravo':`${TIER_XP-x} XP avant le palier ${t+1}`}</b><span class="pbar" style="--p:${t>=TIERS?100:x}%"><i></i></span><small>Fin dans ${dur(new Date(SEASON_END)-now())}</small></div></div>
    <div class="seg glass">${[['pass','Pass de saison',dotS],['missions','Missions',dotM]].map(([k,n,dot])=>`<button data-act="seas" data-v="${k}" aria-pressed="${seaSub===k}">${n}${dot?'<i class="sdot"></i>':''}</button>`).join('')}</div>
    ${seaSub==='missions'?vMissions():`<div class="xpw"><button class="xph" data-act="seahelp"><span>Comment ça marche</span>${ICON.help}</button><div class="xpc"><span><i>${ICON.play}</i>Maxi <b>+20 XP</b></span><span><i>${ICON.star}</i>Nouveau son <b>+10</b></span><span><i>${ICON.check}</i>Mission <b>+40 à 80</b></span><span><i>${ICON.grid}</i>Album complet <b>+100</b></span></div></div>${(()=>{let n=0,nx=null;for(let i=1;i<=TIERS;i++){if(i<=t&&!S.sfree.includes(i))n++;if(!nx&&i>t)nx=i}const r=nx?seasonRewards(nx).f:null;
-     return `<div class="sgrab${n?' on':''}"><div class="sgi">${n?`<span class="sgn">${n}</span>`:ICON.gift}</div><div class="sgt"><b>${n?`${n} récompense${n>1?'s':''} à récupérer`:'Tout est récupéré'}</b><small>${r?`Prochaine : ${rwLabel(r)} au palier ${nx}`:'Saison terminée'}</small></div>${n?`<button class="pbtn" data-act="sall">Tout récupérer</button>`:''}</div>`})()}<div class="trkw"><div class="trkl"><span class="pr">Premium</span><span>Gratuit</span></div><div class="strk" id="trk">${trackHTML()}</div></div>
-   <button class="passbn" data-act="passinfo"><span class="pico">${ICON.star}</span><span><b>Pass Premium</b><small>Double récompenses, maxi gratuit toutes les 5 min</small></span><em>${hasPass()?'Actif':'5,99 €'}</em></button>`}</div>`}
+     return `<div class="sgrab${n?' on':''}"><div class="sgi">${n?`<span class="sgn">${n}</span>`:ICON.gift}</div><div class="sgt"><b>${n?`${n} récompense${n>1?'s':''} à récupérer`:'Tout est récupéré'}</b><small>${r?`Prochaine : ${rwLabel(r)} au palier ${nx}`:'Saison terminée'}</small></div>${n?`<button class="pbtn" data-act="sall">Tout récupérer</button>`:''}</div>`})()}${hasPass()?'':`<button class="passbn" data-act="passinfo"><span class="pico">${ICON.star}</span><span><b>Pass Premium</b><small>Double récompenses, maxi toutes les 5 min</small></span><em>5,99 €</em></button>`}<div class="trkw"><div class="trh"><span>N°</span><span>Gratuit</span><span class="pr">Premium</span></div><div class="strk" id="trk">${trackHTML()}</div></div>`}</div>`}
 function vSaison(){return ''}
 const missReady=()=>missReady0()||(todayMissions().every(m=>day().cl[m.k])&&!day().cl.all);
 const seasonReady=()=>seasonReady0();
@@ -323,16 +318,18 @@ function render(){
   const od=$('odot');if(od)od.hidden=!canFree();const sd=$('shdot');if(sd)sd.hidden=!(missReady()||seasonReady()||window.SOC&&SOC.pending()>0);
   document.querySelectorAll('#tabs button[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));
   if(tab==='saison'){tab='shop';shopSub='saison'}
+  const ov=main.firstElementChild,ok0=ov&&ov.className,st0=ov&&ov.classList.contains('vs')?ov.scrollTop:0,pg0=main.querySelector('.pgv'),ps0=pg0?pg0.scrollTop:0;
   main.innerHTML=tab==='ouvrir'?vOuvrir():tab==='collection'?vCollection():tab==='shop'?vShop():tab==='bourse'?(window.vBourse?vBourse():''):vProfil();
+  const nv=main.firstElementChild;if(nv&&ok0===nv.className){nv._same=1;if(st0)nv.scrollTop=st0}
   layout();
+  if(nv&&nv._same&&ps0){const pg=main.querySelector('.pgv');if(pg)pg.scrollTop=ps0}
 }
 function layout(){
   const h=$('pgr');
   if(tab==='collection'){if($('bub'))initBub();if(h)pager(h,colList(),artistRow,{cellH:66,minW:320,gap:8,empty:'Ouvre un maxi pour commencer'})}
   if(tab==='shop'&&h){if(shopSub==='encheres')mkLayout();else if(shopSub==='echanges'){if(window.SOC)SOC.layout(h)}else if(shopSub==='jetons')pager(h,shopItems(),x=>x,{cellH:jetSub==='packs'?190:188,cols:2,gap:10})}
-  if(tab==='profil'&&h){if(profSub==='vitrine'){vitInit();const F=S.fav.map(id=>C[id]);while(F.length<6)F.push(null);pager(h,F,c=>c?tileBtn(c):'<button class="fslot" data-act="vpick">'+ICON.plus+'<span>Ajouter</span></button>',{minT:96,cols:3})}
-    else if(profSub==='top')pager(h,board(),boardRow,{cellH:54,minW:320,gap:6})}
-  if(tab==='shop'&&shopSub==='saison'){const tk=$('trk');if(tk){const t=tierNow();const c=tk.children[Math.max(0,t-1)];if(c)tk.scrollLeft=Math.max(0,c.offsetLeft-tk.clientWidth/2+c.clientWidth/2)}}
+  
+  if(tab==='shop'&&shopSub==='saison'&&seaSub!=='missions'){const tk=$('trk'),v=tk&&tk.closest('.view');const t=tierNow();if(v&&!v._same&&t>2&&t<TIERS){const c=tk.children[t-2];if(c)v.scrollTop=Math.max(0,c.offsetTop-v.clientHeight*.35)}}
   if(stack.length)renderStack(true);
 }
 const TABS=['collection','shop','ouvrir','bourse','profil'];
