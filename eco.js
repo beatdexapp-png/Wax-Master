@@ -1,4 +1,4 @@
-/* WaxDrop : économie gérée par le serveur (wax, cartes, drops) et Bourse des cours */
+/* WaxDrop : économie gérée par le serveur (wax coins, cartes, drops) et Bourse des cours */
 (function(){
   if(!window.CL||!CL.sb)return;
   var sb=CL.sb;
@@ -11,7 +11,7 @@
     if(!w)return;
     S.coins=w.coins;S.gold=w.gold;S.bonus=w.bonus;S.dust=w.dust;
     var o={};for(var k in (w.owned||{}))if(C[k])o[k]=w.owned[k];S.owned=o;
-    S.freeAt=+new Date(w.free_at)||0;S.xp=w.sxp||0;S.passUntil=w.pass_until?+new Date(w.pass_until):0;S.top=Array.isArray(w.top)?w.top:[];S.topAt=w.top_at?+new Date(w.top_at):0;
+    S.freeAt=+new Date(w.free_at)||0;S.xp=w.sxp||0;S.passUntil=w.pass_until?+new Date(w.pass_until):0;S.top=Array.isArray(w.top)?w.top:[];S.styles=Array.isArray(w.styles)?w.styles:[];S.topAt=w.top_at?+new Date(w.top_at):0;
     var cl=w.claims||{};S.ul=Object.assign({},cl.ul||{});S.sfree=(cl.sf||[]).slice();S.sprem=(cl.sp||[]).slice();S.codes=Object.assign({},cl.codes||{});
     var d=w.day||{};S.day=d.d===today()?Object.assign(fresh0(),d,{cl:Object.assign({},d.cl||{})}):fresh0();
     save();setCoins();
@@ -24,6 +24,9 @@
     ECO.apply(r.data.w);return r.data;
   };
   ECO.op=async function(op,a){var r=await ECO.call(op,a);if(r.error){toast(r.error);return null}return r};
+  /* précharge les pochettes et photos des sons tirés pendant l'animation */
+  var PRE=[];ECO.preload=function(ids){ids.forEach(function(id){var c=C[id];if(!c)return;var A=ARTISTS.find(function(a){return a.ids&&a.ids.indexOf(id)>=0});
+    [c.img,A&&A.img].forEach(function(u){if(!u)return;var i=new Image();i.decoding='async';i.fetchPriority='high';i.src=u;if(i.decode)i.decode().catch(function(){});PRE.push(i)})});if(PRE.length>60)PRE=PRE.slice(-60)};
   ECO.sync=async function(noRender){var r=await ECO.call('state');if(!r.error&&!noRender&&quiet())render();return r};
 
   /* ---------- actions du jeu passées au serveur ---------- */
@@ -42,6 +45,7 @@
     if(reveal)return;
     var ids=(r.data.cards||[]).filter(function(id){return C[id]});
     if(!ids.length){ECO.apply(r.data.w);toast('Drop ajouté, recharge l’app');return}
+    ECO.preload(ids);
     window.SRV={cards:ids,gain:r.data.gain||0,secret:!!r.data.secret};
     try{reveal=pull(PK[m]||m==='drop'?m:'std')}finally{window.SRV=null}
     ECO.apply(r.data.w);
@@ -56,7 +60,7 @@
     var r=await ECO.op('craft',{id:id});if(!r)return;
     render();if(window.craftAnim)craftAnim(c);else see(id);if(r.ul&&r.ul.length)toast('Album complété · récompense !');
   };
-  window.mClaim=async function(k){var m=MISS.find(function(x){return x.k===k});var r=await ECO.op('mission',{k:k});if(!r)return;toast('+'+m.c+' wax · +'+m.x+' XP');render()};
+  window.mClaim=async function(k){var m=MISS.find(function(x){return x.k===k});var r=await ECO.op('mission',{k:k});if(!r)return;toast('+'+m.c+' wax coins · +'+m.x+' XP');render()};
   window.sClaim=async function(i,t){if(t==='p'&&!hasPass()){passSheet();return}var r=await ECO.op('season',{i:+i,t:t==='p'?'p':'f'});if(!r)return;toast('Récompense ajoutée');render()};
   window.buyCoins=async function(k){
     if(k==='nacre'||k==='diamant'){if(S.coins<PK[k].p){needCoins(PK[k].p-S.coins);return}openPack(k);return}
@@ -70,10 +74,10 @@
     if(!CL.user){toast('Connexion requise');return}
     if(!PAY[k]){toast('Bientôt disponible');return}
     if(k==='pass'&&hasPass()){passSheet();return}
-    var item=k==='pass'?{n:'WaxDrop Pro',p:PASS_PRICE}:(function(){var s=SHOP.find(function(x){return x.k===k});return{n:s.n.toLocaleString('fr-FR')+' wax',p:s.p}})();
+    var item=k==='pass'?{n:'WaxDrop Pro',p:PASS_PRICE}:(function(){var s=SHOP.find(function(x){return x.k===k});return{n:s.n.toLocaleString('fr-FR')+' wax coins',p:s.p}})();
     var url=PAY[k]+'?client_reference_id='+encodeURIComponent(CL.user.id)+(CL.user.email?'&prefilled_email='+encodeURIComponent(CL.user.email):'')+'&locale=fr';
     closeMenu();
-    dd.innerHTML=popHTML('<div class="card2 glass paysh"><span class="lbl">Paiement sécurisé · Stripe</span><h2>'+esc(item.n)+'</h2><p class="price2">'+item.p+'</p><p class="cap">Tu vas payer sur la page Stripe, puis revenir dans l’app. '+(k==='pass'?'WaxDrop Pro s’active':'Les wax arrivent')+' en quelques secondes.</p><div class="row"><button class="gbtn" data-act="ddclose">Annuler</button><a class="pbtn" href="'+esc(url)+'" rel="noopener">Payer '+item.p.replace(' / mois','')+'</a></div></div>');
+    dd.innerHTML=popHTML('<div class="card2 glass paysh"><span class="lbl">Paiement sécurisé · Stripe</span><h2>'+esc(item.n)+'</h2><p class="price2">'+item.p+'</p><p class="cap">Tu vas payer sur la page Stripe, puis revenir dans l’app. '+(k==='pass'?'WaxDrop Pro s’active':'Les wax coins arrivent')+' en quelques secondes.</p><div class="row"><button class="gbtn" data-act="ddclose">Annuler</button><a class="pbtn" href="'+esc(url)+'" rel="noopener">Payer '+item.p.replace(' / mois','')+'</a></div></div>');
   };
   window.buyOk=function(k){buyFlow(k)};
   window.claim=async function(){var r=await ECO.op('pass_daily');if(!r)return;toast('+1 drop'+(new Date().getDay()===1?' et 1 Drop Or':''));closeMenu();render()};
@@ -83,7 +87,7 @@
     if(!paid)return;var k=paid,c0=S.coins,p0=hasPass(),n=0;paid=null;
     toast('Paiement reçu, merci !');
     (function poll(){n++;ECO.sync().then(function(){
-      if(k==='pass'?hasPass()&&!p0:S.coins>c0){toast(k==='pass'?'WaxDrop Pro activé':'+'+(S.coins-c0).toLocaleString('fr-FR')+' wax');return}
+      if(k==='pass'?hasPass()&&!p0:S.coins>c0){toast(k==='pass'?'WaxDrop Pro activé':'+'+(S.coins-c0).toLocaleString('fr-FR')+' wax coins');return}
       if(n<10)setTimeout(poll,3000);else toast('Paiement en cours de validation, tes achats arrivent bientôt');
     })})();
   };
@@ -198,7 +202,7 @@
       var byR=[0,0,0,0,0,0];P.rows.forEach(function(x){byR[C[x.id].r]+=x.sell*x.q});var tot=byR.reduce(function(a,b){return a+b},0)||1,acc=0;
       var ring='conic-gradient('+byR.map(function(val,r){var a=acc;acc+=val/tot*360;return RAR[r].c+' '+a.toFixed(1)+'deg '+acc.toFixed(1)+'deg'}).join(',')+')';
       var sorted=P.rows.slice().sort(function(a,b){return b.chg-a.chg}),best=sorted[0],worst=sorted[sorted.length-1];
-      return '<div class="bxpf"><div class="bxring" style="background:'+ring+'"><span><b>'+P.total.toLocaleString('fr-FR')+'</b><small>wax</small></span></div>'
+      return '<div class="bxpf"><div class="bxring" style="background:'+ring+'"><span><b>'+P.total.toLocaleString('fr-FR')+'</b><small>wax coins</small></span></div>'
         +'<div class="bxpfi"><span class="lbl">Valeur de tes sons</span>'+chip(Math.round(v*10)/10)+'<small>sur 24 h</small><span class="lbl" style="margin-top:8px">Résultat Bourse</span><b class="bxc'+cls(P.real)+'">'+(P.real>0?'+':P.real<0?'−':'')+Math.abs(P.real).toLocaleString('fr-FR')+' '+coinI+'</b></div>'
         +'<div class="bxleg">'+byR.map(function(val,r){return val?'<span><i style="background:'+RAR[r].c+'"></i>'+RAR[r].n+' '+Math.round(val/tot*100)+' %</span>':''}).join('')+'</div></div>'
         +(best&&worst&&best!==worst?'<div class="bxbw"><div class="bxbwc up" data-act="bxsee" data-id="'+best.id+'"><span class="lbl">Meilleur</span>'+tileHTML(C[best.id],{nocount:1,lock:false})+'<b>'+esc(C[best.id].t)+'</b>'+chip(best.chg)+'</div><div class="bxbwc dn" data-act="bxsee" data-id="'+worst.id+'"><span class="lbl">Pire</span>'+tileHTML(C[worst.id],{nocount:1,lock:false})+'<b>'+esc(C[worst.id].t)+'</b>'+chip(worst.chg)+'</div></div>':'')
@@ -310,7 +314,7 @@
       +'<div class="chips bxrg">'+['d','w','m'].map(function(k){var lk=k!=='d'&&!hasPass();return '<button class="chip'+(lk?' lk':'')+'" data-act="bxrg" data-v="'+k+'" aria-pressed="'+(F.rg===k)+'">'+RG[k].n+(lk?' <em class="pro">Pro</em>':'')+'</button>'}).join('')+'</div>'
       +'<div class="bxch" id="bxch"></div><p class="cap bxhint">Touche la courbe pour voir le prix à une date</p>'
       +'<div class="bxstat" id="bxstat"></div>'
-      +(x.cost?'<p class="cap">Tu l’as acheté '+x.cost+' wax en moyenne.</p>':'')
+      +(x.cost?'<p class="cap">Tu l’as acheté '+x.cost+' wax coins en moyenne.</p>':'')
       +'<div class="bxact">'
       +(x.can?'<button class="pbtn" data-act="bxbuy" data-id="'+id+'">Acheter · '+x.buy+' '+coinI+'</button>':'<button class="pbtn" disabled>Packs uniquement</button>')
       +'<button class="gbtn" data-act="bxsell" data-id="'+id+'"'+(x.own?'':' disabled')+'>Vendre · '+x.sell+' '+coinI+'</button></div>'
@@ -325,7 +329,7 @@
   ECO.see=function(id){bxSee(id)};
   ECO.quote=async function(id){var el=$('qte');if(!el)return;var r=await sb.rpc('card_quote',{p_id:id});el=$('qte');if(!el)return;
     if(r.error||!r.data){el.innerHTML='<span>Bourse</span>';return}
-    var v=+r.data.chg||0;el.className='qte'+(v>0?' bxup':v<0?' bxdn':'');el.innerHTML='<b>'+r.data.p+'</b><small>wax</small><em>'+(v>0?'▲':v<0?'▼':'=')+' '+fr(Math.abs(v))+' %</em>'};
+    var v=+r.data.chg||0;el.className='qte'+(v>0?' bxup':v<0?' bxdn':'');el.innerHTML='<b>'+r.data.p+'</b><small>wax coins</small><em>'+(v>0?'▲':v<0?'▼':'=')+' '+fr(Math.abs(v))+' %</em>'};
   addEventListener('keydown',function(e){if(e.key==='Escape'&&$('bxfull'))closeFull()});
   addEventListener('resize',function(){if(F)drawChart()});
 
@@ -334,7 +338,7 @@
     var r=await ECO.op(op,{id:id});
     if(btn)btn.disabled=false;
     if(!r)return;
-    toast((op==='bbuy'?'Acheté ':'Vendu ')+r.price+' wax'+(r.ul&&r.ul.length?' · récompense !':''));
+    toast((op==='bbuy'?'Acheté ':'Vendu ')+r.price+' wax coins'+(r.ul&&r.ul.length?' · récompense !':''));
     if(btn){btn.classList.remove('bxok');void btn.offsetWidth;btn.classList.add('bxok')}
     B.t=0;B.pf=null;
     if($('bxfull'))bxSee(id);
@@ -378,11 +382,16 @@
     var L=A.list,got=L.filter(function(x){return x.got}).length,tot=L.reduce(function(s,x){return s+x.r},0),won=L.filter(function(x){return x.got}).reduce(function(s,x){return s+x.r},0);
     var g={};L.forEach(function(x){(g[x.cat]=g[x.cat]||[]).push(x)});
     return '<div class="view v-ach vs">'+subHead('Succès')
-      +'<div class="achh"><div class="achr" style="--p:'+Math.round(got*100/Math.max(1,L.length))+'"><b>'+got+'</b><small>/ '+L.length+'</small></div><div><b>'+won.toLocaleString('fr-FR')+' '+coinI+' gagnés</b><small>'+(tot-won).toLocaleString('fr-FR')+' wax encore à gagner</small></div></div>'
+      +'<div class="achh"><div class="achr" style="--p:'+Math.round(got*100/Math.max(1,L.length))+'"><b>'+got+'</b><small>/ '+L.length+'</small></div><div><b>'+won.toLocaleString('fr-FR')+' '+coinI+' gagnés</b><small>'+(tot-won).toLocaleString('fr-FR')+' wax coins encore à gagner</small></div></div>'
+      +(A.ready()?'<button class="pbtn achall" data-act="achall">Tout récupérer · '+A.ready()+' succès</button>':'')
       +Object.keys(CAT).filter(function(k){return g[k]}).map(function(k){return '<h3 class="achc">'+CAT[k]+'</h3><div class="achl">'+g[k].map(function(x,i){var ok=x.v>=x.n;
         return '<div class="achi'+(x.got?' got':ok?' ok':'')+'" style="--i:'+i+';--p:'+Math.round(x.v*100/x.n)+'"><span class="achic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+IC[k]+'</svg></span><span class="acht"><b>'+esc(x.t)+'</b><small>'+esc(x.d)+'</small><span class="achb"><i></i></span></span>'
           +(x.got?'<span class="achd">'+ICON.check+'</span>':ok?'<button class="pbtn achg" data-act="achc" data-k="'+x.k+'">+'+x.r+' '+coinI+'</button>':'<span class="achv"><b>'+x.v.toLocaleString('fr-FR')+'</b>/'+x.n.toLocaleString('fr-FR')+'<small>+'+x.r+' '+coinI+'</small></span>')+'</div>'}).join('')+'</div>'}).join('')
       +'</div>'};
+  document.addEventListener('click',async function(e){var t=e.target.closest('[data-act="achall"]');if(!t)return;e.stopPropagation();t.disabled=true;
+    var ks=(A.list||[]).filter(function(x){return !x.got&&x.v>=x.n}).map(function(x){return x.k}),sum=0;
+    for(var i=0;i<ks.length;i++){var r;try{r=await CL.sb.rpc('ach_claim',{p_k:ks[i]})}catch(x){r={error:{message:'Connexion impossible, réessaie'}}}if(r.error){toast(r.error.message);break}sum+=r.data.coins||0;A.list=r.data.list}
+    await ECO.sync(true);render();if(sum&&window.rewardPop)rewardPop({coins:sum},1)},true);
   document.addEventListener('click',async function(e){var t=e.target.closest('[data-act="achc"]');if(!t)return;e.stopPropagation();t.disabled=true;
     var r;try{r=await CL.sb.rpc('ach_claim',{p_k:t.dataset.k})}catch(x){r={error:{message:'Connexion impossible, réessaie'}}}
     if(r.error){toast(r.error.message);t.disabled=false;return}
@@ -390,4 +399,16 @@
   /* recharge les succès quand on revient sur le Disquaire */
   document.addEventListener('click',function(e){var t=e.target.closest('[data-tab="shop"],[data-act="shs"][data-v="succes"],[data-act="shs"][data-v="hub"]');if(t)setTimeout(A.fetch,50)},true);
   if(window.ECO){var oA=ECO.afterSync;ECO.afterSync=function(){if(oA)oA.apply(this,arguments);A.fetch()}}
+})();
+
+/* ---------- styles préférés : 2 max, ×2,5 de chances dans les drops ---------- */
+(function(){
+  if(!window.CL||!CL.sb)return;
+  document.addEventListener('click',async function(e){var t=e.target.closest('[data-act="sty"]');if(!t)return;e.stopPropagation();
+    var g=t.dataset.v,cur=(S.styles||[]).slice(),i=cur.indexOf(g);
+    if(i>=0)cur.splice(i,1);else{if(cur.length>=2){toast('2 styles maximum');return}cur.push(g)}
+    var prev=S.styles;S.styles=cur;render();
+    var r;try{r=await CL.sb.rpc('style_set',{p_s:cur})}catch(x){r={error:{message:'Connexion impossible, réessaie'}}}
+    if(r.error){S.styles=prev;toast(r.error.message);render();return}
+    S.styles=r.data||cur;save();toast(cur.length?'Tes styles tombent 2,5× plus souvent':'Styles retirés')},true);
 })();

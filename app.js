@@ -1,3 +1,4 @@
+const STYLES=[['Tous','Tous'],['FR','Rap FR'],['US','Rap US'],['UK','Rap UK'],['Monde','Pop & +']];
 const SKINS=[['auto','Auto'],['graphite','Graphite'],['encre','Encre'],['aube','Aube'],['foret','Forêt'],['or','Or'],['brume','Brume'],['sable','Sable'],['lilas','Lilas'],['minuit','Minuit',1],['nacre','Nacre',1]];
 const SKPV={auto:'linear-gradient(135deg,#e8ebf1 50%,#0e0f12 50%)',graphite:'radial-gradient(circle at 20% 20%,rgba(90,110,190,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(40,130,115,.7),transparent 60%),#0e0f12',encre:'radial-gradient(circle at 20% 20%,rgba(70,90,230,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(40,170,220,.7),transparent 60%),#0a0e1c',aube:'radial-gradient(circle at 20% 20%,rgba(230,90,110,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(240,160,80,.7),transparent 60%),#160d10',foret:'radial-gradient(circle at 20% 20%,rgba(60,170,120,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(150,190,80,.6),transparent 60%),#0b120f',or:'radial-gradient(circle at 20% 20%,rgba(210,160,60,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(160,110,40,.7),transparent 60%),#12100a',brume:'radial-gradient(circle at 20% 20%,rgba(150,170,255,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,190,160,.9),transparent 60%),#e8ebf1',sable:'radial-gradient(circle at 20% 20%,rgba(230,150,110,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(150,180,140,.8),transparent 60%),#efe7db',lilas:'radial-gradient(circle at 20% 20%,rgba(170,140,255,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,170,210,.85),transparent 60%),#ebe7f4',minuit:'radial-gradient(circle at 20% 20%,rgba(140,80,255,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,60,140,.6),transparent 60%),#05040a',nacre:'radial-gradient(circle at 20% 20%,rgba(255,220,240,.95),transparent 60%),radial-gradient(circle at 90% 80%,rgba(200,240,255,.95),transparent 60%),#f6f4f1'};
 const COST=100,ALB_BONUS=250,ART_BONUS=500,GOLD_COST=900,DROP_COST=250,DROP_LIMIT=500;
@@ -115,7 +116,7 @@ const missReady0=()=>{const d=day();return todayMissions().some(m=>!d.cl[m.k]&&d
 const seasonReady0=()=>{const t=tierNow();for(let i=1;i<=t;i++){if(!S.sfree.includes(i))return true;if(hasPass()&&!S.sprem.includes(i))return true}return false};
 function toast(t){document.querySelectorAll('.toast').forEach(x=>x.remove());const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2400)}
 const I=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
-const ICON={list:I('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01" stroke-width="2.6"/>'),users:I('<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3 3 0 0 1 0 5.6M17.5 14.2A5 5 0 0 1 21 19"/>'),pen:I('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'),plus:I('<path d="M12 5v14M5 12h14"/>'),cam:I('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),bolt:I('<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'),sp:I('<circle cx="12" cy="12" r="9"/><path d="M7.5 9.5c3-.9 6.3-.6 9 .9M8 12.6c2.4-.6 4.9-.4 7 .7M8.6 15.5c1.8-.4 3.6-.3 5.2.5"/>'),gift:I('<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18M12 8v13M12 8c-1.5-3.5-5-4-5-1.5S12 8 12 8zm0 0c1.5-3.5 5-4 5-1.5S12 8 12 8z"/>'),search:I('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/>'),back:I('<path d="m15 5-7 7 7 7"/>'),x:I('<path d="M6 6l12 12M18 6 6 18"/>'),share:I('<path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>'),cal:I('<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>'),theme:I('<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>'),gem:I('<path d="M12 3 20 12 12 21 4 12z"/>'),gear:I('<path d="M10.3 3h3.4l.5 2.4 1.9.8 2-1.4 2.4 2.4-1.4 2 .8 1.9 2.4.5v3.4l-2.4.5-.8 1.9 1.4 2-2.4 2.4-2-1.4-1.9.8-.5 2.4h-3.4l-.5-2.4-1.9-.8-2 1.4-2.4-2.4 1.4-2-.8-1.9L3 13.7v-3.4l2.4-.5.8-1.9-1.4-2 2.4-2.4 2 1.4 1.9-.8z"/><circle cx="12" cy="12" r="3.2"/>'),help:I('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17.2v.3"/>'),star:I('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'),check:I('<path d="m5 12 5 5 9-10"/>'),grid:I('<rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/>'),bub:I('<circle cx="8.5" cy="9" r="4.5"/><circle cx="17" cy="15" r="3.5"/><circle cx="9.5" cy="18.5" r="2"/>'),recycle:I('<path d="M7 19H4.5a1.5 1.5 0 0 1-1.3-2.2L5 13.5M14 4.3l-1.3-2.2a1.5 1.5 0 0 0-2.6 0L8.3 5.4M17 13.5l1.8 3.3a1.5 1.5 0 0 1-1.3 2.2H11"/><path d="m11 16-2 3 2 3M3 9.5l2.9 1 1-2.9M20.2 7.5l-1 3-3-.9"/>'),play:I('<path d="M7 5v14l11-7z"/>'),pin:I('<path d="M12 17v5M8 3h8l-1 6 3 4H6l3-4z"/>'),swap:I('<path d="M7 7h12l-3-3M17 17H5l3 3"/>'),lock:I('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')};
+const ICON={list:I('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01" stroke-width="2.6"/>'),users:I('<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3 3 0 0 1 0 5.6M17.5 14.2A5 5 0 0 1 21 19"/>'),pen:I('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'),plus:I('<path d="M12 5v14M5 12h14"/>'),cam:I('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),bolt:I('<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'),sp:I('<circle cx="12" cy="12" r="9"/><path d="M7.5 9.5c3-.9 6.3-.6 9 .9M8 12.6c2.4-.6 4.9-.4 7 .7M8.6 15.5c1.8-.4 3.6-.3 5.2.5"/>'),gift:I('<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18M12 8v13M12 8c-1.5-3.5-5-4-5-1.5S12 8 12 8zm0 0c1.5-3.5 5-4 5-1.5S12 8 12 8z"/>'),search:I('<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/>'),back:I('<path d="m15 5-7 7 7 7"/>'),x:I('<path d="M6 6l12 12M18 6 6 18"/>'),share:I('<path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>'),cal:I('<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>'),theme:I('<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>'),gem:I('<path d="M12 3 20 12 12 21 4 12z"/>'),gear:I('<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>'),help:I('<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17.2v.3"/>'),star:I('<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'),check:I('<path d="m5 12 5 5 9-10"/>'),grid:I('<rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/>'),bub:I('<circle cx="8.5" cy="9" r="4.5"/><circle cx="17" cy="15" r="3.5"/><circle cx="9.5" cy="18.5" r="2"/>'),recycle:I('<path d="M7 19H4.5a1.5 1.5 0 0 1-1.3-2.2L5 13.5M14 4.3l-1.3-2.2a1.5 1.5 0 0 0-2.6 0L8.3 5.4M17 13.5l1.8 3.3a1.5 1.5 0 0 1-1.3 2.2H11"/><path d="m11 16-2 3 2 3M3 9.5l2.9 1 1-2.9M20.2 7.5l-1 3-3-.9"/>'),play:I('<path d="M7 5v14l11-7z"/>'),pin:I('<path d="M12 17v5M8 3h8l-1 6 3 4H6l3-4z"/>'),swap:I('<path d="M7 7h12l-3-3M17 17H5l3 3"/>'),lock:I('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')};
 
 /* ================= RENDUS D'OBJETS ================= */
 function waveSVG(c){if(!c.wv){const R=rng('wv'+c.id);let d='';for(let k=0;k<24;k++){const v=.16+.84*Math.abs(Math.sin(k*.45+R()*2.2))*(.45+.55*R());const h=v*40;d+=`M${k*4.4+2} ${(24-h/2).toFixed(1)}v${h.toFixed(1)}`}c.wv=d}
@@ -163,16 +164,16 @@ function evSheet(){closeMenu();menuPage='events';
   sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Événements"><div class="grab"></div><div class="shh"><h2>Événements</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
    <p class="cap" style="text-align:left">Pendant un événement, certains sons tombent plus souvent dans les drops. Touche un événement pour le détail.</p>
    <div class="evl">${EVENTS.filter(x=>evState(x)!=='past').sort((a,b)=>new Date(a.s)-new Date(b.s)).map((x,i)=>{const st=evState(x),f=x.fx;
-     const det=f.artists?`Les sons de ${f.artists.join(', ')} sortent ${f.mult} fois plus souvent.`:f.genre?`Les sons ${GEN[f.genre]||f.genre} sortent ${f.mult} fois plus souvent.`:f.divin?`Les chances de tomber sur un Divin sont multipliées par ${f.divin}.`:f.cost?`Les drops coûtent ${f.cost} wax au lieu de ${COST}.`:'';
+     const det=f.artists?`Les sons de ${f.artists.join(', ')} sortent ${f.mult} fois plus souvent.`:f.genre?`Les sons ${GEN[f.genre]||f.genre} sortent ${f.mult} fois plus souvent.`:f.divin?`Les chances de tomber sur un Divin sont multipliées par ${f.divin}.`:f.cost?`Les drops coûtent ${f.cost} wax coins au lieu de ${COST}.`:'';
      return `<div class="evc2${st==='live'?' live open':''}" style="--evbg:${x.bg}"><button class="evh" data-act="evx"><i class="sw2"></i><span><b>${x.n}</b><small>${x.d}</small></span><em>${st==='live'?`<i class="ldot"></i>En cours`:fdate(x.s)}</em></button><div class="evd"><p>${det}</p><p class="cap">${st==='live'?`Se termine dans <b data-until="${x.e}">${dur(new Date(x.e)-now())}</b>`:`Du ${fdate(x.s)} au ${fdate(x.e)}`}</p></div></div>`}).join('')}</div></div>`}
 /* poussière : explication */
 function dustHelp(){closeMenu();menuPage='dust';sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="La poussière"><div class="grab"></div><div class="shh"><h2>La poussière</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
   <div class="dsh"><span class="dsi">${dustI}</span><b>Tu en as ${S.dust.toLocaleString('fr-FR')}</b></div>
   <ol class="howl"><li><b>Recycle tes doubles</b><span>Chaque son en trop se transforme en poussière : ${DUST_GET.slice(0,5).map((v,i)=>`${RAR[i].n} ${v}`).join(', ')}.</span></li><li><b>Fabrique le son qui te manque</b><span>Ouvre un son que tu n’as pas et touche « Fabriquer ». Prix : ${DUST_COST.slice(0,5).map((v,i)=>`${RAR[i].n} ${v}`).join(', ')}.</span></li><li><b>Complète tes albums</b><span>C’est le moyen le plus sûr de finir un album sans compter sur la chance.</span></li></ol>
-  <div class="row"><button class="gbtn" data-act="recy">Recycler mes doubles</button><button class="pbtn" data-act="buyc" data-k="dust">+200 · 300 wax</button></div></div>`}
+  <div class="row"><button class="gbtn" data-act="recy">Recycler mes doubles</button><button class="pbtn" data-act="buyc" data-k="dust">+200 · 300 wax coins</button></div></div>`}
 /* récompenses récupérées */
-function rewardPop(g,n){const L=[g.coins>0&&[coinI,'+'+g.coins.toLocaleString('fr-FR'),'wax'],g.maxi>0&&['<i class="mini"></i>','+'+g.maxi,'drop'+(g.maxi>1?'s':'')],g.gold>0&&['<i class="mini gold"></i>','+'+g.gold,'Drop Or'],g.dust>0&&[dustI,'+'+g.dust,'poussière']].filter(Boolean);
-  dd.innerHTML=popHTML(`<div class="rwp"><div class="rwrays" aria-hidden="true"></div><span class="lbl">Bien joué</span><h2>Récompense récupérée</h2><div class="rwl">${L.map(([i,v,t],k)=>`<div class="rwi" style="--k:${k}"><span class="rwic">${i}</span><b>${v}</b><small>${t}</small></div>`).join('')}</div><button class="pbtn" data-act="ddclose">Super</button></div>`);
+function rewardPop(g,n){const L=[g.coins>0&&[coinI,'+'+g.coins.toLocaleString('fr-FR'),'wax coins'],g.maxi>0&&['<i class="mini"></i>','+'+g.maxi,'drop'+(g.maxi>1?'s':'')],g.gold>0&&['<i class="mini gold"></i>','+'+g.gold,'Drop Or'],g.dust>0&&[dustI,'+'+g.dust,'poussière']].filter(Boolean);
+  dd.innerHTML=popHTML(`<div class="rwp"><div class="rwrays" aria-hidden="true"></div>${L[0]?`<div class="rwhero">${L[0][0]}</div>`:''}<span class="lbl">Bien joué</span><h2>Récompense récupérée</h2><div class="rwl">${L.map(([i,v,t],k)=>`<div class="rwi" style="--k:${k}"><span class="rwic">${i}</span><b>${v}</b><small>${t}</small></div>`).join('')}</div><button class="pbtn" data-act="ddclose">Super</button></div>`);
   buzz([20,40,20])}
 /* illustrations du Shop */
 const ART={
@@ -190,7 +191,7 @@ function vOuvrir(){
   return `<div class="view v-open">${evp}
    <div class="obg" aria-hidden="true"><i class="og1"></i><i class="og2"></i><i class="og3"></i><span class="ogrid"></span><span class="orays"></span>${Array.from({length:14},(_,i)=>`<b style="--x:${(i*37)%100};--y:${(i*53)%100};--d:${(i%7)*.9}s;--s:${2+(i%3)}px"></b>`).join('')}</div><div class="ofx" aria-hidden="true"><i class="n1">♪</i><i class="n2">♫</i><i class="n3">♪</i><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>
    <div class="mbox" data-act="open" data-m="${free?'free':'pay'}" role="button" tabindex="0" aria-label="Ouvrir un drop"><div class="maxi"><div class="mv" style="--lc:${e?'#ff5f86':'#c9c3b5'}"></div><div class="ms glass"><b>Wax<br>Drop</b><span>Vol. 01</span><em>5 sons</em></div></div></div>
-   <div class="obar"><button class="pbtn" data-act="open" data-m="${free?'free':'pay'}" ${can?'':'disabled'}>${free?(S.bonus>0?`Ouvrir · ${S.bonus} offert${S.bonus>1?'s':''}`:'Ouvrir · Gratuit'):`Ouvrir · ${cst} ${coinI}`}</button><button class="gbtn sq" data-act="openall" aria-label="Ouverture express" ${can?'':'disabled'}>${ICON.bolt}</button></div>
+   <div class="obar"><button class="pbtn" data-act="open" data-m="${free?'free':'pay'}" ${can?'':'disabled'}>${free?(S.bonus>0?`Ouvrir · ${S.bonus} offert${S.bonus>1?'s':''}`:'Ouvrir · Gratuit'):`Ouvrir · ${cst} ${coinI}`}</button><button class="gbtn sq" data-act="openall" aria-label="Ouverture express" ${can?'':'disabled'}>${ICON.bolt}</button>${S.lastDrop&&C[S.lastDrop]?`<button class="gbtn sq" data-act="share" aria-label="Partager mon dernier drop">${ICON.share}</button>`:''}</div>
    <div class="odeco" aria-hidden="true">${Array.from({length:23},(_,i)=>`<i style="--d:${(i*.137%1).toFixed(2)};--h:${(.25+((i*7)%10)/14).toFixed(2)}"></i>`).join('')}</div>
    <p class="cap" id="freecap">${freeReady()?'Drop gratuit prêt':`Gratuit dans <b data-clock="${S.freeAt}">${clock(S.freeAt-now())}</b>`}</p>
    ${S.gold>0?`<button class="goldp" data-act="opengold" aria-label="Ouvrir un Drop Or">Drop Or ×${S.gold}</button>`:''}
@@ -200,9 +201,9 @@ function colList(){return ownedArtists().filter(A=>colG==='Tous'||A.g===colG).so
 function vCollection(){
   const L=colList(),tot=ownedArtists().length;
   return `<div class="view v-col"><div class="vh"><button class="gbtn sq" data-act="colv" data-v="${colView==='bulles'?'liste':'bulles'}" aria-label="${colView==='bulles'?'Voir en liste':'Voir en bulles'}">${colView==='bulles'?ICON.list:ICON.bub}</button>
-    <div class="seg glass sm">${['Tous','FR','US','UK','Monde'].map(g=>`<button data-act="colg" data-v="${g}" aria-pressed="${colG===g}">${g}</button>`).join('')}</div>
-    <button class="gbtn sq" data-act="recy" aria-label="Recycler les doubles" style="margin-left:auto">${ICON.recycle}</button><button class="gbtn sq" data-act="cat" aria-label="Tout le catalogue">${ICON.search}</button></div>
-    <div class="cntr"><p class="cnt2">${tot} artiste${tot>1?'s':''} · ${CARDS.filter(c=>own(c.id)).length}/${N} sons · ${dustI}${S.dust}</p><button class="crb" data-act="atelier" aria-label="Créer un son"><span>${ICON.plus}</span>Créer</button></div>
+    <div class="seg glass sm">${STYLES.map(([g,n])=>`<button data-act="colg" data-v="${g}" aria-pressed="${colG===g}">${n}</button>`).join('')}</div>
+    <button class="gbtn sq" data-act="cat" aria-label="Tout le catalogue">${ICON.search}</button></div>
+    <div class="cntr"><p class="cnt2"><b>${tot}</b> artiste${tot>1?'s':''} · <b>${CARDS.filter(c=>own(c.id)).length}</b>/${N} sons</p><button class="dpill" data-act="dusthelp" aria-label="Poussière : ${S.dust}">${dustI}<b>${S.dust.toLocaleString('fr-FR')}</b></button><button class="gbtn sq sm2" data-act="recy" aria-label="Recycler les doubles">${ICON.recycle}</button><button class="crb" data-act="atelier" aria-label="Créer un son"><span>${ICON.plus}</span>Créer</button></div>
     ${colView==='bulles'?`<div class="bubw glass" id="bub">${L.length?'':'<p class="empty">Ouvre un drop pour commencer</p>'}</div>`:`<div class="pgr" id="pgr"></div>`}</div>`;
 }
 function tickHTML(){mkInit();const L=S.mk.list.filter(l=>!l.mine).slice().sort((a,b)=>Math.abs(chg(b))-Math.abs(chg(a))).slice(0,8);if(!L.length)return '';
@@ -218,9 +219,9 @@ function vShop(){
   if(shopSub==='hub'){const ix=window.ECO?ECO.ix:0,pend=window.SOC?SOC.pending():0,nf=window.SOC?SOC.friends().length:0,on=hasPass();
     const an=window.ACH?ACH.ready():0;
     return `<div class="view v-shop v-hub"><div class="hgrid">
-     <button class="hb hb-jt" data-act="shs" data-v="jetons">${ART.packs}<span class="hbt"><b>Drops & wax</b><small>Drop Diamant · Mythique garanti</small></span></button>
+     <button class="hb hb-jt" data-act="shs" data-v="jetons">${ART.packs}<span class="hbt"><b>Drops & wax coins</b><small>Drop Diamant · Mythique garanti</small></span></button>
      <div class="hrow">
-      <button class="hb hb-ach" data-act="shs" data-v="succes">${ART.ach}${an?`<i class="hbn">${an}</i>`:''}<span class="hbt"><b>Succès</b><small>${an?`${an} à récupérer`:'Des wax à gagner'}</small></span></button>
+      <button class="hb hb-ach" data-act="shs" data-v="succes">${ART.ach}${an?`<i class="hbn">${an}</i>`:''}<span class="hbt"><b>Succès</b><small>${an?`${an} à récupérer`:'Des wax coins à gagner'}</small></span></button>
       <button class="hb hb-ps" data-act="passinfo">${ART.pass}<span class="hbt"><b>WaxDrop Pro</b><small>${on?'Actif':'4,99 € / mois'}</small></span></button>
      </div>
      <div class="hrow">
@@ -242,7 +243,7 @@ function vShop(){
      <div class="psl">${perks.map(([k,t,d],n)=>`<div class="psi" style="--i:${n}"><span class="psic psic-${k==='chart'?'star':k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${PI[k]}</svg></span><span><b>${t}</b><small>${d}</small></span></div>`).join('')}</div>
      <div class="pscmp"><div class="pch"><span></span><b>Gratuit</b><b class="pp">Pro</b></div>${[['Historique Bourse','24 h','30 jours'],['Stats détaillées','–','Oui'],['Drop gratuit','10 min','5 min'],['Drop offert / jour','–','1'],['Drop Or / semaine','–','1'],['Thèmes exclusifs','–','2']].map(([a,b,c])=>`<div class="pcr"><span>${a}</span><em>${b}</em><em class="pp">${c}</em></div>`).join('')}</div>
      <p class="cap">Paiement sécurisé par Stripe. Sans engagement, résiliable à tout moment.</p></div>`}
-  else{head=subHead('Drops & wax');body=`<div class="chips">${[['packs','Drops'],['jetons','Wax']].map(([k,n])=>`<button class="chip" data-act="jts" data-v="${k}" aria-pressed="${jetSub===k}">${n}</button>`).join('')}</div><div class="pgr" id="pgr"></div>${jetSub==='jetons'?'<p class="cap">Paiement sécurisé par Stripe · wax ajoutés en quelques secondes</p>':''}`}
+  else{head=subHead('Drops & wax coins');body=`<div class="chips">${[['packs','Drops'],['jetons','Wax coins']].map(([k,n])=>`<button class="chip" data-act="jts" data-v="${k}" aria-pressed="${jetSub===k}">${n}</button>`).join('')}</div><div class="pgr" id="pgr"></div>${jetSub==='jetons'?'<p class="cap">Paiement sécurisé par Stripe · wax coins ajoutés en quelques secondes</p>':''}`}
   return `<div class="view v-shop">${head}${body}</div>`;
 }
 function avHTML(cls){const ph=window.CL&&CL.avatar;const nm=(window.CL&&CL.pseudo)||'Moi';return `<span class="av me ${cls||''}" style="${ph?`--avg:url('${esc(ph)}') center/cover no-repeat,#333`:''}">${ph?'':esc(nm.slice(0,2).toUpperCase())}</span>`}
@@ -250,6 +251,7 @@ function vProfil(){
   const t=tierNow();const nm=(window.CL&&CL.pseudo)||'Ton profil';const nf=window.SOC?SOC.friends().length:0,pend=window.SOC?SOC.pending():0;const x=(S.xp||0)%TIER_XP;
   return `<div class="view v-prof vs"><div class="phero"><button class="avb" data-act="pedit" aria-label="Modifier le profil">${avHTML('tbig')}<i class="ped">${ICON.pen}</i></button><div class="pn"><b>${esc(nm)}</b><span>Niveau ${t} · ${score().toLocaleString('fr-FR')} pts</span><span class="plv" style="--p:${t>=TIERS?100:x}%"><i></i></span></div><button class="gbtn sq ghost" data-act="menu" aria-label="Réglages">${ICON.gear}</button></div>
    ${window.ECO?ECO.topHTML():''}
+   <div class="stys"><span class="styk">Tes styles <small>×2,5 de chances</small></span><div class="styl">${STYLES.slice(1).map(([g,n])=>`<button class="chip" data-act="sty" data-v="${g}" aria-pressed="${(S.styles||[]).includes(g)}">${n}</button>`).join('')}</div></div>
    <div class="pq"><button class="pqa pq-fr" data-act="gofriends"><span class="pqi">${ICON.users}</span><b>Amis</b><small>${nf?nf+' ami'+(nf>1?'s':''):'Aucun'}${pend?' · '+pend+' nouveau'+(pend>1?'x':''):''}</small></button><button class="pqa pq-inv" data-act="invite"><span class="pqi">${ICON.share}</span><b>Inviter</b><small>Partage ton lien</small></button><button class="pqa pq-top" data-act="prs" data-v="${profSub==='top'?'vitrine':'top'}" aria-pressed="${profSub==='top'}"><span class="pqi">${profSub==='top'?ICON.grid:ICON.star}</span><b>${profSub==='top'?'Vitrines':'Classement'}</b><small>${profSub==='top'?'Retour':'Top joueurs'}</small></button></div>
    ${profSub==='top'?`<div class="plist">${board().map(boardRow).join('')}</div>`:vVitrine()}</div>`;
 }
@@ -268,7 +270,7 @@ const rwShort=r=>r.gold?'Drop Or':r.maxi?`×${r.maxi}`:r.coins?r.coins:r.dust;
 function trackHTML(){const t=tierNow(),hp=hasPass();let h='';for(let i=1;i<=TIERS;i++){const {f,p}=seasonRewards(i);const un=i<=t,fc=S.sfree.includes(i),pc=S.sprem.includes(i);
     h+=`<div class="tcol${un?' un':''}${i===t+1?' nx':''}${i%10===0?' tbig':''}"><span class="tnum">${i}</span><button class="tcell${un&&!fc?' ready':''}" data-act="sclaim" data-i="${i}" data-t="f" ${un&&!fc?'':'disabled'} aria-label="Palier ${i}">${rwIcon(f)}<b>${rwShort(f)}</b>${fc?'<u>'+ICON.check+'</u>':''}</button><button class="tcell pr" data-act="sclaim" data-i="${i}" data-t="p" ${un&&!pc&&hp?'':'disabled'} aria-label="Palier ${i} premium">${rwIcon(p)}<b>${rwShort(p)}</b>${pc?'<u>'+ICON.check+'</u>':hp?'':'<u>'+ICON.lock+'</u>'}</button></div>`}
   return h}
-function vSaisonTab(){return `<div class="view v-sea vs">${subHead('Missions')}${vMissions()}<p class="cap">Chaque mission donne des wax et de l’XP. Fais les 3 pour gagner un drop bonus.</p></div>`}
+function vSaisonTab(){return `<div class="view v-sea vs">${subHead('Missions')}${vMissions()}<p class="cap">Chaque mission donne des wax coins et de l’XP. Fais les 3 pour gagner un drop bonus.</p></div>`}
 function vSaison(){return ''}
 const missReady=()=>missReady0()||(todayMissions().every(m=>day().cl[m.k])&&!day().cl.all);
 const seasonReady=()=>false;
@@ -285,7 +287,9 @@ const boardRow=x=>`<div class="brow${x.me?' me':''}${x.r<=3?' r'+x.r:''}"><span 
 const BB={nodes:[],raf:0,drag:null,calm:0,w:0,h:0};
 function initBub(){
   const el=$('bub');if(!el)return;const w=el.clientWidth,h=el.clientHeight;if(!w||!h)return;BB.w=w;BB.h=h;
-  const list=colList();if(!list.length)return;
+  let list=colList();if(!list.length)return;
+  const cap=Math.max(12,Math.min(32,Math.floor(w*h/4200)));let more=0;
+  if(list.length>cap){more=list.length-(cap-1);list=list.slice(0,cap-1)}
   const r0=list.map(A=>16+34*pct(A.ids)/100+3*Math.sqrt(A.ids.filter(own).length));const TOPS=S.top||[];const area=r0.reduce((a,r)=>a+Math.PI*r*r,0)||1;
   const k=Math.min(1.7,Math.sqrt(.45*w*h/area));
   BB.nodes=list.map((A,i)=>{const r=clamp(r0[i]*k,22,86);const p=pct(A.ids);const b=document.createElement('button');
@@ -294,6 +298,9 @@ function initBub(){
     b.innerHTML=`<span><b style="font-size:${Math.max(12,r*.4).toFixed(0)}px">${esc(A.ini)}</b>${r>=34?`<em>${p}%</em>`:''}</span>`;
     el.appendChild(b);const a=i*2.4,d=Math.sqrt(i)*17;
     const nd={el:b,A,r,x:clamp(w/2+Math.cos(a)*d,r,w-r),y:clamp(h/2+Math.sin(a)*d,r,h-r),vx:0,vy:0};b.style.transform=`translate3d(${nd.x-r}px,${nd.y-r}px,0)`;return nd});
+  if(more){const r=Math.max(30,Math.min(46,w/9));const b=document.createElement('button');b.className='bb bbmore';b.setAttribute('aria-label',`${more} autres artistes, voir la liste`);
+    b.style.cssText=`width:${2*r}px;height:${2*r}px`;b.innerHTML=`<span><b>+${more}</b><em>en liste</em></span>`;el.appendChild(b);
+    const nd={el:b,A:null,r,x:w/2,y:h-r-4,vx:0,vy:0};b.style.transform=`translate3d(${nd.x-r}px,${nd.y-r}px,0)`;BB.nodes.push(nd)}
   BB.calm=0;bKick();
 }
 function bStep(){
@@ -405,7 +412,7 @@ function pull(kind){
   if(window.SRV&&kind!=='drop')cards=SRV.cards.map(id=>C[id]).sort((a,b)=>a.r-b.r);
   const seen=new Set();
   const res=cards.map(c=>{const isNew=!own(c.id)&&!seen.has(c.id);seen.add(c.id);S.owned[c.id]=(S.owned[c.id]||0)+1;
-    let sp=null;if(c.r>=3&&Math.random()<[0,0,0,.6,.85,1][c.r]){const at=c.r-1-(c.r>=4&&Math.random()<.4?1:0);const opts=['scratch','pulse','fake','needle','glitch','bass'];if(c.r>=4)opts.push('faceb','blackout');if(at+2<=c.r)opts.push('rewind');if(c.r===5)opts.push('blackout','pulse');sp={at,kind:opts[Math.floor(Math.random()*opts.length)]}}
+    let sp=null;if(c.r>=3&&Math.random()<[0,0,0,.6,.85,1][c.r]){const at=c.r-1-(c.r>=4&&Math.random()<.4?1:0);const opts=['scratch','pulse','fake','needle','glitch','bass','vhs','pixel','lag'];if(c.r>=4)opts.push('faceb','blackout');if(at+2<=c.r)opts.push('rewind');if(c.r===5)opts.push('blackout','pulse');sp={at,kind:opts[Math.floor(Math.random()*opts.length)]}}
     return{c,isNew,sp}});
   const secret=!!PK[kind]||(window.SRV?SRV.secret:(kind!=='drop'&&Math.random()<1/40));const gain=window.SRV?SRV.gain:(secret&&kind==='std'?100:0);
   const nn=res.filter(x=>x.isNew).length;const d=day();d.open++;d.newT+=nn;addXP(20+10*nn);
@@ -514,6 +521,9 @@ function levelUp(){
   else if(sp==='fake'){op.classList.add('fake');stamp('',false);after(1000,()=>stamp('Encore',true));after(1350,()=>{op.classList.remove('fake');kick(true);applyLevel(to,true)});run(1350+D[to],fin)}
   else if(sp==='needle'){op.classList.add('ndl');stamp('Rayure',true);buzz([10,40,10]);after(1100,()=>{op.classList.remove('ndl');kick(true);applyLevel(to,true);if(to>=3)boom(to)});run(1100+D[to],fin)}
   else if(sp==='glitch'){op.classList.add('glt');stamp('Bug',true);after(900,()=>{op.classList.remove('glt');flash(RAR[to].c);kick(true);applyLevel(to,true);if(to>=3)boom(to)});run(900+D[to],fin)}
+  else if(sp==='vhs'){op.classList.add('vhs');stamp('VHS',true);after(1000,()=>{op.classList.remove('vhs');flash(RAR[to].c);kick(true);applyLevel(to,true);if(to>=3)boom(to)});run(1000+D[to],fin)}
+  else if(sp==='pixel'){op.classList.add('pxl');stamp('8-bit',true);buzz([8,30,8,30,8]);after(950,()=>{op.classList.remove('pxl');flash('#fff');kick(true);applyLevel(to,true);if(to>=3)boom(to)});run(950+D[to],fin)}
+  else if(sp==='lag'){op.classList.add('lag');stamp('Lag',true);after(1100,()=>{op.classList.remove('lag');flash(RAR[to].c);kick(true);applyLevel(to,true);if(to>=3)boom(to)});run(1100+D[to],fin)}
   else if(sp==='bass'){op.classList.add('bss');stamp('Drop',true);after(250,()=>buzz([20,60,20,60,40]));after(1300,()=>{op.classList.remove('bss');flash('#fff');kick(true);applyLevel(to,true);if(to>=3)boom(to)});run(1300+D[to],fin)}
   else if(sp==='pulse'){op.classList.add('pulse');stamp('',false);buzz(20);after(1150,()=>{op.classList.remove('pulse');kick(true);applyLevel(to,true)});run(1150+D[to],fin)}
   else if(sp==='blackout'){op.classList.add('bo');stamp('',false);after(700,()=>buzz(15));after(1350,()=>{op.classList.remove('bo');flash('#fff');kick(true);applyLevel(to,true)});run(1350+D[to],fin)}
@@ -558,11 +568,11 @@ function nextCard(){
     R.i++;R.lv=0;R.stage='spin';const op=$('op');op.classList.remove('out');applyLevel(0,false);trayFill();hint('Touche')});
 }
 function showSummary(){
-  hardStop();const R=reveal;if(!R)return;R.stage='sum';const nn=R.res.filter(x=>x.isNew).length;
+  hardStop();const R=reveal;if(!R)return;R.stage='sum';try{S.lastDrop=R.res.slice().sort((a,b)=>b.c.r-a.c.r)[0].c.id;save()}catch(_){}const nn=R.res.filter(x=>x.isNew).length;
   const again=canFree()||S.coins>=cost();
   ov.innerHTML=`<div class="ov sumv"><h2>${nn} nouveau${nn>1?'x':''}</h2>${R.gain?`<p class="gain">+${R.gain} ${coinI}</p>`:''}
     <div class="sumg${R.res.length<5?' s3':''}">${R.res.map((x,k)=>`<button class="it" style="animation-delay:${k*.06}s" data-act="see" data-id="${x.c.id}"><span class="tag${x.isNew?'':' dup'}">${x.isNew?'Nouveau':'Double'}</span>${tileHTML(x.c,{nocount:1,lock:false})}</button>`).join('')}</div>
-    <div class="row">${R.ul.length?`<button class="pbtn" data-act="unlocks">${R.ul.length} récompense${R.ul.length>1?'s':''}</button>`:`<button class="pbtn" data-act="done">Continuer</button>${again?'<button class="gbtn" data-act="again">Encore</button>':''}`}<button class="gbtn sq" data-act="share" aria-label="Partager">${ICON.share}</button></div></div>`;
+    <div class="row">${R.ul.length?`<button class="pbtn" data-act="unlocks">${R.ul.length} récompense${R.ul.length>1?'s':''}</button>`:`<button class="pbtn" data-act="done">Continuer</button>${again?'<button class="gbtn" data-act="again">Encore</button>':''}`}<button class="gbtn shr" data-act="share" aria-label="Partager mon drop">${ICON.share}Partager</button></div></div>`;
 }
 function showUnlock(i){
   hardStop();const R=reveal;if(!R)return;const x=R.ul[i];if(!x){closeOv();return}
@@ -590,7 +600,7 @@ function mkStep(t){
   const M=S.mk;const notes=[];
   for(const l of M.list){if(l.done)continue;
     if(t>=l.ends){l.done=true;const c=C[l.cid];
-      if(l.mine){if(l.lead){S.coins+=l.cur;notes.push(`${c.t} vendu ${l.cur} wax`)}else{S.owned[l.cid]=(S.owned[l.cid]||0)+1;notes.push(`${c.t} invendu, rendu`)}}
+      if(l.mine){if(l.lead){S.coins+=l.cur;notes.push(`${c.t} vendu ${l.cur} wax coins`)}else{S.owned[l.cid]=(S.owned[l.cid]||0)+1;notes.push(`${c.t} invendu, rendu`)}}
       else if(l.lead==='me'){S.owned[l.cid]=(S.owned[l.cid]||0)+1;notes.push(`Remporté : ${c.t}`);checkUnlocks()}
       continue}
     const prog=clamp((t-l.t0)/(l.ends-l.t0),0,1);
@@ -618,12 +628,12 @@ function mkPaint(){if(tab!=='shop'||shopSub!=='encheres')return;tickPaint();docu
   const b=el.querySelector('.lbtn');if(b&&!l.mine){if(l.lead==='me'){b.disabled=true;b.classList.add('on');b.textContent='En tête'}else{b.disabled=false;b.classList.remove('on');b.dataset.act='bid';b.dataset.l=l.id;b.innerHTML=`${nextBid(l)} ${coinI}`}}
   const ls=el.querySelector('.ls');if(ls)ls.textContent=l.lead?`${l.bids} offre${l.bids>1?'s':''}`:'Aucune offre'})}
 function bid(id){const l=S.mk.list.find(x=>x.id===id);if(!l||l.mine||l.lead==='me')return;const nb=nextBid(l);
-  if(S.coins<nb){toast('Pas assez de wax');return}S.coins-=nb;hp(l,nb);l.cur=nb;l.lead='me';l.myBid=nb;l.bids++;day().bid++;
+  if(S.coins<nb){toast('Pas assez de wax coins');return}S.coins-=nb;hp(l,nb);l.cur=nb;l.lead='me';l.myBid=nb;l.bids++;day().bid++;
   if(l.ends-now()<30e3)l.ends=now()+30e3;save();setCoins();mkPaint();toast('Tu es en tête')}
 function sellSheet(id){const c=C[id];if(!c||(S.owned[id]||0)<2)return;const V=valOf(c);const prices=[Math.round(V*.4),Math.round(V*.7),V];
   menuPage='sell';sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Vendre"><div class="grab"></div><div class="shh"><h2>Vendre</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
    <div class="sellh"><div class="sth">${tileHTML(c,{nocount:1})}</div><div><b>${esc(c.t)}</b><small>${esc(c.a)} · ${RAR[c.r].n}</small><small>Tu en as ${S.owned[id]}</small></div></div>
-   <span class="lbl">Prix de départ</span><div class="chips">${prices.map((p,i)=>`<button class="chip" data-act="sp" data-v="${p}" aria-pressed="${i===1}">${p} wax</button>`).join('')}</div>
+   <span class="lbl">Prix de départ</span><div class="chips">${prices.map((p,i)=>`<button class="chip" data-act="sp" data-v="${p}" aria-pressed="${i===1}">${p} wax coins</button>`).join('')}</div>
    <span class="lbl">Durée</span><div class="chips">${[[5,'5 min'],[15,'15 min'],[60,'1 h']].map(([m,n],i)=>`<button class="chip" data-act="sd" data-v="${m}" aria-pressed="${i===1}">${n}</button>`).join('')}</div>
    <p class="cap" style="text-align:left">Aucuns frais · ${S.mk.list.filter(l=>l.mine).length}/${mkMax()} ventes</p>
    <button class="pbtn" data-act="list" data-id="${id}">Mettre aux enchères</button></div>`}
@@ -660,7 +670,7 @@ function recyOne(id){const c=C[id];if((S.owned[id]||0)<2)return;S.owned[id]--;S.
 function craft(id){const c=C[id];const k=DUST_COST[c.r];if(own(id)||S.dust<k){toast('Pas assez de poussière');return}S.dust-=k;S.owned[id]=1;const ul=checkUnlocks();save();setCoins();toast(`${c.t} fabriqué${ul.length?' · récompense !':''}`);see(id);render()}
 
 /* ================= MISSIONS / SAISON ================= */
-function mClaim(k){const d=day();const m=MISS.find(x=>x.k===k);if(!m||d.cl[k]||(d[k]||0)<m.n)return;d.cl[k]=1;S.coins+=m.c;addXP(m.x);save();toast(`+${m.c} wax · +${m.x} XP`);render()}
+function mClaim(k){const d=day();const m=MISS.find(x=>x.k===k);if(!m||d.cl[k]||(d[k]||0)<m.n)return;d.cl[k]=1;S.coins+=m.c;addXP(m.x);save();toast(`+${m.c} wax coins · +${m.x} XP`);render()}
 function giveR(r){if(r.gold)S.gold+=r.gold;if(r.maxi)S.bonus+=r.maxi;if(r.coins)S.coins+=r.coins;if(r.dust)S.dust+=r.dust}
 function sClaim(i,t){i=+i;if(i>tierNow())return;const {f,p}=seasonRewards(i);
   if(t==='f'&&!S.sfree.includes(i)){S.sfree.push(i);giveR(f)}else if(t==='p'&&hasPass()&&!S.sprem.includes(i)){S.sprem.push(i);giveR(p)}else return;save();toast('Récompense ajoutée');render()}
@@ -669,9 +679,9 @@ function sClaim(i,t){i=+i;if(i>tierNow())return;const {f,p}=seasonRewards(i);
 function closeDD(){dd.innerHTML=''}
 function needCoins(miss){miss=Math.max(1,miss|0);closeMenu();menuPage='need';
   const best=SHOP.find(p=>p.n>=miss)||SHOP[SHOP.length-1];
-  sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Pas assez de wax"><div class="grab"></div><div class="shh"><h2>Il te manque ${miss.toLocaleString('fr-FR')} wax</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
+  sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Pas assez de wax coins"><div class="grab"></div><div class="shh"><h2>Il te manque ${miss.toLocaleString('fr-FR')} wax coins</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
    <div class="offers">${SHOP.map(p=>`<button class="offer${p===best?' best':''}" data-act="buy" data-k="${p.k}">${p===best?'<em>Conseillé</em>':p.tag?`<em>${p.tag}</em>`:''}<span class="stack">${coinI}${coinI}${coinI}</span><b>${p.n.toLocaleString('fr-FR')}</b><span class="price">${p.p}</span></button>`).join('')}</div>
-   <p class="cap" style="text-align:left">${freeReady()||S.bonus>0?'Tu as un drop gratuit à ouvrir.':`Prochain drop gratuit dans <b data-clock="${S.freeAt}">${clock(S.freeAt-now())}</b>.`} Les missions et les succès donnent aussi des wax.</p>
+   <p class="cap" style="text-align:left">${freeReady()||S.bonus>0?'Tu as un drop gratuit à ouvrir.':`Prochain drop gratuit dans <b data-clock="${S.freeAt}">${clock(S.freeAt-now())}</b>.`} Les missions et les succès donnent aussi des wax coins.</p>
    <button class="gbtn" data-act="gocoins">Voir toutes les offres</button></div>`}
 function passSheet(){closeMenu();closeDD();shopSub='pass';setTab('shop');return;menuPage='pass';
   sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass passsh" role="dialog" aria-label="WaxDrop Pro"><div class="grab"></div><div class="shh"><h2>WaxDrop Pro</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
@@ -691,18 +701,18 @@ function see(id){const c=C[id];if(!c)return;const n=S.owned[id]||0;const fav=S.f
   dd.innerHTML=popHTML(`<div class="big">${tileHTML(c,{nocount:1})}</div><div class="info glass" style="--rc:${RAR[c.r].c}"><span><i></i>${RAR[c.r].n}</span><button class="qte" id="qte" data-act="quote" data-id="${id}" aria-label="Voir à la Bourse"><span class="qld">Cours…</span></button>${c.y?`<span>${c.y}</span>`:''}<span>×${n}</span></div><p class="cap">${esc(c.al||'Single')}</p>${acts}`);if(window.ECO&&ECO.quote)ECO.quote(id)}
 function seeAl(k){const B=RW[k];if(!B)return;
   dd.innerHTML=popHTML(`<div class="big shine">${albumHTML(B)}</div><div class="trk glass">${B.ids.slice(0,9).map(id=>{const c=C[id];return `<div class="${own(id)?'':'no'}" style="--rc:${RAR[c.r].c}"><i></i><span>${esc(c.t)}</span><em>${own(id)?'✓':''}</em></div>`}).join('')}${B.ids.length>9?`<div><span class="muted">+ ${B.ids.length-9} autres</span></div>`:''}</div>
-   <p class="cap">${B.single?'Singles':S.ul[k]?'Complété':`+${ALB_BONUS} wax à la clé`}</p>`)}
+   <p class="cap">${B.single?'Singles':S.ul[k]?'Complété':`+${ALB_BONUS} wax coins à la clé`}</p>`)}
 function seePl(k){const A=RW[k];if(!A)return;
-  dd.innerHTML=popHTML(`<div class="big">${plaqueHTML(A)}</div><div class="info glass"><span>${A.ids.filter(own).length}/${A.ids.length} sons</span><span>${S.ul[k]?'Obtenu':`+${ART_BONUS} wax`}</span></div>`)}
+  dd.innerHTML=popHTML(`<div class="big">${plaqueHTML(A)}</div><div class="info glass"><span>${A.ids.filter(own).length}/${A.ids.length} sons</span><span>${S.ul[k]?'Obtenu':`+${ART_BONUS} wax coins`}</span></div>`)}
 function share(){const R=reveal;if(!R)return;const b=R.res.slice().sort((a,b)=>b.c.r-a.c.r)[0].c;const cap=`J'ai tiré ${b.t} de ${b.a} (${RAR[b.r].n}) sur WaxDrop #trackdex #rap`;
   dd.innerHTML=popHTML(`<div class="story" style="--rc:${RAR[b.r].c}"><p>WaxDrop</p><div class="sc">${tileHTML(b,{nocount:1,lock:false})}</div><div><h3>${RAR[b.r].n}</h3><p style="margin-top:4px">${esc(b.a)}</p></div></div><div class="row"><button class="pbtn" data-act="copycap" data-cap="${esc(cap)}">Copier la légende</button></div>`)}
 function buyFlow(k){
-  const item=k==='pass'?{n:'WaxDrop Pro',p:PASS_PRICE}:k==='starter'?{n:'Pack Starter',p:'2,99 €'}:(()=>{const s=SHOP.find(x=>x.k===k);return{n:`${s.n.toLocaleString('fr-FR')} wax`,p:s.p}})();
+  const item=k==='pass'?{n:'WaxDrop Pro',p:PASS_PRICE}:k==='starter'?{n:'Pack Starter',p:'2,99 €'}:(()=>{const s=SHOP.find(x=>x.k===k);return{n:`${s.n.toLocaleString('fr-FR')} wax coins`,p:s.p}})();
   dd.innerHTML=popHTML(`<div class="card2 glass"><span class="lbl">Paiement · démo</span><h2>${item.n}</h2><p class="price2">${item.p}</p><p class="cap">Aucun paiement réel ici. Dans l’app, le paiement passera par l’App Store, Google Play ou Stripe.</p><div class="row"><button class="gbtn" data-act="ddclose">Annuler</button><button class="pbtn" data-act="buyok" data-k="${k}">Confirmer</button></div></div>`)}
 function buyOk(k){
   if(k==='pass'){S.pass={on:true,since:today()};toast('WaxDrop Pro activé')}
   else if(k==='starter'){if(S.codes._starter){toast('Déjà acheté');closeDD();return}S.codes._starter=1;S.bonus+=3;S.gold+=1;S.coins+=300;toast('Starter ajouté')}
-  else{const s=SHOP.find(x=>x.k===k);if(s){S.coins+=s.n;toast(`+${s.n.toLocaleString('fr-FR')} wax`)}}
+  else{const s=SHOP.find(x=>x.k===k);if(s){S.coins+=s.n;toast(`+${s.n.toLocaleString('fr-FR')} wax coins`)}}
   save();closeDD();render()}
 function buyCoins(k){if(k==='nacre'||k==='diamant'){if(S.coins<PK[k].p){needCoins(PK[k].p-S.coins);return}openPack(k);return}const P={gold:GOLD_COST,lot5:450,dust:300}[k];if(S.coins<P){needCoins(P-S.coins);return}S.coins-=P;
   if(k==='gold'){S.gold++;toast('Drop Or ajouté')}else if(k==='lot5'){S.bonus+=5;toast('5 drops ajoutés')}else{S.dust+=200;toast('+200 poussière')}save();render()}
@@ -723,8 +733,13 @@ function mi(p,bg,icon,t,s){return `<button class="mi" data-act="${p[0]==='!'?p.s
 function renderMenu(){
   const e=liveEv();const top=t=>`<div class="grab"></div><div class="shh">${t?`<button class="gbtn" data-act="mpage" data-p="">${ICON.back}Menu</button>`:'<h2>Menu</h2>'}<button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>`;
   let b='';const p=menuPage;
-  if(!p){const sk=SKINS.find(s=>s[0]===S.set.skin);
-    b=top('')+`<div class="mlist">${mi('compte','#30a46c',ICON.check,'Compte',window.CL&&CL.user?(CL.pseudo||'Connecté'):'Sauvegarde en ligne')}${mi('events','#d6336c',ICON.cal,'Événements',e?'En cours':'')}${mi('!cat','#2b8a3e',ICON.search,'Catalogue',`${ARTISTS.length} artistes`)}${mi('themes','#5b6cff',ICON.theme,'Thèmes',sk?sk[1]:'')}${mi('rar','#e9a23b',ICON.gem,'Raretés','')}${mi('code','#ff7a3d',ICON.gift,'Code','')}${mi('how','#3a8dde',ICON.help,'Aide','')}${mi('set','#7c8494',ICON.gear,'Réglages','')}</div>`}
+  if(!p){const nm=(window.CL&&CL.pseudo)||'Invité';const on=hasPass();
+    b=top('')+`<div class="mhero">${avHTML('mav')}<div class="mhn"><b>${esc(nm)}</b><small>${window.CL&&CL.user?'Compte connecté':'Non connecté'}</small></div>${on?'<span class="pro big">Pro</span>':`<button class="mgo" data-act="gopass"><em class="pro">Pro</em>4,99 €</button>`}</div>
+     <h3 class="msec">Thème</h3>
+     <div class="skrow">${SKINS.map(([id,n,pp])=>{const lk=pp&&!on;return `<button class="skin2" data-act="${lk?'needpass':'skin'}" data-s="${id}" aria-pressed="${(S.set.skin||'auto')===id}"><span class="pv" style="--pv:${SKPV[id]}">${lk?'<u class="pro">Pro</u>':''}</span><small>${n}</small></button>`}).join('')}</div>
+     <div class="mtg"><div class="set"><span class="ic" style="--icbg:#7c5cff">${ICON.play}</span><b>Sons</b><button class="sw" role="switch" aria-checked="${S.set.snd!==false}" data-act="snd" aria-label="Sons"></button></div><div class="set"><span class="ic" style="--icbg:#30a46c">${ICON.bolt}</span><b>Mode économie</b><button class="sw" role="switch" aria-checked="${!!S.set.lite}" data-act="lite" aria-label="Mode économie"></button></div></div>
+     <div class="mgrid">${[['events','#d6336c',ICON.cal,'Événements',liveEv()?'En cours':''],['!cat','#2b8a3e',ICON.search,'Catalogue',`${ARTISTS.length} artistes`],['rar','#e9a23b',ICON.gem,'Raretés',''],['code','#ff7a3d',ICON.gift,'Code',''],['how','#3a8dde',ICON.help,'Aide',''],['compte','#4c6ef5',ICON.users,'Compte','']].map(([p2,bg,ic,t,sm])=>`<button class="mt" data-act="${p2[0]==='!'?p2.slice(1):'mpage'}" data-p="${p2}"><span class="ic" style="--icbg:${bg}">${ic}</span><b>${t}</b>${sm?`<small>${sm}</small>`:''}</button>`).join('')}</div>
+     <button class="mlink" data-act="mpage" data-p="set">Réinitialiser les réglages</button>`}
   else if(p==='compte'){b=top('Compte')+(window.CL?CL.page():'<p class="cap">Indisponible hors ligne</p>')}
   else if(p==='events'){b=top('Événements')+`<h2>Événements</h2>`+EVENTS.filter(x=>evState(x)!=='past').sort((a,b)=>new Date(a.s)-new Date(b.s)).map(x=>{const st=evState(x);return `<div class="evc"><i class="sw2" style="--evbg:${x.bg}"></i><div><b>${x.n}</b><small>${x.d}</small></div><em>${st==='live'?`<span data-until="${x.e}">${dur(new Date(x.e)-now())}</span>`:fdate(x.s)}</em></div>`}).join('')}
   else if(p==='themes'){b=top('Thèmes')+`<div class="skins">${SKINS.map(([id,n,pp])=>{const lk=pp&&!hasPass();return `<button class="skin" data-act="${lk?'needpass':'skin'}" data-s="${id}" aria-pressed="${S.set.skin===id}"><span class="pv" style="--pv:${SKPV[id]}"><i></i>${lk?'<u>Pass</u>':''}</span>${n}</button>`}).join('')}</div>`}
@@ -814,7 +829,7 @@ document.addEventListener('click',e=>{
     case 'mall':{const d=day();if(d.cl.all||todayMissions().some(m=>!d.cl[m.k]))break;if(window.ECO)ECO.op('mission_all').then(r=>{if(r){toast('+1 drop · +50 XP');render()}});break}
     case 'dusthelp':if(e.target.closest('.price')){buyCoins('dust');break}dustHelp();break;
     case 'passinfo':closeMenu();closeDD();shopSub='pass';setTab('shop');break;
-    case 'seahelp':closeMenu();menuPage='seah';sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Le pass de saison"><div class="grab"></div><div class="shh"><h2>Le pass de saison</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div><ol class="howl"><li><b>Gagne de l’XP</b><span>Chaque drop ouvert, chaque nouveau son, chaque mission et chaque album complété te donnent de l’XP.</span></li><li><b>Monte de palier</b><span>Tous les ${TIER_XP} XP, tu passes au palier suivant. Il y a ${TIERS} paliers jusqu’au ${new Date(SEASON_END).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}.</span></li><li><b>Récupère tes récompenses</b><span>Chaque palier débloque une récompense gratuite : wax, poussière, drops ou Drop Or. Avec le Pass, tu en as une deuxième à chaque palier.</span></li></ol><button class="pbtn" data-act="mclose">Compris</button></div>`;break;
+    case 'seahelp':closeMenu();menuPage='seah';sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Le pass de saison"><div class="grab"></div><div class="shh"><h2>Le pass de saison</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div><ol class="howl"><li><b>Gagne de l’XP</b><span>Chaque drop ouvert, chaque nouveau son, chaque mission et chaque album complété te donnent de l’XP.</span></li><li><b>Monte de palier</b><span>Tous les ${TIER_XP} XP, tu passes au palier suivant. Il y a ${TIERS} paliers jusqu’au ${new Date(SEASON_END).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}.</span></li><li><b>Récupère tes récompenses</b><span>Chaque palier débloque une récompense gratuite : wax coins, poussière, drops ou Drop Or. Avec le Pass, tu en as une deuxième à chaque palier.</span></li></ol><button class="pbtn" data-act="mclose">Compris</button></div>`;break;
     case 'gocoins':closeMenu();closeDD();tab='shop';shopSub='jetons';jetSub='jetons';setTab('shop');break;
     case 'mclaim':mClaim(t.dataset.k);break;
     case 'sclaim':sClaim(t.dataset.i,t.dataset.t);break;
@@ -830,7 +845,7 @@ document.addEventListener('click',e=>{
 document.addEventListener('submit',e=>{
   if(e.target.id!=='codef')return;e.preventDefault();
   const v=$('code').value.trim().toUpperCase(),m=$('cmsg');
-  if(window.ECO){ECO.call('code',{v}).then(r=>{if(r.error){m.textContent=r.error;m.style.color='#e5484d'}else{m.textContent=`+${r.coins} wax`;m.style.color='#30a46c'}});return}
+  if(window.ECO){ECO.call('code',{v}).then(r=>{if(r.error){m.textContent=r.error;m.style.color='#e5484d'}else{m.textContent=`+${r.coins} wax coins`;m.style.color='#30a46c'}});return}
   m.textContent='Connexion requise';m.style.color='#e5484d';
 });
 let qT=0;
@@ -844,7 +859,7 @@ document.addEventListener('pointerdown',e=>{
   const b=e.target.closest('.bb');if(!b)return;const node=BB.nodes.find(x=>x.el===b);if(!node)return;const r=$('bub').getBoundingClientRect();
   BB.drag={n:node,ox:e.clientX-r.left-node.x,oy:e.clientY-r.top-node.y,moved:0,lx:e.clientX,ly:e.clientY,id:e.pointerId,rect:r};try{b.setPointerCapture(e.pointerId)}catch(_){}bKick()});
 document.addEventListener('pointermove',e=>{const g=BB.drag;if(g&&e.pointerId===g.id){const n=g.n;n.x=e.clientX-g.rect.left-g.ox;n.y=e.clientY-g.rect.top-g.oy;n.vx=(e.clientX-g.lx)*.6;n.vy=(e.clientY-g.ly)*.6;g.lx=e.clientX;g.ly=e.clientY;g.moved+=Math.abs(n.vx)+Math.abs(n.vy);bKick()}},{passive:true});
-function pEnd(e){const g=BB.drag;if(g&&e.pointerId===g.id){BB.drag=null;if(g.moved<8&&e.type==='pointerup')pushPage({type:'artist',k:g.n.A.key});bKick()}}
+function pEnd(e){const g=BB.drag;if(g&&e.pointerId===g.id){BB.drag=null;if(g.moved<8&&e.type==='pointerup'){if(g.n.A)pushPage({type:'artist',k:g.n.A.key});else{colView='liste';try{localStorage.setItem('td-colv','liste')}catch(_){}render();return}}bKick()}}
 document.addEventListener('pointerup',pEnd);document.addEventListener('pointercancel',pEnd);
 let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{stopBub();if($('bub'))$('bub').querySelectorAll('.bb').forEach(x=>x.remove());layout()},160)});
 let tickN=0;setInterval(()=>{const ch=(++tickN%2===0)&&mkTick();if(ch&&tab==='shop'&&(shopSub==='encheres'||shopSub==='hub')&&!ov.innerHTML&&!sh.innerHTML)render();else mkPaint();

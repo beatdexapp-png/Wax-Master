@@ -7,21 +7,28 @@
 <meta name="description" content="Ouvre des drops, collectionne les sons de tes artistes préférés, complète les albums.">
 <meta name="theme-color" content="#0e0f12">
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" href="/icons/icon-192.png?v=2" type="image/png">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=2">
+<link rel="icon" href="/icons/icon-192.png?v=3" type="image/png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=3">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="WaxDrop">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://ptoncebyqakclxqnmlzk.supabase.co" crossorigin>
+<link rel="preconnect" href="https://i.scdn.co">
+<link rel="preconnect" href="https://coverartarchive.org">
+<link rel="preconnect" href="https://archive.org">
+<link rel="dns-prefetch" href="https://ia800000.us.archive.org">
+<link rel="preconnect" href="https://commons.wikimedia.org">
+<link rel="preconnect" href="https://upload.wikimedia.org">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@500;600&display=swap">
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
 <div id="app">
-  <header class="hd"><div class="wm"><i></i>WaxDrop</div><button class="jet glass" id="coins" data-act="gojet" aria-label="Wax, ouvrir la boutique"></button></header>
+  <header class="hd"><div class="wm"><i></i>WaxDrop</div><div class="hdr"><button class="jet glass" id="coins" data-act="gojet" aria-label="Wax coins, ouvrir la boutique"></button><button class="hdm glass" data-act="menu" aria-label="Menu et réglages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg></button></div></header>
   <main id="main"></main>
   <nav class="tabs glass" id="tabs">
     <button data-tab="collection"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="9" r="4.5"/><circle cx="17" cy="15" r="3.5"/><circle cx="9.5" cy="18.5" r="2"/></svg>Collection</button>
@@ -68,5 +75,6 @@
 <script src="/social.js"></script>
 <script src="/vendor/motion.js"></script>
 <script src="/fx.js"></script>
+<script src="/share.js"></script>
 </body>
 </html>
