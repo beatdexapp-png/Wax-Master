@@ -1619,3 +1619,7 @@ body.mo #main .view{animation:none}
 .pqa small{display:none}
 .pqa b{max-width:100%}
 .tcol .tcell.ready{animation:none;box-shadow:0 4px 14px rgba(255,194,61,.35)}
+/* création d'un son : texte et bouton restent visibles, croix pour quitter */
+@keyframes crtin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.crt{animation:crtin .5s ease-out 1.5s forwards}
+.crx2{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;z-index:2;background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.25)}

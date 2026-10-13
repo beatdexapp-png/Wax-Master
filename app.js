@@ -156,7 +156,7 @@ function atelier(){closeMenu();menuPage='atelier';
    <div class="chips">${[[-1,'Tous'],[0,'Commun'],[1,'Rare'],[2,'Ultra rare'],[3,'Légendaire'],[4,'Mythique'],[5,'Divin']].map(([v,n])=>`<button class="chip" data-act="atr" data-v="${v}" aria-pressed="${atR===v}">${n}</button>`).join('')}</div>
    <div class="atl">${miss.length?miss.map(c=>{const k=DUST_COST[c.r],ok=S.dust>=k;return `<button class="atc${ok?'':' no'}" data-act="atc" data-id="${c.id}">${tileHTML(c,{nocount:1,lock:false})}<span class="atp">${k} ${dustI}</span></button>`}).join(''):'<p class="cap">Tu as tous les sons de cette rareté</p>'}</div></div>`}
 function craftAnim(c){closeMenu();let p='';for(let k=0;k<26;k++){const a=k/26*360,d=38+Math.random()*30;p+=`<i style="--a:${a}deg;--d:${d}vw;animation-delay:${(Math.random()*.25).toFixed(2)}s"></i>`}
-  dd.innerHTML=`<div class="scrim" data-act="ddclose"></div><div class="crf" style="--rc:${RAR[c.r].c}"><div class="crp">${p}</div><div class="crc">${tileHTML(c,{nocount:1,lock:false})}</div><div class="crt"><span class="lbl">Son créé</span><b>${esc(c.t)}</b><small>${esc(c.a)} · ${RAR[c.r].n}</small><button class="pbtn" data-act="ddclose">Super</button></div></div>`;
+  dd.innerHTML=`<div class="scrim" data-act="ddclose"></div><div class="crf" style="--rc:${RAR[c.r].c}"><button class="gbtn sq crx2" data-act="ddclose" aria-label="Fermer">${ICON.x}</button><div class="crp">${p}</div><div class="crc">${tileHTML(c,{nocount:1,lock:false})}</div><div class="crt"><span class="lbl">Son créé</span><b>${esc(c.t)}</b><small>${esc(c.a)} · ${RAR[c.r].n}</small><button class="pbtn" data-act="ddclose">Continuer</button></div></div>`;
   buzz([15,30,60])}
 /* événements */
 function evSheet(){closeMenu();menuPage='events';
