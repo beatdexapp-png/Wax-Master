@@ -81,7 +81,7 @@ S.fav=(S.fav||[]).filter(id=>C[id]);S.spot=null;S.pass=null;if(S.mk&&S.mk.list)S
 if(S.freeAt>Date.now()+600e3)S.freeAt=Date.now()+600e3;
 if(!SKINS.some(s=>s[0]===S.set.skin))S.set.skin='auto';
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-let tab='ouvrir';try{const t=localStorage.getItem(KEY+'-t8');if(['ouvrir','collection','shop','saison','profil'].includes(t))tab=t}catch(e){}
+let tab='ouvrir';try{const t=localStorage.getItem(KEY+'-t8');if(['ouvrir','collection','shop','bourse','profil'].includes(t))tab=t}catch(e){}
 let seaSub='pass',colView='bulles',colG='Tous',shopSub='hub',jetSub='packs',mkSub='live',profSub='vitrine',catQ='',catScope='artistes',catG='Tous',catOwn='all',reveal=null,menuPage=null,resetArm=false,stack=[];
 
 /* ================= OUTILS ================= */
@@ -162,6 +162,7 @@ function rewardPop(g,n){const L=[g.coins>0&&[coinI,'+'+g.coins.toLocaleString('f
   buzz([20,40,20])}
 /* illustrations du Shop */
 const ART={
+ saison:`<svg class="hart ha-s" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="has" x1="0" x2="1"><stop offset="0" stop-color="#ffc23d"/><stop offset="1" stop-color="#ff5f86"/></linearGradient></defs><path class="hsp2" d="M-10 150 C60 140 90 110 140 100 S230 60 330 30" fill="none" stroke="url(#has)" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 16"/>${[[30,146,'c'],[90,126,'m'],[150,98,'g'],[210,80,'c'],[270,52,'m']].map(([x,y,k],n)=>`<g class="hst" style="--k:${n}"><circle cx="${x}" cy="${y}" r="17" fill="${n<2?'url(#has)':'rgba(255,255,255,.14)'}" stroke="rgba(255,255,255,.5)" stroke-width="2"/>${k==='c'?`<circle cx="${x}" cy="${y}" r="7" fill="#fff3c4"/>`:k==='m'?`<rect x="${x-5}" y="${y-7}" width="10" height="14" rx="2" fill="#e9ecff"/>`:`<rect x="${x-5}" y="${y-7}" width="10" height="14" rx="2" fill="#ffd76b"/>`}</g>`).join('')}<path d="M296 18l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z" fill="#ffd76b" class="hsz"/></svg>`,
  bourse:`<svg class="hart ha-b" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="hab" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#30c07a" stop-opacity=".45"/><stop offset="1" stop-color="#30c07a" stop-opacity="0"/></linearGradient></defs><g class="hgr">${[30,60,90,120,150].map(y=>`<line x1="0" x2="320" y1="${y}" y2="${y}"/>`).join('')}${[40,80,120,160,200,240,280].map(x=>`<line y1="0" y2="180" x1="${x}" x2="${x}"/>`).join('')}</g>${[[24,96,120,82,128],[44,90,104,70,118],[64,98,110,86,122],[84,76,94,60,104],[104,82,100,70,112],[124,64,86,52,94],[144,72,80,58,92],[164,50,70,40,80],[184,58,66,44,76],[204,40,56,30,64],[224,46,52,32,62],[244,30,44,20,52],[264,34,40,24,50],[284,22,30,12,38]].map(([x,o,c,h,l],k)=>`<g class="${k%3===1?'cd':'cu'}" style="--k:${k}"><line x1="${x+5}" x2="${x+5}" y1="${h}" y2="${l}"/><rect x="${x}" y="${Math.min(o,c)}" width="10" height="${Math.max(3,Math.abs(c-o))}" rx="1.5"/></g>`).join('')}<path class="hl" d="M0 128 C40 120 60 112 90 100 S150 80 180 66 S250 40 320 22"/><path d="M0 128 C40 120 60 112 90 100 S150 80 180 66 S250 40 320 22 V180 H0Z" fill="url(#hab)"/><circle class="hdot" cx="320" cy="22" r="5"/></svg>`,
  amis:`<svg class="hart ha-a" viewBox="0 0 160 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="haa1" x1="0" x2="1"><stop offset="0" stop-color="#ffc23d"/><stop offset="1" stop-color="#ff8a3d"/></linearGradient><linearGradient id="haa2" x1="0" x2="1"><stop offset="0" stop-color="#20c997"/><stop offset="1" stop-color="#1c7fd6"/></linearGradient></defs><circle cx="130" cy="30" r="46" fill="rgba(255,255,255,.12)"/><g class="hav"><circle cx="62" cy="62" r="24" fill="url(#haa1)"/><circle cx="62" cy="55" r="8" fill="rgba(255,255,255,.85)"/><path d="M48 76a14 12 0 0 1 28 0" fill="rgba(255,255,255,.85)"/></g><g class="hav h2"><circle cx="108" cy="78" r="24" fill="url(#haa2)"/><circle cx="108" cy="71" r="8" fill="rgba(255,255,255,.85)"/><path d="M94 92a14 12 0 0 1 28 0" fill="rgba(255,255,255,.85)"/></g><g class="hsw"><circle cx="86" cy="112" r="14" fill="#fff"/><path d="M79 109h12l-3-3M93 115H81l3 3" fill="none" stroke="#6d5cff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g><rect class="hcd" x="22" y="104" width="30" height="40" rx="6" fill="rgba(255,255,255,.9)"/><rect class="hcd h2" x="118" y="110" width="30" height="40" rx="6" fill="rgba(255,255,255,.75)"/></svg>`,
  pass:`<svg class="hart ha-p" viewBox="0 0 160 170" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="hap" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6d6"/><stop offset="1" stop-color="#f2c45a"/></linearGradient></defs><g class="hrays">${Array.from({length:12},(_,k)=>`<path d="M100 56 L${100+120*Math.cos(k*Math.PI/6)} ${56+120*Math.sin(k*Math.PI/6)} L${100+120*Math.cos(k*Math.PI/6+.18)} ${56+120*Math.sin(k*Math.PI/6+.18)}Z"/>`).join('')}</g><g class="htk"><path d="M52 30h96v24a10 10 0 0 0 0 20v24H52V74a10 10 0 0 0 0-20z" fill="url(#hap)" stroke="rgba(120,80,0,.25)"/><line x1="78" x2="78" y1="34" y2="94" stroke="rgba(120,80,0,.3)" stroke-dasharray="3 4"/><path d="M113 46l4.5 9.2 10.1 1.5-7.3 7.1 1.7 10.1-9-4.8-9 4.8 1.7-10.1-7.3-7.1 10.1-1.5z" fill="#c98a12"/></g><circle class="hsp" cx="40" cy="40" r="3" fill="#fff"/><circle class="hsp s2" cx="140" cy="20" r="2.5" fill="#fff"/></svg>`,
@@ -197,10 +198,11 @@ function bigChart(){const R=rng('ws'+Math.floor(now()/3600e3));let v=50,p=[];for
   return `<svg class="bch" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,100 ${p.join(' ')} 100,100"/><polyline points="${p.join(' ')}"/></svg>`}
 const subHead=(t,x)=>`<div class="vh shd2"><button class="gbtn sq" data-act="shs" data-v="hub" aria-label="Retour">${ICON.back}</button><h2>${t}</h2>${x||''}</div>`;
 function vShop(){
-  if(shopSub==='encheres')shopSub='cours';
+  if(shopSub==='encheres'||shopSub==='cours')shopSub='hub';
+  if(shopSub==='saison')return vSaisonTab();
   if(shopSub==='hub'){const ix=window.ECO?ECO.ix:0,pend=window.SOC?SOC.pending():0,nf=window.SOC?SOC.friends().length:0,on=hasPass();
     return `<div class="view v-shop v-hub"><div class="hgrid">
-     <button class="hb hb-ws" data-act="shs" data-v="cours">${ART.bourse}<span class="wix${ix>0?' gn':ix===0?' z':''}">CAC Son ${ix>0?'▲':ix<0?'▼':'='} ${fr(Math.abs(ix))} %</span><span class="hbt"><span class="hbk">Achète et vends tes sons</span><b>La Bourse</b><small><i class="ldot"></i>Cours en direct</small></span></button>
+     <button class="hb hb-sz" data-act="shs" data-v="saison">${ART.saison}${missReady()||seasonReady()?'<i class="hbn">!</i>':''}<span class="hbt"><span class="hbk">Saison 1 · Premiers sillons</span><b>Pass de saison</b><small>Palier ${tierNow()} / ${TIERS} · missions du jour</small><span class="hsb"><i style="width:${tierNow()>=TIERS?100:(S.xp||0)%TIER_XP}%"></i></span></span></button>
      <div class="hrow">
       <button class="hb hb-tr" data-act="shs" data-v="echanges">${ART.amis}${pend?`<i class="hbn">${pend}</i>`:''}<span class="hbt"><b>Amis & échanges</b><small>${pend?`${pend} nouveauté${pend>1?'s':''}`:nf?`${nf} ami${nf>1?'s':''} · échanges`:'Invite tes potes'}</small></span></button>
       <button class="hb hb-ps" data-act="passinfo">${ART.pass}<span class="hbt"><b>Pass</b><small>${on?'Actif':'5,99 € / mois'}</small></span></button>
@@ -230,6 +232,7 @@ function avHTML(cls){const ph=window.CL&&CL.avatar;const nm=(window.CL&&CL.pseud
 function vProfil(){
   const t=tierNow();const nm=(window.CL&&CL.pseudo)||'Ton profil';const nf=window.SOC?SOC.friends().length:0,pend=window.SOC?SOC.pending():0;const x=(S.xp||0)%TIER_XP;
   return `<div class="view v-prof"><div class="phero"><button class="avb" data-act="pedit" aria-label="Modifier le profil">${avHTML('tbig')}<i class="ped">${ICON.pen}</i></button><div class="pn"><b>${esc(nm)}</b><span>Palier ${t} · ${score().toLocaleString('fr-FR')} pts</span><span class="plv" style="--p:${t>=TIERS?100:x}%"><i></i></span></div><button class="gbtn sq ghost" data-act="menu" aria-label="Réglages">${ICON.gear}</button></div>
+   ${window.ECO?ECO.topHTML():''}
    <div class="pq"><button class="pqa pq-fr" data-act="gofriends"><span class="pqi">${ICON.users}</span><b>Amis</b><small>${nf?nf+' ami'+(nf>1?'s':''):'Aucun'}${pend?' · '+pend+' nouveau'+(pend>1?'x':''):''}</small></button><button class="pqa pq-inv" data-act="invite"><span class="pqi">${ICON.share}</span><b>Inviter</b><small>Partage ton lien</small></button><button class="pqa pq-top" data-act="prs" data-v="${profSub==='top'?'vitrine':'top'}" aria-pressed="${profSub==='top'}"><span class="pqi">${profSub==='top'?ICON.grid:ICON.star}</span><b>${profSub==='top'?'Vitrines':'Classement'}</b><small>${profSub==='top'?'Retour':'Top joueurs'}</small></button></div>
    ${profSub==='top'?`<div class="pgr" id="pgr"></div>`:vVitrine()}</div>`;
 }
@@ -249,7 +252,7 @@ function trackHTML(){const t=tierNow();let h='';for(let i=1;i<=TIERS;i++){const 
     h+=`<div class="tcol${un?' un':''}${i===t+1?' nx':''}${i%10===0?' tbig':''}"><button class="tcell pr" data-act="sclaim" data-i="${i}" data-t="p" ${un&&!pc&&hasPass()?'':'disabled'} aria-label="Palier ${i} premium">${rwIcon(p)}<b>${rwShort(p)}</b>${pc?'<u>'+ICON.check+'</u>':hasPass()?'':'<u>'+ICON.lock+'</u>'}</button><span class="tnum">${i}</span><button class="tcell${un&&!fc?' ready':''}" data-act="sclaim" data-i="${i}" data-t="f" ${un&&!fc?'':'disabled'} aria-label="Palier ${i}">${rwIcon(f)}<b>${rwShort(f)}</b>${fc?'<u>'+ICON.check+'</u>':''}</button></div>`}
   return h}
 function vSaisonTab(){const t=tierNow(),x=(S.xp||0)%TIER_XP;const dotM=missReady(),dotS=seasonReady();
-  return `<div class="view v-sea"><div class="shero"><span class="slv2" style="--p:${t>=TIERS?100:x}"><b>${t}</b><small>palier</small></span><div class="sinfo"><span class="skk">Saison 1 · Premiers sillons</span><b>${t>=TIERS?'Saison terminée, bravo':`${TIER_XP-x} XP avant le palier ${t+1}`}</b><span class="pbar" style="--p:${t>=TIERS?100:x}%"><i></i></span><small>Fin dans ${dur(new Date(SEASON_END)-now())}</small></div></div>
+  return `<div class="view v-sea">${subHead('Pass de saison')}<div class="shero"><span class="slv2" style="--p:${t>=TIERS?100:x}"><b>${t}</b><small>palier</small></span><div class="sinfo"><span class="skk">Saison 1 · Premiers sillons</span><b>${t>=TIERS?'Saison terminée, bravo':`${TIER_XP-x} XP avant le palier ${t+1}`}</b><span class="pbar" style="--p:${t>=TIERS?100:x}%"><i></i></span><small>Fin dans ${dur(new Date(SEASON_END)-now())}</small></div></div>
    <div class="seg glass">${[['pass','Pass de saison',dotS],['missions','Missions',dotM]].map(([k,n,dot])=>`<button data-act="seas" data-v="${k}" aria-pressed="${seaSub===k}">${n}${dot?'<i class="sdot"></i>':''}</button>`).join('')}</div>
    ${seaSub==='missions'?vMissions():`<div class="xpw"><button class="xph" data-act="seahelp"><span>Comment ça marche</span>${ICON.help}</button><div class="xpc"><span><i>${ICON.play}</i>Maxi <b>+20 XP</b></span><span><i>${ICON.star}</i>Nouveau son <b>+10</b></span><span><i>${ICON.check}</i>Mission <b>+40 à 80</b></span><span><i>${ICON.grid}</i>Album complet <b>+100</b></span></div></div>${(()=>{let n=0,nx=null;for(let i=1;i<=TIERS;i++){if(i<=t&&!S.sfree.includes(i))n++;if(!nx&&i>t)nx=i}const r=nx?seasonRewards(nx).f:null;
      return `<div class="sgrab${n?' on':''}"><div class="sgi">${n?`<span class="sgn">${n}</span>`:ICON.gift}</div><div class="sgt"><b>${n?`${n} récompense${n>1?'s':''} à récupérer`:'Tout est récupéré'}</b><small>${r?`Prochaine : ${rwLabel(r)} au palier ${nx}`:'Saison terminée'}</small></div>${n?`<button class="pbtn" data-act="sall">Tout récupérer</button>`:''}</div>`})()}<div class="trkw"><div class="trkl"><span class="pr">Premium</span><span>Gratuit</span></div><div class="strk" id="trk">${trackHTML()}</div></div>
@@ -299,9 +302,10 @@ function applySkin(){const sk=SKINS.find(s=>s[0]===S.set.skin);if(sk&&sk[2]&&!ha
 let coinShown=null,coinRaf=0;function setCoins(){const el=$('coins');if(!el)return;const to=S.coins;if(coinShown===null||S.set.lite||Math.abs(to-coinShown)>100000){coinShown=to;el.innerHTML=`${coinI}${to.toLocaleString('fr-FR')}`;return}if(to===coinShown)return;const from=coinShown,t0=performance.now();coinShown=to;if(to>from){const r=el.getBoundingClientRect(),f=document.createElement('div');f.className='cfly';f.innerHTML=`+${(to-from).toLocaleString('fr-FR')} ${coinI}`;f.style.top=(r.bottom+4)+'px';f.style.right=(innerWidth-r.right)+'px';document.body.appendChild(f);setTimeout(()=>f.remove(),1500)}el.classList.toggle('up',to>from);el.classList.toggle('dn',to<from);cancelAnimationFrame(coinRaf);const step=t=>{const k=Math.min(1,(t-t0)/450),v=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));el.innerHTML=`${coinI}${v.toLocaleString('fr-FR')}`;if(k<1)coinRaf=requestAnimationFrame(step);else el.classList.remove('up','dn')};coinRaf=requestAnimationFrame(step)}
 function render(){
   stopBub();applySkin();setCoins();
-  $('pdot').hidden=!(missReady()||seasonReady());const od=$('odot');if(od)od.hidden=!canFree();const sd=$('shdot');if(sd)sd.hidden=!(window.SOC&&SOC.pending()>0);
+  const od=$('odot');if(od)od.hidden=!canFree();const sd=$('shdot');if(sd)sd.hidden=!(missReady()||seasonReady()||window.SOC&&SOC.pending()>0);
   document.querySelectorAll('#tabs button[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));
-  main.innerHTML=tab==='ouvrir'?vOuvrir():tab==='collection'?vCollection():tab==='shop'?vShop():tab==='saison'?vSaisonTab():vProfil();
+  if(tab==='saison'){tab='shop';shopSub='saison'}
+  main.innerHTML=tab==='ouvrir'?vOuvrir():tab==='collection'?vCollection():tab==='shop'?vShop():tab==='bourse'?(window.vBourse?vBourse():''):vProfil();
   layout();
 }
 function layout(){
@@ -310,10 +314,10 @@ function layout(){
   if(tab==='shop'&&h){if(shopSub==='encheres')mkLayout();else if(shopSub==='echanges'){if(window.SOC)SOC.layout(h)}else if(shopSub==='jetons')pager(h,shopItems(),x=>x,{cellH:jetSub==='packs'?190:188,cols:2,gap:10})}
   if(tab==='profil'&&h){if(profSub==='vitrine'){vitInit();const F=S.fav.map(id=>C[id]);while(F.length<6)F.push(null);pager(h,F,c=>c?tileBtn(c):'<button class="fslot" data-act="vpick">'+ICON.plus+'<span>Ajouter</span></button>',{minT:96,cols:3})}
     else if(profSub==='top')pager(h,board(),boardRow,{cellH:54,minW:320,gap:6})}
-  if(tab==='saison'){const tk=$('trk');if(tk){const t=tierNow();const c=tk.children[Math.max(0,t-1)];if(c)tk.scrollLeft=Math.max(0,c.offsetLeft-tk.clientWidth/2+c.clientWidth/2)}}
+  if(tab==='shop'&&shopSub==='saison'){const tk=$('trk');if(tk){const t=tierNow();const c=tk.children[Math.max(0,t-1)];if(c)tk.scrollLeft=Math.max(0,c.offsetLeft-tk.clientWidth/2+c.clientWidth/2)}}
   if(stack.length)renderStack(true);
 }
-const TABS=['collection','shop','ouvrir','saison','profil'];
+const TABS=['collection','shop','ouvrir','bourse','profil'];
 function setTab(t){const d=TABS.indexOf(t)-TABS.indexOf(tab);main.style.setProperty('--dx',(d>0?28:d<0?-28:0)+'px');clearTimeout(setTab.t);setTab.t=setTimeout(()=>main.style.setProperty('--dx','0px'),400);tab=t;try{localStorage.setItem(KEY+'-t8',t)}catch(_){}render()}
 function shopItems(){
   if(jetSub==='jetons')return SHOP.map((p,i)=>`<button class="pk glass cpk cpk${i}" data-act="buy" data-k="${p.k}">${i===1?'<span class="rib">Populaire</span>':i===3?'<span class="rib best">Meilleure offre</span>':''}${p.tag?`<em>${p.tag}</em>`:''}<span class="cstack" aria-hidden="true">${Array.from({length:i+2},(_,k)=>`<i style="--k:${k}"></i>`).join('')}<s></s><s></s><s></s></span><b>${p.n.toLocaleString('fr-FR')}</b><small class="cpb">${p.tag?`dont ${Math.round(p.n-p.n/(1+parseInt(p.tag.replace(/\D/g,''))/100)).toLocaleString('fr-FR')} offerts`:'Pour bien démarrer'}</small><span class="price">${p.p}</span></button>`);
@@ -773,7 +777,7 @@ document.addEventListener('click',e=>{
     case 'jts':jetSub=t.dataset.v;render();break;
     case 'bid':bid(t.dataset.l);break;
     case 'sell':sellSheet(t.dataset.id);break;
-    case 'sellfrom':closeDD();closeStack();shopSub='cours';setTab('shop');if(window.ECO)ECO.see(t.dataset.id);break;
+    case 'sellfrom':closeDD();closeStack();setTab('bourse');if(window.ECO)ECO.see(t.dataset.id);break;
     case 'sp':case 'sd':t.parentElement.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c===t));break;
     case 'list':listCard(t.dataset.id);break;
     

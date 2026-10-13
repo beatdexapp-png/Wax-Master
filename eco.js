@@ -11,7 +11,7 @@
     if(!w)return;
     S.coins=w.coins;S.gold=w.gold;S.bonus=w.bonus;S.dust=w.dust;
     var o={};for(var k in (w.owned||{}))if(C[k])o[k]=w.owned[k];S.owned=o;
-    S.freeAt=+new Date(w.free_at)||0;S.xp=w.sxp||0;S.passUntil=w.pass_until?+new Date(w.pass_until):0;
+    S.freeAt=+new Date(w.free_at)||0;S.xp=w.sxp||0;S.passUntil=w.pass_until?+new Date(w.pass_until):0;S.top=Array.isArray(w.top)?w.top:[];S.topAt=w.top_at?+new Date(w.top_at):0;
     var cl=w.claims||{};S.ul=Object.assign({},cl.ul||{});S.sfree=(cl.sf||[]).slice();S.sprem=(cl.sp||[]).slice();S.codes=Object.assign({},cl.codes||{});
     var d=w.day||{};S.day=d.d===today()?Object.assign(fresh0(),d,{cl:Object.assign({},d.cl||{})}):fresh0();
     save();setCoins();
@@ -38,7 +38,7 @@
     try{r=await sb.rpc('eco',{p_op:'open',p_a:{kind:m==='pay'?'std':m,alk:m==='drop'?curDrop().A.key:null,v:window.CATV}})}
     catch(e){r={error:{message:'Connexion impossible'}}}
     finally{ECO.busy=false}
-    if(r.error){toast(r.error.message);return}
+    if(r.error){toast(/fetch|network/i.test(r.error.message)?'Connexion impossible, réessaie':r.error.message);return}
     if(reveal)return;
     var ids=(r.data.cards||[]).filter(function(id){return C[id]});
     if(!ids.length){ECO.apply(r.data.w);toast('Maxi ajouté, recharge l’app');return}
@@ -88,6 +88,35 @@
     })})();
   };
 
+  /* ---------- Ton top du moment : bonus de chance, modifiable une fois par semaine ---------- */
+  var TP={sel:[],q:''};
+  function topLeft(){return S.topAt&&(S.top||[]).length?Math.max(0,S.topAt+7*864e5-Date.now()):0}
+  ECO.topHTML=function(){
+    var L=(S.top||[]).map(function(k){return RW[k]}).filter(Boolean);
+    return '<button class="topc" data-act="topedit"><span class="topk">Ton top du moment</span>'+(L.length?'<span class="topa">'+L.map(function(A){return '<span class="av" style="--avg:'+esc(A.avg)+'">'+esc(A.ini)+'</span>'}).join('')+'</span><span class="topb">×3 chances</span>':'<span class="topn">Choisis tes 5 artistes et drop-les 3× plus souvent</span>')+'</button>';
+  };
+  function topList(){var q=TP.q.trim().toLowerCase();return ARTISTS.filter(function(A){return !q||A.n.toLowerCase().indexOf(q)>=0}).sort(function(a,b){var sa=TP.sel.indexOf(a.key)>=0,sb=TP.sel.indexOf(b.key)>=0;return sa!==sb?(sa?-1:1):a.n.localeCompare(b.n)}).slice(0,80)}
+  function topRows(){return topList().map(function(A){var on=TP.sel.indexOf(A.key)>=0;return '<button class="tpr'+(on?' on':'')+'" data-act="toppick" data-k="'+A.key+'"><span class="av" style="--avg:'+esc(A.avg)+'">'+esc(A.ini)+'</span><b>'+esc(A.n)+'</b><small>'+(GEN[A.g]||A.g)+'</small><i>'+(on?ICON.check:'')+'</i></button>'}).join('')}
+  function topSheet(){
+    closeMenu();menuPage='top';var left=topLeft();
+    if(left){var L=(S.top||[]).map(function(k){return RW[k]}).filter(Boolean);
+      sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Ton top du moment"><div class="grab"></div><div class="shh"><h2>Ton top du moment</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div><p class="cap" style="text-align:left">Leurs sons sortent 3 fois plus souvent dans tes maxis. La rareté ne change pas.</p><div class="tpl">'+L.map(function(A){return '<div class="tpr on"><span class="av" style="--avg:'+esc(A.avg)+'">'+esc(A.ini)+'</span><b>'+esc(A.n)+'</b><small>×3</small></div>'}).join('')+'</div><p class="tplock">'+ICON.lock+'Modifiable dans '+dur(left)+'</p></div>';return}
+    TP.sel=(S.top||[]).slice();TP.q='';
+    sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass topsh" role="dialog" aria-label="Ton top du moment"><div class="grab"></div><div class="shh"><h2>Ton top du moment</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div><p class="cap" style="text-align:left">Choisis jusqu’à 5 artistes que tu écoutes en ce moment : leurs sons sortent 3 fois plus souvent dans tes maxis. Tu pourras changer une fois par semaine.</p><div class="bxs"><input id="tpq" type="search" placeholder="Chercher un artiste" autocomplete="off"></div><div class="tpl" id="tpl">'+topRows()+'</div><button class="pbtn" id="tpgo2" data-act="topsave">'+topBtn()+'</button></div>';
+  }
+  function topBtn(){return TP.sel.length?'Valider · '+TP.sel.length+'/5':'Choisis au moins 1 artiste'}
+  ECO.topSheet=topSheet;
+  document.addEventListener('input',function(e){if(e.target.id==='tpq'){TP.q=e.target.value;var l=$('tpl');if(l)l.innerHTML=topRows()}});
+  document.addEventListener('click',function(e){
+    var t=e.target.closest('[data-act="topedit"],[data-act="toppick"],[data-act="topsave"]');if(!t)return;e.stopPropagation();
+    var a=t.dataset.act;
+    if(a==='topedit')topSheet();
+    else if(a==='toppick'){var k=t.dataset.k,i=TP.sel.indexOf(k);if(i>=0)TP.sel.splice(i,1);else if(TP.sel.length<5)TP.sel.push(k);else{toast('5 artistes maximum');return}
+      t.classList.toggle('on',TP.sel.indexOf(k)>=0);t.querySelector('i').innerHTML=TP.sel.indexOf(k)>=0?ICON.check:'';var b=$('tpgo2');if(b)b.textContent=topBtn()}
+    else if(a==='topsave'){if(!TP.sel.length)return;t.disabled=true;ECO.op('top_set',{artists:TP.sel}).then(function(r){t.disabled=false;if(!r)return;closeMenu();toast('Top du moment enregistré · ×3 chances');try{localStorage.setItem('td-top-ask','1')}catch(_){}render()})}
+  },true);
+  ECO.afterSync=function(){var asked=null;try{asked=localStorage.getItem('td-top-ask')}catch(_){}if(!asked&&!(S.top||[]).length&&!reveal&&!sh.innerHTML&&!ov.innerHTML){try{localStorage.setItem('td-top-ask','1')}catch(_){}setTimeout(topSheet,600)}};
+
   /* ---------- Bourse ---------- */
   function pct(v){v=+v||0;return (v>0?'+':v<0?'−':'')+fr(Math.abs(v))+' %'}
   function cls(v){return v>0?' bxup':v<0?' bxdn':''}
@@ -97,7 +126,7 @@
     var q=B.q.trim();
     var r=await sb.rpc('bourse_list',{p_f:B.f,p_q:q.length>1?q:null,p_r:null});
     B.load=false;
-    if(r.error){toast(r.error.message);return}
+    if(r.error){toast(/fetch|network/i.test(r.error.message)?'Connexion impossible, réessaie':r.error.message);return}
     B.list=(r.data.rows||[]).filter(function(x){return C[x.id]});
     B.list.forEach(function(x){LIVE[x.id]=LIVE[x.id]||{};LIVE[x.id].sp=(x.sp||[x.p]).map(Number);LIVE[x.id].real=(x.sp&&x.sp.length?+x.sp[x.sp.length-1]:x.p)});
     B.meta={buys:r.data.buys,sells:r.data.sells};
@@ -106,7 +135,7 @@
   }
   async function loadPf(){
     var r=await sb.rpc('bourse_portfolio');
-    if(r.error){toast(r.error.message);return}
+    if(r.error){toast(/fetch|network/i.test(r.error.message)?'Connexion impossible, réessaie':r.error.message);return}
     B.pf=r.data;B.pf.rows=(B.pf.rows||[]).filter(function(x){return C[x.id]});B.t=Date.now();paint();
   }
   var LIVE={};
@@ -153,34 +182,33 @@
         +(P.rows.length?P.rows.slice(0,150).map(pfRowHTML).join(''):'<p class="cap">Aucun son</p>');
     }
     var top='<div class="bxs"><input id="bxq" type="search" placeholder="Chercher un son ou un artiste" value="'+esc(B.q)+'" autocomplete="off"></div>'
-      +'<div class="chips">'+[['hot','Tendances'],['mine','Mes sons']].map(function(z){return '<button class="chip" data-act="bxf" data-v="'+z[0]+'" aria-pressed="'+(B.f===z[0]&&!B.q)+'">'+z[1]+'</button>'}).join('')+'</div>'
+      +'<div class="chips">'+[['hot','Tendances'],['top','Les plus chers'],['mine','Mes sons']].map(function(z){return '<button class="chip" data-act="bxf" data-v="'+z[0]+'" aria-pressed="'+(B.f===z[0]&&!B.q)+'">'+z[1]+'</button>'}).join('')+'</div>'
       +'<p class="cap bxcap">Achat au cours +5 %, revente −5 %. Encore '+B.meta.buys+' achat'+(B.meta.buys>1?'s':'')+' et '+B.meta.sells+' vente'+(B.meta.sells>1?'s':'')+' aujourd’hui. Mythiques et Divins : packs uniquement.</p>';
     return top+'<div id="bxl" class="bxlist">'+listHTML()+'</div>';
   }
   function listHTML(){
     if(!B.list)return '<p class="cap">Chargement…</p>';
     if(!B.list.length)return '<p class="cap">'+(B.q?'Aucun son trouvé':B.f==='mine'?'Aucun son':'Rien pour l’instant')+'</p>';
-    return B.list.map(rowHTML).join('');
+    return B.list.map(function(x,i){return B.f==='top'&&!B.q?rowHTML(x,i).replace('<span class="lth">','<span class="bxrk">'+(i+1)+'</span><span class="lth">'):rowHTML(x,i)}).join('');
   }
   function ixHTML(){var ix=ECO.ix;return '<span class="wix sm'+(ix>0?' gn':ix===0?' z':'')+'">CAC Son '+(ix>0?'▲':ix<0?'▼':'=')+' '+fr(Math.abs(ix))+' %</span>'}
   var BG='<div class="bxbg" aria-hidden="true"><i class="g1"></i><i class="g2"></i><svg class="bxcand" viewBox="0 0 400 200" preserveAspectRatio="none">'+(function(){var s='',y=120;for(var i=0;i<26;i++){var o=y,c=Math.max(30,Math.min(170,y+(Math.sin(i*1.7)*22+Math.cos(i*.6)*14))),hi=Math.min(o,c)-6-(i*7%11),lo=Math.max(o,c)+5+(i*5%9),up=c<o;s+='<line x1="'+(i*15+8)+'" x2="'+(i*15+8)+'" y1="'+hi+'" y2="'+lo+'" class="'+(up?'u':'d')+'"/><rect x="'+(i*15+4)+'" y="'+Math.min(o,c)+'" width="8" height="'+Math.max(2,Math.abs(c-o))+'" class="'+(up?'u':'d')+'"/>';y=c}return s})()+'</svg></div>';
   function view(){
-    var head=subHead('La Bourse',ixHTML());
+    var head='<div class="vh bxh"><h2>La Bourse</h2>'+ixHTML()+'</div>';
     var chips='<div class="chips">'+[['mkt','Marché'],['pf','Mon portefeuille']].map(function(z){return '<button class="chip" data-act="bxsub" data-v="'+z[0]+'" aria-pressed="'+(B.sub===z[0])+'">'+z[1]+'</button>'}).join('')+'</div>';
     if(Date.now()-B.t>60e3&&!B.load){if(B.sub==='pf')loadPf();else loadList()}
     if(!B.tk&&B.sub==='pf'&&!B.tkl){B.tkl=1;sb.rpc('bourse_list',{p_f:'hot',p_q:null,p_r:null}).then(function(r){if(!r.error){B.tk=(r.data.rows||[]).filter(function(x){return C[x.id]});ECO.ix=+r.data.ix||0;var t=$('bxtkw');if(t)t.innerHTML=tickerHTML()}})}
     return '<div class="view v-shop v-bx">'+BG+head+'<div id="bxtkw">'+tickerHTML()+'</div>'+chips+'<div class="bx" id="bxb">'+bodyHTML()+'</div></div>';
   }
   function paint(){
-    if(tab!=='shop'||shopSub!=='cours')return;
+    if(tab!=='bourse')return;
     var t=$('bxtkw');if(t)t.innerHTML=tickerHTML();
     var w=document.querySelector('.v-bx .wix');if(w)w.outerHTML=ixHTML();
     var l=$('bxl');
     if(B.sub==='mkt'&&l&&document.activeElement&&document.activeElement.id==='bxq'){l.innerHTML=listHTML();return}
     var b=$('bxb');if(b&&quiet())b.innerHTML=bodyHTML();
   }
-  var origShop=window.vShop;
-  window.vShop=function(){return shopSub==='cours'?view():origShop()};
+  window.vBourse=view;
 
   /* courbes vivantes : petites variations simulées autour du vrai cours */
   function gauss(){return (Math.random()+Math.random()+Math.random()-1.5)/1.5}
@@ -305,6 +333,6 @@
     B.q=e.target.value;clearTimeout(qT);
     qT=setTimeout(function(){if(B.q.trim().length===1)return;loadList()},350);
   });
-  setInterval(function(){if(!document.hidden&&tab==='shop'&&shopSub==='cours'&&quiet()&&!$('bxfull')){if(B.sub==='pf')loadPf();else loadList()}},60e3);
+  setInterval(function(){if(!document.hidden&&tab==='bourse'&&quiet()&&!$('bxfull')){if(B.sub==='pf')loadPf();else loadList()}},60e3);
   setTimeout(function(){if(CL.user)loadList()},4000);
 })();

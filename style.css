@@ -1314,3 +1314,39 @@ body.lite .op.charge .stage,body.lite .op.quake .opmid,body.lite .op.quake2 .opm
 .dsi .dust{width:28px;height:28px}
 .dsh b{font:700 16px var(--disp)}
 .pkx .pko,.pkx b{color:#fff}.pkx .pko{opacity:.62}
+
+/* Boutique : pass de saison */
+.hb-sz{background:linear-gradient(150deg,#2a1a3f,#5b2a4f 55%,#a8452e);color:#fff}
+.hb-sz::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(20,10,20,.7));pointer-events:none}
+.hb-sz .hbt{z-index:2}
+.ha-s .hst{animation:frb 3s ease-in-out infinite;animation-delay:calc(var(--k)*-.4s)}
+.ha-s .hsp2{animation:dash 6s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-180}}
+.ha-s .hsz{transform-box:fill-box;transform-origin:center;animation:spark 2.4s ease-in-out infinite}
+.hsb{display:block;width:160px;max-width:60vw;height:5px;border-radius:3px;background:rgba(255,255,255,.2);overflow:hidden;margin-top:6px}
+.hsb i{display:block;height:100%;background:linear-gradient(90deg,#ffc23d,#ff5f86);border-radius:3px}
+/* Bourse en onglet */
+.bxh{display:flex;align-items:center;gap:10px}
+.bxh h2{flex:1;margin:0;font:800 clamp(24px,7vw,30px)/1.1 var(--disp);color:#fff}
+.bxrk{flex:none;width:22px;text-align:center;font:800 15px var(--mono);color:#ffcf6b}
+.bxr:has(.bxrk){padding-left:6px}
+/* top du moment */
+.topc{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;border-radius:20px;text-align:left;background:linear-gradient(120deg,rgba(255,194,61,.22),rgba(255,95,134,.18));box-shadow:inset 0 0 0 1px rgba(255,194,61,.35)}
+.topk{width:100%;font:600 10.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--fg2)}
+.topa{display:flex}
+.topa .av{width:34px;height:34px;border-radius:50%;margin-right:-8px;background:var(--avg);box-shadow:0 0 0 2px var(--bg);display:grid;place-items:center;font:700 11px var(--disp);color:#fff}
+.topb{margin-left:auto;padding:4px 10px;border-radius:999px;background:#111216;color:#ffcf6b;font:700 12px var(--mono)}
+.topn{font-size:13.5px;font-weight:600}
+.topsh{max-height:calc(100% - 40px)}
+.tpl{display:flex;flex-direction:column;gap:6px;overflow-y:auto;min-height:0;flex:1;max-height:46vh}
+.tpr{display:flex;align-items:center;gap:10px;padding:8px 12px 8px 8px;border-radius:16px;background:var(--soft);text-align:left;flex:none}
+.tpr .av{width:38px;height:38px;border-radius:50%;flex:none;background:var(--avg);display:grid;place-items:center;font:700 12px var(--disp);color:#fff}
+.tpr b{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tpr small{font:500 11px var(--mono);color:var(--fg2)}
+.tpr i{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px rgba(127,127,127,.4);flex:none}
+.tpr i svg{width:14px;height:14px}
+.tpr.on{background:linear-gradient(120deg,rgba(255,194,61,.28),rgba(255,95,134,.2))}
+.tpr.on i{background:#111216;color:#ffcf6b;box-shadow:none}
+.tplock{display:flex;align-items:center;justify-content:center;gap:6px;font:600 13px var(--mono);color:var(--fg2)}
+.tplock svg{width:15px;height:15px}
+.hb-tr .hbt b{font-size:clamp(19px,5.6vw,24px);line-height:1.05}
