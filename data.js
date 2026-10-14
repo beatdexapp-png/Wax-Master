@@ -99,12 +99,12 @@ const RAW=[
 {n:'Central Cee',g:'UK',ini:'CC',sg:[['Doja',900,2022],['Sprinter',800,2023],['Band4Band',500,2024],['Commitment Issues',200,2022]]},
 ];
 const RAR=[
- {k:'commun',n:'Commun',min:0,drop:52,dup:10,c:'#aab3bd',d:'Moins de 50 M',v:20},
- {k:'rare',n:'Rare',min:50,drop:30,dup:20,c:'#5aa9ff',d:'50 à 200 M',v:45},
- {k:'ultra',n:'Ultra rare',min:200,drop:12,dup:40,c:'#c27dff',d:'200 à 500 M',v:100},
- {k:'legendaire',n:'Légendaire',min:500,drop:4.5,dup:80,c:'#ffc23d',d:'500 M à 1 Md',v:220},
- {k:'mythique',n:'Mythique',min:1000,drop:1.3,dup:150,c:'#ff5f86',d:'Plus d’1 Md',v:480},
- {k:'divin',n:'Divin',min:Infinity,drop:.12,dup:300,c:'#f3e3b5',d:'Classiques fondateurs',v:1000},
+ {k:'commun',n:'Commun',min:0,drop:62,dup:10,c:'#aab3bd',d:'Moins de 50 M',v:20},
+ {k:'rare',n:'Rare',min:50,drop:26,dup:20,c:'#5aa9ff',d:'50 à 200 M',v:45},
+ {k:'ultra',n:'Ultra rare',min:200,drop:8,dup:40,c:'#c27dff',d:'200 à 500 M',v:100},
+ {k:'legendaire',n:'Légendaire',min:500,drop:2.5,dup:80,c:'#ffc23d',d:'500 M à 1 Md',v:220},
+ {k:'mythique',n:'Mythique',min:1000,drop:.6,dup:150,c:'#ff5f86',d:'Plus d’1 Md',v:480},
+ {k:'divin',n:'Divin',min:Infinity,drop:.05,dup:300,c:'#f3e3b5',d:'Classiques fondateurs',v:1000},
 ];
 const GEN={FR:'Rap FR',US:'Rap US',UK:'Rap UK'};
 const GW={FR:1.6,US:1,UK:1};
