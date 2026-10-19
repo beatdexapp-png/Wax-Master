@@ -5,7 +5,7 @@ const RAW=[
 /* ---------- RAP FR ---------- */
 {n:'PNL',g:'FR',al:[
  {t:'Dans la légende',y:2016,b:45,tr:[['DA',230],['Naha',200],['Onizuka',190],["J'suis QLF",90],'Bené',['La vie est belle',150],["Jusqu'au dernier gramme",140],['Luz de luna',80],['Tchiki tchiki',110],'Kratos','Uranus','Dans la légende','Humain','Mira']},
- {t:'Deux frères',y:2019,b:50,tr:[['Deux frères',170],['Au DD',420],['Blanka',140],["91's",90],['Celsius',110],'Coco',["À l'ammoniaque",270],'Zoulou tchaing','Kuta Ubud','Shenmue','Cramés','Autre monde','Hasta la vista',['Chang',80]]}],
+ {t:'Deux frères',y:2019,b:50,tr:[['Deux frères',170],['Au DD',420],['Blanka',140],["91's",90],['Celsius',110],["À l'ammoniaque",270],'Zoulou tchaing','Kuta Ubud','Shenmue','Autre monde','Hasta la vista',['Chang',80]]}],
  sg:[['Le monde ou rien',150,2015]]},
 {n:'Nekfeu',g:'FR',al:[
  {t:'Feu',y:2015,b:28,tr:[['Martin Eden',45],['Égérie',65],['On verra',170],['Tempête',40],['Nique les clones, Pt. II',55],['Princesse',60],'Mauvaise graine','Être humain','Ma dope','Reuf','Risibles amours','Saturne']},
