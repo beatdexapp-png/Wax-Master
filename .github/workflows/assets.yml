@@ -1,0 +1,15 @@
+name: assets
+on:
+  push:
+    branches: [capture]
+    paths: ['cap/assets.txt']
+permissions:
+  contents: write
+jobs:
+  get:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir pub && while read n u; do [ -n "$n" ] && curl -sfL -o "pub/$n" "$u" && echo "ok $n"; done < cap/assets.txt; ls -la pub
+          cd pub && git init -q -b assets-out && git add . && git -c user.name=waxdrop-bot -c user.email=bot@waxdrop.fr commit -qm assets && git push -qf https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} assets-out

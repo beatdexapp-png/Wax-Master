@@ -2,6 +2,7 @@ name: capture
 on:
   push:
     branches: [capture]
+    paths-ignore: ['cap/assets.txt', '.github/workflows/assets.yml']
 permissions:
   contents: write
 jobs:
