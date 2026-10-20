@@ -10,6 +10,8 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: true, isMobile: true, locale: 'fr-FR' });
   const p = await ctx.newPage();
   p.on('pageerror', e => console.log('pageerror', e.message));
+  p.on('response', r => { const u = r.url(); if (/mzstatic|coverartarchive|scdn|wikimedia/.test(u) && r.status() >= 400) console.log('IMGFAIL', r.status(), u.slice(0, 160)) });
+  p.on('requestfailed', r => { const u = r.url(); if (/mzstatic|coverartarchive|scdn|wikimedia/.test(u)) console.log('IMGREQFAIL', r.failure() && r.failure().errorText, u.slice(0, 160)) });
   await p.route('**/*supabase.co/**', r => r.request().url().includes('/rpc/catalog_dump2') ? r.continue() : r.abort());
   // 1er passage : le catalogue est téléchargé et rangé, 2e passage : il est chargé au démarrage
   await p.goto(SITE); await p.waitForTimeout(25000);
@@ -22,8 +24,8 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
     const fam = ARTISTS.filter(A => FAMOUS.includes(A.n));
     fam.forEach((A, i) => A.ids.forEach((id, k) => { if ((k + i) % 3 !== 0) S.owned[id] = 1 }));
     S.coins = 2480; S.dust = 1340; S.set.lite = false; render();
-    const pick = (names, r) => { for (const n of names) { const c = CARDS.find(c => c.a === n && c.r === r && c.img); if (c) return c } return CARDS.find(c => c.r === r && c.img) };
-    const cs = [pick(['Damso','Jul','SCH','Gazo'], 2), pick(['Ninho','Freeze Corleone','Tiakola','Werenoi'], 3), pick(['Booba','PNL','Gazo','Niska'], 4), CARDS.find(c => c.a === 'Cherry Pie' && c.r === 5) || pick(['PNL'], 5)];
+    const pick = (names, r) => { const l = CARDS.filter(c => names.includes(c.a) && c.r === r && c.img).sort((a, b) => (b.s || 0) - (a.s || 0)); return l[0] || CARDS.find(c => c.r === r && c.img) };
+    const cs = [pick(['Gazo','Tiakola','Werenoi','SCH','Jul'], 2), pick(['Ninho','Freeze Corleone','Damso','Niska'], 3), pick(['PNL','Booba','Aya Nakamura','Gims'], 4), CARDS.find(c => c.a === 'Cherry Pie' && c.r === 5) || pick(['PNL'], 5)];
     cs.forEach(c => delete S.owned[c.id]);
     window.__cs = cs;
     const urls = new Set();
