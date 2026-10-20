@@ -8,6 +8,7 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
   fs.mkdirSync(OUT, { recursive: true });
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: true, isMobile: true, locale: 'fr-FR' });
+  await ctx.addInitScript(() => { window.__slow = 1; const st = window.setTimeout.bind(window), si = window.setInterval.bind(window); window.setTimeout = (f, d, ...a) => st(f, (d || 0) * window.__slow, ...a); window.setInterval = (f, d, ...a) => si(f, (d || 0) * window.__slow, ...a); });
   const p = await ctx.newPage();
   p.on('pageerror', e => console.log('pageerror', e.message));
   p.on('response', r => { const u = r.url(); if (/mzstatic|coverartarchive|scdn|wikimedia/.test(u) && r.status() >= 400) console.log('IMGFAIL', r.status(), u.slice(0, 160)) });
@@ -40,19 +41,23 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
   await p.evaluate(async urls => { const t0 = Date.now(); for (let k = 0; k < urls.length && Date.now() - t0 < 60000; k += 6) await Promise.all(urls.slice(k, k + 6).map(u => new Promise(r => { const i = new Image(); i.onload = i.onerror = r; i.src = u; setTimeout(r, 8000) }))) }, info.urls);
   await p.waitForTimeout(1500);
   const cdp = await ctx.newCDPSession(p);
-  let frames = [], rec = false;
-  cdp.on('Page.screencastFrame', async f => { if (rec) frames.push({ t: f.metadata.timestamp, d: f.data }); try { await cdp.send('Page.screencastFrameAck', { sessionId: f.sessionId }) } catch (e) { } });
-  await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 92, maxWidth: 780, maxHeight: 1688, everyNthFrame: 1 });
-  const sleep = ms => p.waitForTimeout(ms);
+  await cdp.send('Animation.enable');
+  const SLOW = 8;
+  let cur = 1;
   async function clip(name, fn) {
-    frames = []; rec = true; await fn(); rec = false;
+    // ralenti x8 : animations CSS et minuteries ralenties, captures nettes en 2x, puis remises à vitesse réelle
+    cur = SLOW; await cdp.send('Animation.setPlaybackRate', { playbackRate: 1 / SLOW }); await p.evaluate(s => window.__slow = s, SLOW);
+    const shots = []; let rec = true; const t0 = Date.now();
+    const loop = (async () => { while (rec) { const a = Date.now(); const d = await p.screenshot({ type: 'jpeg', quality: 90 }); shots.push({ t: (a - t0) / SLOW / 1000, d }) } })();
+    await fn(); rec = false; await loop;
+    cur = 1; await cdp.send('Animation.setPlaybackRate', { playbackRate: 1 }); await p.evaluate(() => window.__slow = 1);
     const dir = OUT + '/' + name; fs.mkdirSync(dir, { recursive: true });
-    if (!frames.length) { console.log(name, 'no frames'); return }
-    const t0 = frames[0].t, t1 = frames[frames.length - 1].t; const n = Math.floor((t1 - t0) * 30); let j = 0;
-    for (let k = 0; k <= n; k++) { const t = t0 + k / 30; while (j + 1 < frames.length && frames[j + 1].t <= t) j++; fs.writeFileSync(dir + '/' + String(k).padStart(4, '0') + '.jpg', Buffer.from(frames[j].d, 'base64')) }
-    await p.screenshot({ path: OUT + '/' + name + '.png' });
-    console.log(name, frames.length, 'raw ->', n + 1, 'frames', (t1 - t0).toFixed(1) + 's');
+    const T = shots[shots.length - 1].t; const n = Math.floor(T * 30); let j = 0;
+    for (let k = 0; k <= n; k++) { const t = k / 30; while (j + 1 < shots.length && shots[j + 1].t <= t) j++; fs.writeFileSync(dir + '/' + String(k).padStart(4, '0') + '.jpg', shots[j].d) }
+    fs.writeFileSync(OUT + '/' + name + '.png', shots[shots.length - 1].d);
+    console.log(name, shots.length, 'shots ->', n + 1, 'frames', T.toFixed(1) + 's');
   }
+  const sleep = ms => p.waitForTimeout(ms * cur);
   const waitImgs = () => p.evaluate(() => new Promise(r => { const urls = new Set(); document.querySelectorAll('*').forEach(e => { const m = getComputedStyle(e).backgroundImage.match(/url\("([^"]+)"\)/g); if (m) m.forEach(u => urls.add(u.slice(5, -2))) }); document.querySelectorAll('img').forEach(i => urls.add(i.src)); Promise.all([...urls].map(u => new Promise(q => { const i = new Image(); i.onload = i.onerror = q; i.src = u }))).then(r); setTimeout(r, 15000) }));
   // écrans préparés hors enregistrement pour que les images soient déjà là
   await p.evaluate(() => { colView = 'bulles'; setTab('collection') }); await waitImgs(); await sleep(1500);
