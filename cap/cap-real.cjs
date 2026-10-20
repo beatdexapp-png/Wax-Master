@@ -25,7 +25,8 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
     fam.forEach((A, i) => A.ids.forEach((id, k) => { if ((k + i) % 3 !== 0) S.owned[id] = 1 }));
     S.coins = 2480; S.dust = 1340; S.set.lite = false; render();
     const pick = (names, r) => { const l = CARDS.filter(c => names.includes(c.a) && c.r === r && c.img).sort((a, b) => (b.s || 0) - (a.s || 0)); return l[0] || CARDS.find(c => c.r === r && c.img) };
-    const cs = [pick(['Gazo','Tiakola','Werenoi','SCH','Jul'], 2), pick(['Ninho','Freeze Corleone','Damso','Niska'], 3), pick(['PNL','Booba','Aya Nakamura','Gims'], 4), CARDS.find(c => c.a === 'Cherry Pie' && c.r === 5) || pick(['PNL'], 5)];
+    const byT = (artist, title, r) => CARDS.find(c => c.a === artist && c.t === title) || pick([artist], r);
+    const cs = [byT('PNL', 'Au DD', 2), byT('Ninho', 'Tokarev', 3), byT('Freeze Corleone', 'Tse Chi Lop', 4), CARDS.find(c => c.a === 'Cherry Pie' && c.r === 5) || pick(['PNL'], 5)];
     cs.forEach(c => delete S.owned[c.id]);
     window.__cs = cs;
     const urls = new Set();
@@ -36,7 +37,7 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
   }, FAMOUS);
   console.log(JSON.stringify(info.cs), 'images', info.urls.length);
   // on attend que toutes les images soient chargées
-  await p.evaluate(urls => Promise.race([Promise.all(urls.map(u => new Promise(r => { const i = new Image(); i.onload = i.onerror = r; i.src = u }))), new Promise(r => setTimeout(r, 30000))]), info.urls);
+  await p.evaluate(async urls => { const t0 = Date.now(); for (let k = 0; k < urls.length && Date.now() - t0 < 60000; k += 6) await Promise.all(urls.slice(k, k + 6).map(u => new Promise(r => { const i = new Image(); i.onload = i.onerror = r; i.src = u; setTimeout(r, 8000) }))) }, info.urls);
   await p.waitForTimeout(1500);
   const cdp = await ctx.newCDPSession(p);
   let frames = [], rec = false;
@@ -56,12 +57,11 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
   // écrans préparés hors enregistrement pour que les images soient déjà là
   await p.evaluate(() => { colView = 'bulles'; setTab('collection') }); await waitImgs(); await sleep(1500);
   await clip('col', async () => { await p.evaluate(() => { setTab('ouvrir') }); await sleep(300); await p.evaluate(() => { setTab('collection') }); await sleep(3500); });
-  await p.evaluate(() => { stack = [{ type: 'cat' }]; renderStack() }); await waitImgs(); await sleep(1500);
-  await p.evaluate(() => { stack = []; renderStack() }); await sleep(400);
-  await clip('cat', async () => { await p.evaluate(() => { stack = [{ type: 'cat' }]; renderStack() }); await sleep(1300); for (let k = 0; k < 14; k++) { await p.mouse.wheel(0, 150); await sleep(130) } await sleep(1200); });
-  await p.evaluate(() => { const A = ARTISTS.find(a => a.n === 'Cherry Pie'); stack = [{ type: 'artist', k: A.key }]; renderStack() }); await waitImgs(); await sleep(1500);
-  await p.evaluate(() => { stack = []; renderStack() }); await sleep(400);
-  await clip('artist', async () => { await p.evaluate(() => { const A = ARTISTS.find(a => a.n === 'Cherry Pie'); stack = [{ type: 'artist', k: A.key }]; renderStack() }); await sleep(3000); });
+  for (const [nm, name] of [['Freeze Corleone', 'artFreeze'], ['Ninho', 'artNinho'], ['Cherry Pie', 'artCherry'], ['PNL', 'artPNL']]) {
+    await p.evaluate(nm => { const A = ARTISTS.find(a => a.n === nm); stack = [{ type: 'artist', k: A.key }]; renderStack() }, nm); await waitImgs(); await sleep(2000);
+    await p.evaluate(() => { stack = []; renderStack() }); await sleep(400);
+    await clip(name, async () => { await p.evaluate(nm => { const A = ARTISTS.find(a => a.n === nm); stack = [{ type: 'artist', k: A.key }]; renderStack() }, nm); await sleep(1800); for (let k = 0; k < 6; k++) { await p.mouse.wheel(0, 120); await sleep(140) } await sleep(800); });
+  }
   await p.evaluate(() => { stack = []; renderStack() }); await sleep(400);
   await clip('shop', async () => { await p.evaluate(() => { setTab('shop'); shopSub = 'hub'; render() }); await sleep(2800); });
   await clip('home', async () => { await p.evaluate(() => { setTab('ouvrir') }); await sleep(2800); });
