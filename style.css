@@ -1759,3 +1759,5 @@ body[data-skin="brume"] .mgo,body[data-skin="sable"] .mgo,body[data-skin="lilas"
 .rwp h2{font-size:18px}
 .rwp>.rwrays{position:absolute;pointer-events:none;z-index:0}
 .v-col .seg button{padding:0 9px}
+/* v29 : filtres de styles défilants */
+.seg.scr{max-width:100%;min-width:0;overflow-x:auto;scrollbar-width:none}.seg.scr::-webkit-scrollbar{display:none}.seg.scr button{flex:none}

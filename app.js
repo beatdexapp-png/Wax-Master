@@ -1,4 +1,4 @@
-const STYLES=[['Tous','Tous'],['FR','Rap FR'],['US','Rap US'],['UK','Rap UK'],['Monde','Pop & +']];
+let STYLES=[['Tous','Tous']];
 const SKINS=[['auto','Auto'],['graphite','Graphite'],['encre','Encre'],['aube','Aube'],['foret','Forêt'],['or','Or'],['brume','Brume'],['sable','Sable'],['lilas','Lilas'],['minuit','Minuit',1],['nacre','Nacre',1]];
 const SKPV={auto:'linear-gradient(135deg,#e8ebf1 50%,#0e0f12 50%)',graphite:'radial-gradient(circle at 20% 20%,rgba(90,110,190,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(40,130,115,.7),transparent 60%),#0e0f12',encre:'radial-gradient(circle at 20% 20%,rgba(70,90,230,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(40,170,220,.7),transparent 60%),#0a0e1c',aube:'radial-gradient(circle at 20% 20%,rgba(230,90,110,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(240,160,80,.7),transparent 60%),#160d10',foret:'radial-gradient(circle at 20% 20%,rgba(60,170,120,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(150,190,80,.6),transparent 60%),#0b120f',or:'radial-gradient(circle at 20% 20%,rgba(210,160,60,.85),transparent 60%),radial-gradient(circle at 90% 80%,rgba(160,110,40,.7),transparent 60%),#12100a',brume:'radial-gradient(circle at 20% 20%,rgba(150,170,255,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,190,160,.9),transparent 60%),#e8ebf1',sable:'radial-gradient(circle at 20% 20%,rgba(230,150,110,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(150,180,140,.8),transparent 60%),#efe7db',lilas:'radial-gradient(circle at 20% 20%,rgba(170,140,255,.9),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,170,210,.85),transparent 60%),#ebe7f4',minuit:'radial-gradient(circle at 20% 20%,rgba(140,80,255,.8),transparent 60%),radial-gradient(circle at 90% 80%,rgba(255,60,140,.6),transparent 60%),#05040a',nacre:'radial-gradient(circle at 20% 20%,rgba(255,220,240,.95),transparent 60%),radial-gradient(circle at 90% 80%,rgba(200,240,255,.95),transparent 60%),#f6f4f1'};
 const COST=100,ALB_BONUS=250,ART_BONUS=500,GOLD_COST=900,DROP_COST=250,DROP_LIMIT=500;
@@ -34,19 +34,21 @@ function cover(seed,r){
 /* ================= CONSTRUCTION ================= */
 const CARDS=[],ALBUMS=[],ARTISTS=[],C={},RW={};
 RAW.forEach(A=>{
-  const ak=A.k||slug(A.n);const art={key:ak,n:A.n,g:A.g,u:!!A.u,ids:[],albums:[],sgk:null,ini0:A.ini,type:'artiste'};
+  const ak=A.k||slug(A.n);const st=A.st||(A.g==='Monde'?'Pop':'Rap');const art={key:ak,n:A.n,g:A.g,st,u:!!A.u,ids:[],albums:[],sgk:null,ini0:A.ini,type:'artiste'};
   (A.al||[]).forEach(al=>{
-    const alk=al.k||('al-'+ak+'-'+slug(al.t));const alb={key:alk,t:al.t,a:A.n,ak,g:A.g,y:al.y,ids:[],p:!!al.p,type:'album'};
+    const alk=al.k||('al-'+ak+'-'+slug(al.t));const alb={key:alk,t:al.t,a:A.n,ak,g:A.g,st,y:al.y,ids:[],p:!!al.p,type:'album'};
     const R=rng('st|'+alk);
     al.tr.forEach(x=>{const [t,s0,id0,r0]=typeof x==='string'?[x,undefined]:x;const id=id0||ak+'--'+slug(t);if(C[id])return;
-      const s=s0===undefined?Math.max(1,Math.round(al.b*(.45+R()*.9))):s0;const c={id,t,a:A.n,ak,g:A.g,y:al.y,s,al:al.t,alk,r0};C[id]=c;CARDS.push(c);alb.ids.push(id);art.ids.push(id)});
+      const s=s0===undefined?Math.max(1,Math.round(al.b*(.45+R()*.9))):s0;const c={id,t,a:A.n,ak,g:A.g,st,y:al.y,s,al:al.t,alk,r0};C[id]=c;CARDS.push(c);alb.ids.push(id);art.ids.push(id)});
     ALBUMS.push(alb);art.albums.push(alk);RW[alk]=alb;
   });
-  if(A.sg&&A.sg.length){const sk='sg-'+ak;const sgl={key:sk,t:'Singles',a:A.n,ak,g:A.g,y:null,ids:[],single:true,type:'album'};
-    A.sg.forEach(([t,s,y,from,id0,r0])=>{const id=id0||ak+'--'+slug(t);if(C[id])return;const c={id,t,a:A.n,ak,g:A.g,y,s,al:from||null,alk:sk,r0};C[id]=c;CARDS.push(c);sgl.ids.push(id);art.ids.push(id)});
+  if(A.sg&&A.sg.length){const sk='sg-'+ak;const sgl={key:sk,t:'Singles',a:A.n,ak,g:A.g,st,y:null,ids:[],single:true,type:'album'};
+    A.sg.forEach(([t,s,y,from,id0,r0])=>{const id=id0||ak+'--'+slug(t);if(C[id])return;const c={id,t,a:A.n,ak,g:A.g,st,y,s,al:from||null,alk:sk,r0};C[id]=c;CARDS.push(c);sgl.ids.push(id);art.ids.push(id)});
     art.sgk=sk;RW[sk]=sgl}
   ARTISTS.push(art);RW[ak]=art;
 });
+/* styles musicaux présents (au moins 3 artistes), du plus fréquent au moins fréquent */
+{const n={};ARTISTS.forEach(A=>{n[A.st]=(n[A.st]||0)+1});STYLES=[['Tous','Tous'],...Object.keys(n).filter(k=>n[k]>=3).sort((a,b)=>n[b]-n[a]).map(k=>[k,k])]}
 const BASE=[[24,24],[36,24],[49,22],[61,20],[73,18],[84,15]];
 CARDS.forEach(c=>{c.r=c.r0!=null?c.r0:tierOf(c.s)});
 CARDS.sort((x,y)=>x.r-y.r||(x.s??0)-(y.s??0)||x.t.localeCompare(y.t));
@@ -197,7 +199,7 @@ function vOuvrir(){
    ${S.gold>0?`<button class="goldp" data-act="opengold" aria-label="Ouvrir un Drop Or">Drop Or ×${S.gold}</button>`:''}
   </div>`;
 }
-function colList(){return ownedArtists().filter(A=>colG==='Tous'||A.g===colG).sort((a,b)=>pct(b.ids)-pct(a.ids)||a.n.localeCompare(b.n))}
+function colList(){return ownedArtists().filter(A=>colG==='Tous'||A.st===colG).sort((a,b)=>pct(b.ids)-pct(a.ids)||a.n.localeCompare(b.n))}
 function vCollection(){
   const L=colList(),tot=ownedArtists().length;
   return `<div class="view v-col"><div class="vh"><button class="gbtn sq" data-act="colv" data-v="${colView==='bulles'?'liste':'bulles'}" aria-label="${colView==='bulles'?'Voir en liste':'Voir en bulles'}">${colView==='bulles'?ICON.list:ICON.bub}</button>
@@ -353,7 +355,7 @@ function shopItems(){
 function pushPage(p){stack.push(p);renderStack()}
 function popPage(){stack.pop();renderStack()}
 function closeStack(){stack=[];dt.innerHTML=''}
-function catResults(){const q=catQ.trim()?slug(catQ):'';const okG=x=>catG==='Tous'||x.g===catG;
+function catResults(){const q=catQ.trim()?slug(catQ):'';const okG=x=>catG==='Tous'||x.st===catG;
   if(catScope==='artistes')return ARTISTS.filter(A=>okG(A)&&(!q||A.q.includes(q))&&(catOwn==='all'||(catOwn==='own')===A.ids.some(own))).sort((a,b)=>a.n.localeCompare(b.n));
   if(catScope==='albums')return ALBUMS.filter(A=>okG(A)&&(!q||A.q.includes(q))&&(catOwn==='all'||(catOwn==='own')===!!S.ul[A.key])).sort((a,b)=>a.a.localeCompare(b.a)||(a.y||0)-(b.y||0));
   return CARDS.filter(c=>okG(c)&&(!q||c.q.includes(q))&&(catOwn==='all'||(catOwn==='own')===own(c.id))).slice().sort((a,b)=>b.r-a.r||a.t.localeCompare(b.t));
@@ -370,12 +372,12 @@ function renderStack(keep){
     h=`<div class="ph">${back}<div class="pn"><b>Catalogue</b><span><span id="catn">0</span> résultats</span></div></div>
      <input class="search glass" id="cq" type="search" placeholder="Artiste, album ou son" value="${esc(catQ)}" autocomplete="off" aria-label="Rechercher">
      <div class="vh wrap"><div class="seg glass">${[['artistes','Artistes'],['albums','Albums'],['titres','Sons']].map(([k,n])=>`<button data-act="cats" data-v="${k}" aria-pressed="${catScope===k}">${n}</button>`).join('')}</div>
-      <div class="seg glass sm">${['Tous','FR','US','UK','Monde'].map(g=>`<button data-act="catg" data-v="${g}" aria-pressed="${catG===g}">${g}</button>`).join('')}</div>
+      <div class="seg glass sm scr">${STYLES.map(([g,n])=>`<button data-act="catg" data-v="${g}" aria-pressed="${catG===g}">${n}</button>`).join('')}</div>
       <div class="seg glass sm">${[['all','Tout'],['own','À moi'],['miss','Manque']].map(([k,n])=>`<button data-act="cato" data-v="${k}" aria-pressed="${catOwn===k}">${n}</button>`).join('')}</div></div>
      <div class="pgr" id="spgr"></div>`;
   }else if(p.type==='artist'){const A=RW[p.k];const n=A.ids.filter(own).length,pc=pct(A.ids);
     p.items=[...A.albums.map(k=>RW[k]),...(A.sgk?[RW[A.sgk]]:[])];
-    h=`<div class="ph">${back}<span class="av" style="--avg:${esc(A.avg)}">${esc(A.ini)}</span><div class="pn"><b>${esc(A.n)}</b><span>${GEN[A.g]}${A.u?' · underground':''} · ${n}/${A.ids.length}</span></div><button class="ring" data-act="seepl" data-k="${A.key}" style="--p:${pc}" aria-label="Disque de platine"><span>${pc}%</span></button></div>
+    h=`<div class="ph">${back}<span class="av" style="--avg:${esc(A.avg)}">${esc(A.ini)}</span><div class="pn"><b>${esc(A.n)}</b><span>${esc(A.st)}${A.u?' · underground':''} · ${n}/${A.ids.length}</span></div><button class="ring" data-act="seepl" data-k="${A.key}" style="--p:${pc}" aria-label="Disque de platine"><span>${pc}%</span></button></div>
      <div class="pgr" id="spgr"></div>`;
   }else if(p.type==='album'){const B=RW[p.k];const n=B.ids.filter(own).length;
     h=`<div class="ph">${back}<button class="alth" data-act="seeal" data-k="${B.key}" style="background:${esc(B.art)}" aria-label="Pochette"></button><div class="pn"><b>${esc(B.t)}</b><span>${esc(B.a)}${B.y?' · '+B.y:''} · ${n}/${B.ids.length}${B.p?' · sélection':''}</span></div><span class="ring" style="--p:${pct(B.ids)}"><span>${pct(B.ids)}%</span></span></div>

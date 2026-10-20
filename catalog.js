@@ -8,24 +8,25 @@
   var G={'rap-fr':'FR','rap-us':'US','rap-uk':'UK','global':'Monde'};
   function merge(dump){
     if(!dump||!Array.isArray(dump.a)||typeof RAW==='undefined')return;
-    var have={};RAW.forEach(function(A){have[key(A.n)]=1});
+    var have={};RAW.forEach(function(A){have[key(A.n)]=A});
     dump.a.forEach(function(x){
       if(!x||!x.n)return;
       if(x.i)CATIMG.a[x.n]=x.i;
+      var kx=key(x.n);if(x.st&&have[kx])have[kx].st=x.st;
       (x.al||[]).forEach(function(b){if(b.c)CATIMG.b[x.n+'|'+b.t]=b.c});
       if(x.base)return;
       (x.sg||[]).forEach(function(s){if(s[6])CATIMG.s[x.n+'|'+s[0]]=s[6]});
       var al=(x.al||[]).filter(function(b){return b.tr&&b.tr.length}).map(function(b){return{k:b.k,t:b.t,y:+b.y||2020,b:40,tr:b.tr}});
       var sg=(x.sg||[]).map(function(s){return[s[0],s[1],+s[2]||2020,null,s[4],s[5]]});
       if(!al.length&&!sg.length)return;
-      if(have[key(x.n)]){
+      if(have[kx]){
         /* artiste déjà dans le jeu de base : on ajoute ses autres albums et singles, sans doublons */
-        var R0=RAW.find(function(A){return key(A.n)===key(x.n)});if(!R0)return;
+        var R0=have[kx];
         var tk={},ak={};(R0.al||[]).forEach(function(b){ak[key(b.t)]=b;(b.tr||[]).forEach(function(t){tk[key(typeof t==='string'?t:t[0])]=1})});(R0.sg||[]).forEach(function(t){tk[key(t[0])]=1});
         al.forEach(function(b){b.tr=b.tr.filter(function(t){if(tk[key(t[0])])return false;tk[key(t[0])]=1;return true});if(!b.tr.length)return;var same=ak[key(b.t)];if(same){same.tr=(same.tr||[]).concat(b.tr)}else{R0.al=R0.al||[];R0.al.push(b)}});
         sg.forEach(function(t){if(tk[key(t[0])])return;tk[key(t[0])]=1;R0.sg=R0.sg||[];R0.sg.push(t)});
         return}
-      RAW.push({n:x.n,k:x.k,g:G[x.s]||'Monde',al:al,sg:sg});
+      RAW.push({n:x.n,k:x.k,g:G[x.s]||'Monde',st:x.st||null,al:al,sg:sg});have[kx]=RAW[RAW.length-1];
     });
     window.CATV=dump.v||null;
   }
