@@ -255,6 +255,7 @@ function vProfil(){
    ${window.ECO?ECO.topHTML():''}
    <div class="stys"><span class="styk">Tes styles <small>×2,5 de chances</small></span><div class="styl">${STYLES.slice(1).map(([g,n])=>`<button class="chip" data-act="sty" data-v="${g}" aria-pressed="${(S.styles||[]).includes(g)}">${n}</button>`).join('')}</div></div>
    <div class="pq"><button class="pqa pq-fr" data-act="gofriends"><span class="pqi">${ICON.users}</span><b>Amis</b><small>${nf?nf+' ami'+(nf>1?'s':''):'Aucun'}${pend?' · '+pend+' nouveau'+(pend>1?'x':''):''}</small></button><button class="pqa pq-inv" data-act="invite"><span class="pqi">${ICON.share}</span><b>Inviter</b><small>Partage ton lien</small></button><button class="pqa pq-top" data-act="prs" data-v="${profSub==='top'?'vitrine':'top'}" aria-pressed="${profSub==='top'}"><span class="pqi">${profSub==='top'?ICON.grid:ICON.star}</span><b>${profSub==='top'?'Vitrines':'Classement'}</b><small>${profSub==='top'?'Retour':'Top joueurs'}</small></button></div>
+   <button class="statb glass" data-act="mystats"><span class="pqi">${ICON.gem}</span><span><b>Mes stats</b><small>Drops ouverts, chance, meilleur tirage…</small></span><i>›</i></button>
    ${profSub==='top'?`<div class="plist">${board().map(boardRow).join('')}</div>`:vVitrine()}</div>`;
 }
 function vitInit(){if(!Array.isArray(S.vits)||!S.vits.length)S.vits=[{n:'Ma vitrine',ids:(S.fav||[]).slice(0,6)}];S.vits.forEach(v=>{v.ids=(v.ids||[]).filter(id=>C[id]&&own(id)).slice(0,6)});S.vi=Math.min(S.vi|0,S.vits.length-1);S.fav=S.vits[S.vi].ids}

@@ -53,7 +53,8 @@
     if(f.status==='accepted')b='<button class="lbtn" data-act="trplayer" data-p="'+esc(f.pseudo)+'">'+ICON.swap+'Échanger</button>';
     else if(f.dir==='in')b='<span class="acts"><button class="lbtn on" data-act="fracc" data-id="'+f.id+'">Accepter</button><button class="lbtn ghost" data-act="frdec" data-id="'+f.id+'">Refuser</button></span>';
     else b='<span class="acts"><span class="st">En attente</span><button class="lbtn ghost" data-act="frdel" data-id="'+f.id+'">Annuler</button></span>';
-    return '<div class="prow fr">'+avH(f.avatar,f.pseudo)+'<b>'+esc(f.pseudo||'Joueur')+'</b><em>'+(f.score||0).toLocaleString('fr-FR')+' pts</em>'+b+'</div>';
+    var who=avH(f.avatar,f.pseudo)+'<b>'+esc(f.pseudo||'Joueur')+'</b><em>'+(f.score||0).toLocaleString('fr-FR')+' pts</em>';
+    return '<div class="prow fr">'+(f.status==='accepted'?'<button class="frwho" data-act="frstats" data-p="'+esc(f.pseudo)+'" aria-label="Stats de '+esc(f.pseudo||'Joueur')+'">'+who+'</button>':who)+b+'</div>';
   }
   SOC.layout=function(h){
     if(SOC.sub==='amis'){

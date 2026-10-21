@@ -32,7 +32,7 @@
   }
   /* Le catalogue (plusieurs Mo) est rangé dans IndexedDB, sans la limite d'environ 5 Mo du stockage local de Safari.
      Le reste de l'app ne démarre qu'une fois le catalogue chargé, pour que tous les artistes soient là dès l'ouverture. */
-  var REST=['/app.js','/vendor/supabase.js','/cloud.js','/eco.js','/social.js','/vendor/motion.js','/fx.js','/share.js'];
+  var REST=['/app.js','/vendor/supabase.js','/cloud.js','/eco.js','/social.js','/vendor/motion.js','/fx.js','/share.js','/stats.js'];
   var started=false;
   function boot(){if(started)return;started=true;REST.forEach(function(src){var el=document.createElement('script');el.src=src;el.async=false;document.body.appendChild(el)});
     setTimeout(refresh,4000)}
