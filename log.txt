@@ -1,0 +1,12 @@
+cards 67545 artists 891
+[["PNL","Au DD",2,true],["Ninho","Tokarev",3,true],["Freeze Corleone","Tse Chi Lop",4,true],["Cherry Pie","BIR HAKEIM",5,true]] images 281
+{"hits":["Aya Nakamura - Carnet d’adresses","SCH - Frime","Freeze Corleone - INTERLUDE","Booba - La vie en rouge","Plk - Olcho Gvng","Freeze Corleone - OLIVINE","Niska - Sal baye","Ninho - Wallet","Aya Nakamura - Le goût","Gazo - La Belle Et La Bête","Plk - Terrible","Niska - Boucherie","Jul - Je T'Aime","Ninho - Des piges","Plk - Waow","So La Lune - Catamaran"],"alb":"Gazo / APOCALYPSE -> La Belle Et La Bête r3"}
+numero11 ["sp-sam-1654602664",4,true]
+atelier 70 shots -> 95 frames 3.1s
+craft 111 shots -> 156 frames 5.2s
+recy 106 shots -> 132 frames 4.4s
+search 64 shots -> 102 frames 3.4s
+artSLL 70 shots -> 103 frames 3.4s
+prof 412 shots -> 78 frames 2.6s
+drops 554 shots -> 115 frames 3.8s
+albfull 866 shots -> 309 frames 10.3s
