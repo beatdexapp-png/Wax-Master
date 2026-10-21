@@ -361,6 +361,7 @@ function catResults(){const q=catQ.trim()?slug(catQ):'';const okG=x=>catG==='Tou
   return CARDS.filter(c=>okG(c)&&(!q||c.q.includes(q))&&(catOwn==='all'||(catOwn==='own')===own(c.id))).slice().sort((a,b)=>b.r-a.r||a.t.localeCompare(b.t));
 }
 function catPager(){const h=$('spgr');if(!h)return;const L=catResults();const c=$('catn');if(c)c.textContent=L.length;
+  const sg=$('catsug');if(sg){const q=catQ.trim(),has=q&&ARTISTS.some(A=>A.q===slug(q));sg.innerHTML=q.length>=2&&!has?`<div class="sugb glass"><span>« ${esc(q)} » n’est pas dans le jeu ?</span><button class="pbtn sm" data-act="askart">Proposer l’ajout</button></div>`:''}
   if(catScope==='artistes')pager(h,L,artistCell,{minT:88,extra:30,empty:'Aucun résultat'});
   else if(catScope==='albums')pager(h,L,albBtn,{minT:140,empty:'Aucun résultat'});
   else pager(h,L,tileBtn,{minT:92,empty:'Aucun résultat'})}
@@ -374,7 +375,7 @@ function renderStack(keep){
      <div class="vh wrap"><div class="seg glass">${[['artistes','Artistes'],['albums','Albums'],['titres','Sons']].map(([k,n])=>`<button data-act="cats" data-v="${k}" aria-pressed="${catScope===k}">${n}</button>`).join('')}</div>
       <div class="seg glass sm scr">${STYLES.map(([g,n])=>`<button data-act="catg" data-v="${g}" aria-pressed="${catG===g}">${n}</button>`).join('')}</div>
       <div class="seg glass sm">${[['all','Tout'],['own','À moi'],['miss','Manque']].map(([k,n])=>`<button data-act="cato" data-v="${k}" aria-pressed="${catOwn===k}">${n}</button>`).join('')}</div></div>
-     <div class="pgr" id="spgr"></div>`;
+     <div id="catsug"></div><div class="pgr" id="spgr"></div>`;
   }else if(p.type==='artist'){const A=RW[p.k];const n=A.ids.filter(own).length,pc=pct(A.ids);
     p.items=[...A.albums.map(k=>RW[k]),...(A.sgk?[RW[A.sgk]]:[])];
     h=`<div class="ph">${back}<span class="av" style="--avg:${esc(A.avg)}">${esc(A.ini)}</span><div class="pn"><b>${esc(A.n)}</b><span>${esc(A.st)}${A.u?' · underground':''} · ${n}/${A.ids.length}</span></div><button class="ring" data-act="seepl" data-k="${A.key}" style="--p:${pc}" aria-label="Disque de platine"><span>${pc}%</span></button></div>
@@ -740,12 +741,13 @@ function renderMenu(){
      <h3 class="msec">Thème</h3>
      <div class="skrow">${SKINS.map(([id,n,pp])=>{const lk=pp&&!on;return `<button class="skin2" data-act="${lk?'needpass':'skin'}" data-s="${id}" aria-pressed="${(S.set.skin||'auto')===id}"><span class="pv" style="--pv:${SKPV[id]}">${lk?'<u class="pro">Pro</u>':''}</span><small>${n}</small></button>`}).join('')}</div>
      <div class="mtg"><div class="set"><span class="ic" style="--icbg:#7c5cff">${ICON.play}</span><b>Sons</b><button class="sw" role="switch" aria-checked="${S.set.snd!==false}" data-act="snd" aria-label="Sons"></button></div><div class="set"><span class="ic" style="--icbg:#30a46c">${ICON.bolt}</span><b>Mode économie</b><button class="sw" role="switch" aria-checked="${!!S.set.lite}" data-act="lite" aria-label="Mode économie"></button></div></div>
-     <div class="mgrid">${[['events','#d6336c',ICON.cal,'Événements',liveEv()?'En cours':''],['!cat','#2b8a3e',ICON.search,'Catalogue',`${ARTISTS.length} artistes`],['rar','#e9a23b',ICON.gem,'Raretés',''],['code','#ff7a3d',ICON.gift,'Code',''],['how','#3a8dde',ICON.help,'Aide',''],['compte','#4c6ef5',ICON.users,'Compte','']].map(([p2,bg,ic,t,sm])=>`<button class="mt" data-act="${p2[0]==='!'?p2.slice(1):'mpage'}" data-p="${p2}"><span class="ic" style="--icbg:${bg}">${ic}</span><b>${t}</b>${sm?`<small>${sm}</small>`:''}</button>`).join('')}</div>
+     <div class="mgrid">${[['events','#d6336c',ICON.cal,'Événements',liveEv()?'En cours':''],['!cat','#2b8a3e',ICON.search,'Catalogue',`${ARTISTS.length} artistes`],['rar','#e9a23b',ICON.gem,'Raretés',''],['code','#ff7a3d',ICON.gift,'Code',''],['idee','#9c36b5',ICON.star,'Tes idées','Améliore le jeu'],['how','#3a8dde',ICON.help,'Aide',''],['compte','#4c6ef5',ICON.users,'Compte','']].map(([p2,bg,ic,t,sm])=>`<button class="mt" data-act="${p2[0]==='!'?p2.slice(1):'mpage'}" data-p="${p2}"><span class="ic" style="--icbg:${bg}">${ic}</span><b>${t}</b>${sm?`<small>${sm}</small>`:''}</button>`).join('')}</div>
      <button class="mlink" data-act="mpage" data-p="set">Réinitialiser les réglages</button>`}
   else if(p==='compte'){b=top('Compte')+(window.CL?CL.page():'<p class="cap">Indisponible hors ligne</p>')}
   else if(p==='events'){b=top('Événements')+`<h2>Événements</h2>`+EVENTS.filter(x=>evState(x)!=='past').sort((a,b)=>new Date(a.s)-new Date(b.s)).map(x=>{const st=evState(x);return `<div class="evc"><i class="sw2" style="--evbg:${x.bg}"></i><div><b>${x.n}</b><small>${x.d}</small></div><em>${st==='live'?`<span data-until="${x.e}">${dur(new Date(x.e)-now())}</span>`:fdate(x.s)}</em></div>`}).join('')}
   else if(p==='themes'){b=top('Thèmes')+`<div class="skins">${SKINS.map(([id,n,pp])=>{const lk=pp&&!hasPass();return `<button class="skin" data-act="${lk?'needpass':'skin'}" data-s="${id}" aria-pressed="${S.set.skin===id}"><span class="pv" style="--pv:${SKPV[id]}"><i></i>${lk?'<u>Pass</u>':''}</span>${n}</button>`}).join('')}</div>`}
   else if(p==='rar'){b=top('Raretés')+`<div class="mlist">${RAR.map((R,i)=>{const d=i===5&&e&&e.fx.divin?R.drop*e.fx.divin:R.drop;return `<div class="set"><span style="display:flex;align-items:center;gap:10px"><i style="width:10px;height:10px;border-radius:50%;background:${R.c}"></i><span><b>${R.n}</b><br><small class="muted">${R.d}</small></span></span><span style="font:600 13px var(--mono);text-align:right">${d} %<br><small class="muted">${POOL[i].filter(c=>own(c.id)).length}/${POOL[i].length}</small></span></div>`}).reverse().join('')}</div><p class="cap" style="text-align:left">Le rap français tombe plus souvent. ↑ = son en hausse cette semaine.</p>`}
+  else if(p==='idee'){b=top('Tes idées')+`<h2>Améliore WaxDrop</h2><form class="fbf" id="fbf"><div class="chips">${[['idea','Idée'],['bug','Bug'],['artist','Artiste à ajouter']].map(([k,n])=>`<button type="button" class="chip" data-act="fbk" data-v="${k}" aria-pressed="${fbK===k}">${n}</button>`).join('')}</div><textarea id="fbt" maxlength="600" rows="5" placeholder="${fbK==='artist'?'Nom de l’artiste':fbK==='bug'?'Ce qui ne marche pas, et où':'Ton idée pour le jeu'}" aria-label="Ton message"></textarea><button class="pbtn" type="submit" style="height:48px">Envoyer</button></form><p class="msg" id="fbm"></p><p class="cap" style="text-align:left">On lit tout. Les artistes proposés sont ajoutés automatiquement s’ils existent.</p>`}
   else if(p==='code'){b=top('Code')+`<form class="codef" id="codef"><input id="code" placeholder="CODE" autocomplete="off" aria-label="Code bonus"><button class="pbtn" type="submit" style="height:48px">OK</button></form><p class="msg" id="cmsg"></p>`}
   else if(p==='how'){b=top('Aide')+`<div class="prose"><p><b>Drop</b> · 5 sons, gratuit toutes les ${hasPass()?'5':'10'} min.</p><p><b>Touche le vinyle</b> : il accélère, et change de couleur si la rareté monte.</p><p><b>Collection</b> · un artiste, puis un album, puis ses sons.</p><p><b>Doubles</b> · vends-les à la Bourse ou recycle-les en poussière pour fabriquer un son manquant.</p><p><b>Profil</b> · missions du jour, saison, classement des joueurs.</p></div>`}
   else if(p==='set'){b=top('Réglages')+`<div class="mlist"><div class="set"><b>Mode économie</b><button class="sw" role="switch" aria-checked="${!!S.set.lite}" data-act="lite" aria-label="Mode économie"></button></div><div class="set"><b>Réinitialiser</b><button class="gbtn" style="height:38px${resetArm?';background:#e5484d;color:#fff;border-color:#e5484d':''}" data-act="reset">${resetArm?'Confirmer':'Effacer'}</button></div></div>`}
@@ -839,11 +841,21 @@ document.addEventListener('click',e=>{
     case 'menu':openMenu(t.dataset.p);break;
     case 'mclose':closeMenu();break;
     case 'mpage':menuPage=t.dataset.p||'';resetArm=false;renderMenu();break;
+    case 'fbk':fbK=t.dataset.v;document.querySelectorAll('[data-act="fbk"]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===fbK));{const ta=$('fbt');if(ta)ta.placeholder=fbK==='artist'?'Nom de l’artiste':fbK==='bug'?'Ce qui ne marche pas, et où':'Ton idée pour le jeu'}break;
+    case 'askart':{const q=catQ.trim();t.disabled=true;fbSend('artist',q).then(r=>{if(r.error){toast(r.error);t.disabled=false;return}toast(r.status==='exists'?'Déjà dans le jeu, recharge l’app pour le voir':'Merci ! '+q+' arrive dans quelques heures s’il existe');const sg=$('catsug');if(sg)sg.innerHTML=''})}break;
     case 'skin':S.set.skin=t.dataset.s;save();applySkin();renderMenu();break;
     case 'lite':S.set.lite=!S.set.lite;save();applySkin();renderMenu();break;
     case 'reset':if(!resetArm){resetArm=true;renderMenu()}else{resetArm=false;S=fresh();save();closeMenu();closeStack();setTab('ouvrir');if(window.ECO)ECO.sync();toast('Réglages effacés')}break;
   }
 });
+let fbK='idea';
+function fbSend(kind,text){if(!window.CL||!CL.sb)return Promise.resolve({error:'Hors ligne, réessaie plus tard'});return CL.sb.rpc('feedback_send',{p_kind:kind,p_text:text}).then(r=>r.error?{error:/fetch|network/i.test(r.error.message)?'Connexion impossible, réessaie':r.error.message}:r.data,()=>({error:'Connexion impossible, réessaie'}))}
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='fbf')return;e.preventDefault();
+  const ta=$('fbt'),m=$('fbm'),v=ta.value.trim();if(v.length<2){m.textContent='Écris un peu plus';m.style.color='#e5484d';return}
+  const bt=e.target.querySelector('button[type=submit]');bt.disabled=true;
+  fbSend(fbK,v).then(r=>{bt.disabled=false;if(r.error){m.textContent=r.error;m.style.color='#e5484d';return}
+    ta.value='';m.style.color='#30a46c';m.textContent=r.status==='exists'?'Cet artiste est déjà dans le jeu':fbK==='artist'?'Merci ! Il arrive dans quelques heures s’il existe':'Merci, c’est envoyé'})});
 document.addEventListener('submit',e=>{
   if(e.target.id!=='codef')return;e.preventDefault();
   const v=$('code').value.trim().toUpperCase(),m=$('cmsg');

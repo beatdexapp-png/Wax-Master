@@ -1761,3 +1761,7 @@ body[data-skin="brume"] .mgo,body[data-skin="sable"] .mgo,body[data-skin="lilas"
 .v-col .seg button{padding:0 9px}
 /* v29 : filtres de styles défilants */
 .seg.scr{max-width:100%;min-width:0;overflow-x:auto;scrollbar-width:none}.seg.scr::-webkit-scrollbar{display:none}.seg.scr button{flex:none}
+/* v30 : proposer un artiste, boîte à idées */
+.sugb{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 10px 10px 14px;border-radius:18px;margin:6px 0 10px;font-size:14px;font-weight:600}
+.sugb span{min-width:0;overflow:hidden;text-overflow:ellipsis}.sugb .pbtn.sm{flex:none;height:38px;padding:0 14px;font-size:13px}
+.fbf{display:flex;flex-direction:column;gap:12px}.fbf textarea{width:100%;box-sizing:border-box;border-radius:16px;padding:12px 14px;font:inherit;font-size:16px;background:var(--card,rgba(255,255,255,.08));color:inherit;border:1px solid rgba(127,127,127,.25);resize:vertical;min-height:110px}
