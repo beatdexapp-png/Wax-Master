@@ -27,7 +27,7 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
     S.coins = 2480; S.dust = 1340; S.set.lite = false; render();
     const pick = (names, r) => { const l = CARDS.filter(c => names.includes(c.a) && c.r === r && c.img).sort((a, b) => (b.s || 0) - (a.s || 0)); return l[0] || CARDS.find(c => c.r === r && c.img) };
     const byT = (artist, title, r) => CARDS.find(c => c.a === artist && c.t === title) || pick([artist], r);
-    const cs0 = [byT('PNL', 'Au DD', 2), byT('Ninho', 'Tokarev', 3), byT('Freeze Corleone', 'Tse Chi Lop', 4), CARDS.find(c => c.a === 'Cherry Pie' && c.r === 5) || pick(['PNL'], 5)];
+    const cs = [byT('PNL', 'Au DD', 2), byT('Ninho', 'Tokarev', 3), byT('Freeze Corleone', 'Tse Chi Lop', 4), CARDS.find(c => c.a === 'Cherry Pie' && c.r === 5) || pick(['PNL'], 5)];
     cs.forEach(c => delete S.owned[c.id]);
     window.__cs = cs;
     const urls = new Set();
