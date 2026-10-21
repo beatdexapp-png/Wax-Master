@@ -17,7 +17,7 @@ jobs:
       - run: |
           for u in https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/12/06/e6/1206e6ca-3700-b4a3-61f8-c5323423adbd/1200220128129.jpg/600x600bb.jpg https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/12/06/e6/1206e6ca-3700-b4a3-61f8-c5323423adbd/1200220128129.jpg/1200x630wp-60.jpg https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/01/f5/30/01f53068-50d1-1e09-22dc-b160751aac9b/file_cropped.png/600x600cc.jpg https://is1-ssl.mzstatic.com/image/thumb/AMCArtistImages211/v4/01/f5/30/01f53068-50d1-1e09-22dc-b160751aac9b/file_cropped.png/600x600bb.jpg; do echo "IMGCHECK $(curl -s -o /dev/null -w '%{http_code} %{content_type}' $u) $u"; done | tee imgcheck.txt
       - run: npm i playwright && npx playwright install --with-deps chromium
-      - run: mkdir -p out && node cap/cap-real.cjs out 2>&1 | tee out/log.txt
+      - run: mkdir -p out && node cap/cap-v2.cjs out 2>&1 | tee out/log.txt
       - run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
           for d in out/*/; do n=$(basename $d); ffmpeg -loglevel error -y -framerate 30 -i $d/%04d.jpg -c:v libx264 -crf 14 -preset slow -pix_fmt yuv420p out/$n.mp4; done
