@@ -39,7 +39,7 @@
     sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass stsh" role="dialog" aria-label="Statistiques"><div class="grab"></div><p class="cap">Chargement…</p></div>';
     CL.sb.rpc('profile_stats',{p_pseudo:ps||null}).then(function(r){
       var box=sh.querySelector('.stsh');if(!box||menuPage!=='stats')return;
-      if(r.error){box.innerHTML='<div class="shh"><b>Stats</b><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div><p class="cap">'+esc(/fetch|network/i.test(r.error.message)?'Connexion impossible':r.error.message)+'</p>';return}
+      if(r.error){box.innerHTML='<div class="shh"><b>Stats</b><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div><p class="cap">'+esc(niceErr(r.error.message))+'</p>';return}
       box.innerHTML='<div class="grab"></div>'+view(r.data);
     },function(){var box=sh.querySelector('.stsh');if(box)box.innerHTML='<p class="cap">Connexion impossible</p>'});
   }

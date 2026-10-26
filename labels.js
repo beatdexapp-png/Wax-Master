@@ -25,7 +25,7 @@
       +'<span class="lbl">Classement des labels</span>'+top(D.top,L.id)
       +'<button class="gbtn lbleave" data-act="lbleave">Quitter le label</button>'}
   function paint(){var box=sh.querySelector('.lbsh');if(!box||menuPage!=='label')return;box.innerHTML='<div class="grab"></div>'+(D.label?mine():none())}
-  async function call(fn,a){var r=await sb().rpc(fn,a||{});if(r.error){toast(/fetch|network/i.test(r.error.message)?'Connexion impossible':r.error.message);return null}D=r.data;return D}
+  async function call(fn,a){var r=await sb().rpc(fn,a||{});if(r.error){toast(niceErr(r.error.message));return null}D=r.data;return D}
   async function open(){if(!sb()){toast('Connexion requise');return}closeMenu();menuPage='label';
     sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass lbsh" role="dialog" aria-label="Label"><div class="grab"></div><p class="cap">Chargement…</p></div>';
     if(await call('label_me'))paint()}

@@ -17,10 +17,11 @@
     save();setCoins();
   };
   /* appel brut : renvoie {error} ou les données */
+  window.niceErr=function(m){m=String(m||'');if(/fetch|network|Failed to/i.test(m))return 'Connexion impossible, réessaie';if(/statement timeout|canceling statement|timeout/i.test(m))return 'Le serveur met trop de temps, réessaie dans un instant';if(/JWT|permission denied|not allowed/i.test(m))return 'Reconnecte-toi puis réessaie';if(/violates|duplicate key|syntax|function .* does not exist|column/i.test(m))return 'Petit souci de notre côté, réessaie';return m};
   ECO.call=async function(op,a){
     if(!CL.user)return{error:'Connexion requise'};
     var r;try{r=await sb.rpc('eco',{p_op:op,p_a:a||{}})}catch(x){return{error:'Connexion impossible, réessaie'}}
-    if(r.error)return{error:/fetch|network/i.test(r.error.message)?'Connexion impossible, réessaie':r.error.message};
+    if(r.error)return{error:niceErr(r.error.message)};
     ECO.apply(r.data.w);return r.data;
   };
   ECO.op=async function(op,a){var r=await ECO.call(op,a);if(r.error){toast(r.error);return null}return r};
@@ -41,7 +42,7 @@
     try{r=await sb.rpc('eco',{p_op:'open',p_a:{kind:m==='pay'?'std':m,alk:m==='drop'?curDrop().A.key:null,v:window.CATV}})}
     catch(e){r={error:{message:'Connexion impossible'}}}
     finally{ECO.busy=false}
-    if(r.error){toast(/fetch|network/i.test(r.error.message)?'Connexion impossible, réessaie':r.error.message);return}
+    if(r.error){toast(niceErr(r.error.message));return}
     if(reveal)return;
     var ids=(r.data.cards||[]).filter(function(id){return C[id]});
     if(!ids.length){ECO.apply(r.data.w);toast('Drop ajouté, recharge l’app');return}
@@ -130,7 +131,7 @@
     var q=B.q.trim();
     var r=await sb.rpc('bourse_list',{p_f:B.f,p_q:q.length>1?q:null,p_r:null});
     B.load=false;
-    if(r.error){toast(/fetch|network/i.test(r.error.message)?'Connexion impossible, réessaie':r.error.message);return}
+    if(r.error){toast(niceErr(r.error.message));return}
     B.list=(r.data.rows||[]).filter(function(x){return C[x.id]});
     B.list.forEach(function(x){LIVE[x.id]=LIVE[x.id]||{};LIVE[x.id].sp=(x.sp||[x.p]).map(Number);LIVE[x.id].real=(x.sp&&x.sp.length?+x.sp[x.sp.length-1]:x.p)});
     B.meta={buys:r.data.buys,sells:r.data.sells,pro:!!r.data.pro};
@@ -139,7 +140,7 @@
   }
   async function loadPf(){
     var r=await sb.rpc('bourse_portfolio');
-    if(r.error){toast(/fetch|network/i.test(r.error.message)?'Connexion impossible, réessaie':r.error.message);return}
+    if(r.error){toast(niceErr(r.error.message));return}
     B.pf=r.data;B.pf.rows=(B.pf.rows||[]).filter(function(x){return C[x.id]});B.t=Date.now();paint();
   }
   var LIVE={};
@@ -309,7 +310,7 @@
     requestAnimationFrame(function(){el.classList.add('on')});
     var r=await sb.rpc('bourse_card',{p_id:id});
     var d=$('bxd');if(!d||!el.isConnected)return;
-    if(r.error){d.innerHTML='<p class="cap">'+esc(r.error.message)+'</p>';return}
+    if(r.error){d.innerHTML='<p class="cap">'+esc(niceErr(r.error.message))+'</p>';return}
     var x=r.data;var rg0=hasPass()?((F&&F.rg)||'w'):'d';F={id:id,x:x,rg:rg0,live:+x.pts[rg0][x.pts[rg0].length-1],scrub:false};
     d.innerHTML='<div class="bxp"><b><span id="bxlive">'+money(F.live)+'</span> '+coinI+'</b><span id="bxchg" class="bxc"></span></div>'
       +'<div class="chips bxrg">'+['d','w','m'].map(function(k){var lk=k!=='d'&&!hasPass();return '<button class="chip'+(lk?' lk':'')+'" data-act="bxrg" data-v="'+k+'" aria-pressed="'+(F.rg===k)+'">'+RG[k].n+(lk?' <em class="pro">Pro</em>':'')+'</button>'}).join('')+'</div>'
@@ -389,13 +390,13 @@
         return '<div class="achi'+(x.got?' got':ok?' ok':'')+'" style="--i:'+i+';--p:'+Math.round(x.v*100/x.n)+'"><span class="achic md'+(x.r>=1500?3:x.r>=500?2:1)+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+IC[k]+'</svg></span><span class="acht"><b>'+esc(x.t)+'</b><small>'+esc(x.d)+'</small><span class="achb"><i></i></span></span>'
           +(x.got?'<span class="achd">'+ICON.check+'</span>':ok?'<button class="pbtn achg" data-act="achc" data-k="'+x.k+'">+'+x.r+' '+coinI+'</button>':'<span class="achv"><b>'+x.v.toLocaleString('fr-FR')+'</b>/'+x.n.toLocaleString('fr-FR')+'<small>+'+x.r+' '+coinI+'</small></span>')+'</div>'}).join('')+'</div>'}).join('')
       +'</div>'};
-  document.addEventListener('click',async function(e){var t=e.target.closest('[data-act="achall"]');if(!t)return;e.stopPropagation();t.disabled=true;
-    var ks=(A.list||[]).filter(function(x){return !x.got&&x.v>=x.n}).map(function(x){return x.k}),sum=0;
-    for(var i=0;i<ks.length;i++){var r;try{r=await CL.sb.rpc('ach_claim',{p_k:ks[i]})}catch(x){r={error:{message:'Connexion impossible, réessaie'}}}if(r.error){toast(r.error.message);break}sum+=r.data.coins||0;A.list=r.data.list}
-    await ECO.sync(true);render();if(sum&&window.rewardPop)rewardPop({coins:sum},1)},true);
+  document.addEventListener('click',async function(e){var t=e.target.closest('[data-act="achall"]');if(!t)return;e.stopPropagation();t.disabled=true;t.textContent='Récupération…';
+    var r;try{r=await CL.sb.rpc('ach_claim_all')}catch(x){r={error:{message:'fetch'}}}
+    if(r.error){toast(niceErr(r.error.message));t.disabled=false;render();return}
+    A.list=r.data.list;await ECO.sync(true);render();if(window.rewardPop)rewardPop({coins:r.data.coins},1)},true);
   document.addEventListener('click',async function(e){var t=e.target.closest('[data-act="achc"]');if(!t)return;e.stopPropagation();t.disabled=true;
     var r;try{r=await CL.sb.rpc('ach_claim',{p_k:t.dataset.k})}catch(x){r={error:{message:'Connexion impossible, réessaie'}}}
-    if(r.error){toast(r.error.message);t.disabled=false;return}
+    if(r.error){toast(niceErr(r.error.message));t.disabled=false;return}
     A.list=r.data.list;var c0=S.coins;await ECO.sync(true);render();if(window.rewardPop)rewardPop({coins:S.coins-c0||r.data.coins},1)},true);
   /* recharge les succès quand on revient sur le Disquaire */
   document.addEventListener('click',function(e){var t=e.target.closest('[data-tab="shop"],[data-act="shs"][data-v="succes"],[data-act="shs"][data-v="hub"]');if(t)setTimeout(A.fetch,50)},true);
@@ -410,6 +411,6 @@
     if(i>=0)cur.splice(i,1);else{if(cur.length>=2){toast('2 styles maximum');return}cur.push(g)}
     var prev=S.styles;S.styles=cur;render();
     var r;try{r=await CL.sb.rpc('style_set',{p_s:cur})}catch(x){r={error:{message:'Connexion impossible, réessaie'}}}
-    if(r.error){S.styles=prev;toast(r.error.message);render();return}
+    if(r.error){S.styles=prev;toast(niceErr(r.error.message));render();return}
     S.styles=r.data||cur;save();toast(cur.length?'Tes styles tombent 2,5× plus souvent':'Styles retirés')},true);
 })();

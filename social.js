@@ -102,10 +102,10 @@
   async function request(ps){
     var m=$('frmsg');if(!ps||ps.length<3){if(m)m.textContent='Entre un pseudo';return}
     var r=await sb.rpc('friend_request',{p_pseudo:ps});
-    if(r.error){if(m)m.textContent=r.error.message;return}
+    if(r.error){if(m)m.textContent=niceErr(r.error.message);return}
     closeMenu();SOC.q='';toast(r.data==='accepted'?'Vous êtes maintenant amis':'Demande envoyée à '+ps);SOC.sub=r.data==='accepted'?'amis':'demandes';await load();render();
   }
-  async function frAct(fn,args,msg){var r=await sb.rpc(fn,args);if(r.error){toast(r.error.message);return}if(msg)toast(msg);await load();render()}
+  async function frAct(fn,args,msg){var r=await sb.rpc(fn,args);if(r.error){toast(niceErr(r.error.message));return}if(msg)toast(msg);await load();render()}
   /* lien d'invitation reçu */
   try{var ami=new URLSearchParams(location.search).get('ami');if(ami){localStorage.setItem('td-ami',ami);history.replaceState(null,'',location.pathname)}}catch(e){}
   async function useInvite(){
@@ -143,21 +143,21 @@
     if((S.owned[g]||0)<2){toast('Il te faut ce son en double');return}
     var b=$('tpgo');if(b){b.disabled=true;b.textContent='Envoi…'}
     var r=await sb.rpc('propose_trade',{p_to:P.pseudo,p_give:g,p_want:w});
-    if(r.error){toast(r.error.message);if(b){b.disabled=false;b.textContent='Proposer l’échange'}return}
+    if(r.error){toast(niceErr(r.error.message));if(b){b.disabled=false;b.textContent='Proposer l’échange'}return}
     if(window.ECO)await ECO.sync(true);closeMenu();toast('Proposition envoyée à '+P.pseudo);SOC.sub='envoyes';await load();if(tab==='shop'&&shopSub==='echanges')render();
   }
   async function respond(id,ok){
     var t=SOC.list.find(function(x){return String(x.id)===String(id)});if(!t)return;
     if(ok&&!own(t.want_card)){toast('Tu n’as plus '+(C[t.want_card]?C[t.want_card].t:'ce son'));return}
     var r=await sb.rpc('respond_trade',{p_id:t.id,p_accept:ok});
-    if(r.error){toast(r.error.message);load();return}
+    if(r.error){toast(niceErr(r.error.message));load();return}
     if(window.ECO)await ECO.sync(true);
     if(ok)toast('Échange fait : tu reçois '+(C[t.give_card]?C[t.give_card].t:'un son'))
     else toast('Échange refusé');
     await load();render();
   }
   async function cancel(id){
-    var r=await sb.rpc('cancel_trade',{p_id:+id});if(r.error){toast(r.error.message);return}
+    var r=await sb.rpc('cancel_trade',{p_id:+id});if(r.error){toast(niceErr(r.error.message));return}
     await events();if(window.ECO)await ECO.sync(true);await load();render();
   }
 
