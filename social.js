@@ -213,5 +213,5 @@
     else if(a==='frrm'){var f=SOC.fr.find(function(x){return x.pseudo===t.dataset.p});if(f){closeMenu();frAct('friend_remove',{p_id:f.id},t.dataset.p+' retiré de tes amis')}}
   });
   var n=0;
-  setInterval(function(){n++;if(!me()||document.hidden)return;if(tab==='shop'&&shopSub==='echanges')load();else if(n%3===0)load();if(n%3===0)events()},8000);
+  setInterval(function(){n++;if(!me()||document.hidden)return;if(tab==='shop'&&shopSub==='echanges')load();else if(n%3===0)load();if(n%3===0)events()},20000);
 })();

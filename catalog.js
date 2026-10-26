@@ -40,8 +40,11 @@
     r.onupgradeneeded=function(){r.result.createObjectStore('kv')};r.onsuccess=function(){ok(r.result)};r.onerror=function(){ko(r.error)}})}
   function idbGet(k){return db().then(function(d){return new Promise(function(ok,ko){var q=d.transaction('kv').objectStore('kv').get(k);q.onsuccess=function(){ok(q.result||null)};q.onerror=function(){ko(q.error)}})})}
   function idbSet(k,v){return db().then(function(d){return new Promise(function(ok,ko){var t=d.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=function(){ok()};t.onerror=function(){ko(t.error)}})})}
-  function get(){return fetch(URL+'/rest/v1/rpc/catalog_dump2',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'},body:'{}'}).then(function(r){return r.ok?r.text():null}).catch(function(){return null})}
-  function refresh(){get().then(function(t){if(t)idbSet(CK,t).catch(function(){})})}
+  /* catalogue servi en fichier statique (CDN), la base n'est appelée qu'en secours */
+  function stat(){return fetch('/catalog.json?v='+Math.floor(Date.now()/36e5),{cache:'default'}).then(function(r){return r.ok?r.text():null}).then(function(t){return t&&t.length>1000&&t[0]==='{'?t:null}).catch(function(){return null})}
+  function get(){return stat().then(function(t){return t||rpc()})}
+  function rpc(){return fetch(URL+'/rest/v1/rpc/catalog_dump2',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'},body:'{}'}).then(function(r){return r.ok?r.text():null}).catch(function(){return null})}
+  function refresh(){stat().then(function(t){if(t)idbSet(CK,t).catch(function(){})})}
   function use(t){if(!t||started)return;try{merge(JSON.parse(t))}catch(e){}}
   /* ancienne version : catalogue dans localStorage, on le déplace */
   var old=null;try{old=localStorage.getItem(CK)}catch(e){}
