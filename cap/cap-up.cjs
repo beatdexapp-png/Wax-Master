@@ -107,7 +107,7 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
     await sleep(2600); await p.mouse.move(195, 600); for (let k = 0; k < 4; k++) { await p.mouse.wheel(0, 170); await sleep(170) } await sleep(900) });
   await p.evaluate(() => closeMenu()); await sleep(500);
   // 8. collection : vue Sons, doubles
-  await p.evaluate(() => { colView = 'sons'; sonsF = 'all'; setTab('collection') }); await waitImgs(); await sleep(800); await p.evaluate(() => setTab('ouvrir')); await sleep(500);
+  await p.evaluate(() => { CARDS.filter(c => own(c.id) && c.img).slice(0, 400).forEach((c, i) => { if (i % 3 === 0) S.owned[c.id] = 2 + (i % 2) }); colView = 'sons'; sonsF = 'all'; setTab('collection') }); await waitImgs(); await sleep(800); await p.evaluate(() => setTab('ouvrir')); await sleep(500);
   await clip('sons', async () => { await p.evaluate(() => setTab('collection')); await sleep(1400); await p.evaluate(() => { sonsF = 'dup'; render() }); await sleep(1400); await p.evaluate(() => { sonsF = '4'; render() }); await sleep(1400) });
   // 6. menu : réglage Extraits
   await clip('menu', async () => { await p.evaluate(() => openMenu()); await sleep(1800) });
