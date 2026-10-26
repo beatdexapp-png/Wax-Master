@@ -66,20 +66,13 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
   p.on('console', m => { if (/PVLOG/.test(m.text())) console.log(m.text()) });
   const center = sel => p.evaluate(s => { const e = document.querySelector(s); if (!e) return null; const r = e.getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2, r.width] }, sel);
   async function wobble(cx, cy, r, ms) { const n = Math.round(ms / 60); for (let k = 0; k <= n; k++) { const a = k / n * Math.PI * 2; await p.mouse.move(cx + Math.sin(a) * r, cy + Math.sin(a * 2) * r * .6); await sleep(60) } }
-  async function shot(name, fn, scrolls) { await fn(); await p.waitForTimeout(1800); await waitImgs(); await p.waitForTimeout(400); await p.screenshot({ path: OUT + '/' + name + '.png' });
+  async function shot(name, fn, scrolls) { await fn(); await p.waitForTimeout(1800); await waitImgs(); await p.waitForTimeout(400); console.log('PVLOG dbg', name, await p.evaluate(() => { const v = document.querySelector('#main .view'); return (v ? getComputedStyle(v).opacity : 'none') + ' anims=' + document.getAnimations().filter(a => a.playState !== 'running').length })); await p.screenshot({ path: OUT + '/' + name + '.png' });
     for (let k = 0; k < (scrolls || 0); k++) { await p.mouse.move(195, 600); for (let j = 0; j < 3; j++) { await p.mouse.wheel(0, 170); await p.waitForTimeout(120) } await p.waitForTimeout(700); await p.screenshot({ path: OUT + '/' + name + '_' + (k + 2) + '.png' }) } console.log('shot', name) }
   async function reset() { await p.evaluate(() => { try { closeOv() } catch (e) { } try { closeMenu() } catch (e) { } try { document.getElementById('dd').innerHTML = '' } catch (e) { } reveal = null; ov.innerHTML = ''; stack = []; renderStack(); setTab('ouvrir') }); await sleep(800) }
   const fev = await p.evaluate(() => { const c = CARDS.find(c => c.a === 'La Fève' && c.t === 'BLACKOUT') || CARDS.find(c => c.a === 'La Fève' && c.alk === 'al-sp-1hvfxqZg3KcDfAxSrB1XXv'); window.__fev = c; return c ? [c.id, c.t, c.r, c.img] : null });
   console.log('PVLOG fev', JSON.stringify(fev));
   await p.evaluate(() => { CL.user = CL.user || { id: 'demo' }; S.top = ARTISTS.filter(A => A.n === 'La Fève').map(A => A.key); S.evp = { 14: 11 }; S.evc = { 14: [0] }; render() }); await sleep(800);
   await p.evaluate(() => { const c = window.__fev; const im = new Image(); im.src = c.img; }); await sleep(2500);
-  // 1. drop FINIS-LES
-  await clip('fev', async () => {
-    await p.evaluate(() => { const c = window.__fev; delete S.owned[c.id]; reveal = { res: [{ c, isNew: true, sp: null }], i: 0, lv: 0, ul: [], gain: 0, stage: 'seal', secret: false, kind: 'std', base: new Set() }; showOpening() });
-    await sleep(600);
-    for (let k = 0; k < 220; k++) { const st = await p.evaluate(() => { if (!reveal || reveal.stage === 'sum') return 'end'; if (reveal.stage === 'shown' && !A.busy) return 'end'; if (!A.busy) { opTap(); return 'tap' } return 'busy' }); if (st === 'end') break; await sleep(st === 'tap' ? 240 : 90) }
-    await sleep(1000); const c = await center('.rvw .rsq'); if (c) await wobble(c[0], c[1], c[2] * .35, 2000); await sleep(600) });
-  await reset();
   // 2. accueil : événement + label
   await p.evaluate(() => setTab('collection')); await sleep(400);
   await shot('home', async () => { await p.evaluate(() => setTab('ouvrir')) });
@@ -102,5 +95,13 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
   // 8. boîte à idées
   await reset();
   await shot('idee', async () => { await p.evaluate(() => openMenu('idee')); await p.waitForTimeout(900); try { await p.click('#fbf textarea', { timeout: 1500 }) } catch (e) { } await p.keyboard.type('Un mode duel entre potes') });
+  await reset();
+  // 1. drop FINIS-LES
+  await clip('fev', async () => {
+    await p.evaluate(() => { const c = window.__fev; delete S.owned[c.id]; reveal = { res: [{ c, isNew: true, sp: null }], i: 0, lv: 0, ul: [], gain: 0, stage: 'seal', secret: false, kind: 'std', base: new Set() }; showOpening() });
+    await sleep(600);
+    for (let k = 0; k < 220; k++) { const st = await p.evaluate(() => { if (!reveal || reveal.stage === 'sum') return 'end'; if (reveal.stage === 'shown' && !A.busy) return 'end'; if (!A.busy) { opTap(); return 'tap' } return 'busy' }); if (st === 'end') break; await sleep(st === 'tap' ? 240 : 90) }
+    await sleep(1000); const c = await center('.rvw .rsq'); if (c) await wobble(c[0], c[1], c[2] * .35, 2000); await sleep(600) });
+  await reset();
   await b.close();
 })();
