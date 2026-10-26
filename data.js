@@ -55,7 +55,7 @@ const RAW=[
 {n:'So La Lune',g:'FR',u:1,sg:[['Rodé',12,null,'Orbite'],['Tsukithèse',8,null,'2ème faille (Silfra)']]},
 {n:'Jeune Morty',g:'FR',u:1,al:[{t:'Eponyme',y:null,b:6,p:1,tr:[['Couture',9],['Solo Dolo*',5]]}],sg:[['Ivoire Feeling',10,null,'Jeune Morty Vol.1'],['Dent',7,null,'Dent'],['Camera',6,null,'En Attendant Eponyme']]},
 {n:'Jolagreen23',g:'FR',u:1,ini:'J23',al:[{t:'GOTY EDITION',y:null,b:8,p:1,tr:[['FUMER LE VERT',22],['300.000',14],['CR7 MAN UTD',10]]}],sg:[['JAPANEXPO',9,null,'23 JOURS PLUS TARD'],['360TrickShot',6,null,'A COLORS SHOW']]},
-{n:'La Fève',g:'FR',u:1,al:[{t:'ERRR',y:null,b:8,p:1,tr:[['MAUVAIS PAYEUR',12],['NO HOOK',8]]}],sg:[['FINIS-LES',18,null,'FINIS-LES'],["RIEN D'EXCEPTIONNEL",9,null,'A COLORS SHOW']]},
+{n:'La Fève',g:'FR',u:1,al:[{t:'ERRR',y:null,b:8,p:1,tr:[['MAUVAIS PAYEUR',12],['NO HOOK',8]]}],sg:[['FINIS-LES',18,2026,'FINIS-LES',null,4],["RIEN D'EXCEPTIONNEL",9,null,'A COLORS SHOW']]},
 {n:'Prince Waly',g:'FR',u:1,al:[{t:'Moussa',y:null,b:5,p:1,tr:[['Balotelli',12],['Problème',8],['BBF',5],['Cra$h',4]]}],sg:[['Junior',4,null,'Junior']]},
 {n:'Luv Resval',g:'FR',u:1,al:[{t:'Etoile Noire',y:null,b:8,p:1,tr:[["Tout s'en va",16],['Cette fille',10],['MPC, Part II (La rivière)',6]]}],sg:[['Ballade nocturne III',7,null,'Mustafar'],['Crystal Lake',14,null,'Crystal Lake']]},
 {n:'H JeuneCrack',g:'FR',u:1,ini:'HJC',sg:[['Au max',6,null,'MATIÈRE PREMIÈRE']]},
