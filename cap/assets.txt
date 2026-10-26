@@ -1,1 +1,2 @@
 catalog.json https://ptoncebyqakclxqnmlzk.supabase.co/rest/v1/rpc/catalog_dump2?apikey=sb_publishable_6-9wecVefsCjpqMPnh9Afg_-x-PIjhv
+
