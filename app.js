@@ -190,7 +190,7 @@ const ART={
 /* ================= VUES ================= */
 function vOuvrir(){
   const e=liveEv(),nx=nextEv(),cst=cost(),free=canFree(),can=free||S.coins>=cst;const dp=curDrop();const left=Math.max(0,DROP_LIMIT-(S.drop[dp.w]||0)-((hash('ds'+dp.w)%120)+Math.floor((now()-(dp.w*48*3600e3))/(48*3600e3)*260)));
-  const evp=e?`<button class="evp glass" data-act="events"><span class="evk">Événement</span><i class="ldot"></i><b>${e.n}</b><span data-until="${e.e}">${dur(new Date(e.e)-now())}</span></button>`:nx?`<button class="evp glass" data-act="events"><span class="evk">Prochain</span><b>${nx.n}</b><span>${fdate(nx.s)}</span></button>`:'';
+  const evp=e?`<button class="evp glass" data-act="events">${window.evAvatars?evAvatars(e,'sm'):''}<span class="evk">Événement</span><i class="ldot"></i><b>${e.n}</b><span data-until="${e.e}">${dur(new Date(e.e)-now())}</span></button>`:nx?`<button class="evp glass" data-act="events"><span class="evk">Prochain</span><b>${nx.n}</b><span>${fdate(nx.s)}</span></button>`:'';
   return `<div class="view v-open">${evp}
    <div class="obg" aria-hidden="true"><i class="og1"></i><i class="og2"></i><i class="og3"></i><span class="ogrid"></span><span class="orays"></span>${Array.from({length:14},(_,i)=>`<b style="--x:${(i*37)%100};--y:${(i*53)%100};--d:${(i%7)*.9}s;--s:${2+(i%3)}px"></b>`).join('')}</div><div class="ofx" aria-hidden="true"><i class="n1">♪</i><i class="n2">♫</i><i class="n3">♪</i><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>
    <div class="mbox" data-act="open" data-m="${free?'free':'pay'}" role="button" tabindex="0" aria-label="Ouvrir un drop"><div class="maxi"><div class="mv" style="--lc:${e?'#ff5f86':'#c9c3b5'}"></div><div class="ms glass"><b>Wax<br>Drop</b><span>Vol. 01</span><em>5 sons</em></div></div></div>
@@ -201,13 +201,18 @@ function vOuvrir(){
   </div>`;
 }
 function colList(){return ownedArtists().filter(A=>colG==='Tous'||A.st===colG).sort((a,b)=>pct(b.ids)-pct(a.ids)||a.n.localeCompare(b.n))}
+let sonsF='all';
+function sonsList(){const L=CARDS.filter(c=>{const n=S.owned[c.id]||0;return n>0&&(sonsF==='all'||(sonsF==='dup'?n>1:c.r===+sonsF))});return L.sort((a,b)=>b.r-a.r||(S.owned[b.id]||0)-(S.owned[a.id]||0)||a.t.localeCompare(b.t))}
+function sonsChips(){const all=CARDS.filter(c=>own(c.id));const cnt=r=>all.filter(c=>c.r===r).length,dup=all.filter(c=>(S.owned[c.id]||0)>1).length;
+  return `<div class="chips scr sonsf">${[['all','Tous',all.length],['dup','Doubles',dup],...[5,4,3,2,1,0].map(r=>[String(r),RAR[r].n,cnt(r)])].filter(x=>x[0]==='all'||x[2]).map(([k,n,v])=>`<button class="chip" data-act="sonsf" data-v="${k}" aria-pressed="${sonsF===k}"${/^\d$/.test(k)?` style="--rc:${RAR[+k].c}"`:''}>${/^\d$/.test(k)?'<i class="rdot"></i>':''}${n}<small>${v}</small></button>`).join('')}</div>`}
 function vCollection(){
   const L=colList(),tot=ownedArtists().length;
-  return `<div class="view v-col"><div class="vh"><button class="gbtn sq" data-act="colv" data-v="${colView==='bulles'?'liste':'bulles'}" aria-label="${colView==='bulles'?'Voir en liste':'Voir en bulles'}">${colView==='bulles'?ICON.list:ICON.bub}</button>
-    <div class="seg glass sm">${STYLES.map(([g,n])=>`<button data-act="colg" data-v="${g}" aria-pressed="${colG===g}">${n}</button>`).join('')}</div>
+  const so=colView==='sons';
+  return `<div class="view v-col"><div class="vh"><div class="seg glass sm cmode">${[['bulles','Bulles'],['liste','Artistes'],['sons','Sons']].map(([k,n])=>`<button data-act="colv" data-v="${k}" aria-pressed="${colView===k}">${n}</button>`).join('')}</div></div>
+    <div class="vh">${so?sonsChips():`<div class="seg glass sm">${STYLES.map(([g,n])=>`<button data-act="colg" data-v="${g}" aria-pressed="${colG===g}">${n}</button>`).join('')}</div>`}
     <button class="gbtn sq" data-act="cat" aria-label="Tout le catalogue">${ICON.search}</button></div>
     <div class="cntr"><p class="cnt2"><b>${tot}</b> artiste${tot>1?'s':''} · <b>${CARDS.filter(c=>own(c.id)).length}</b>/${N} sons</p><button class="dpill" data-act="dusthelp" aria-label="Poussière : ${S.dust}">${dustI}<b>${S.dust.toLocaleString('fr-FR')}</b></button><button class="gbtn sq sm2" data-act="recy" aria-label="Recycler les doubles">${ICON.recycle}</button><button class="crb" data-act="atelier" aria-label="Créer un son"><span>${ICON.plus}</span>Créer</button></div>
-    ${colView==='bulles'?`<div class="bubw glass" id="bub">${L.length?'':'<p class="empty">Ouvre un drop pour commencer</p>'}</div>`:`<div class="pgr" id="pgr"></div>`}</div>`;
+    ${so?`<div class="pgr" id="pgs"></div>`:colView==='bulles'?`<div class="bubw glass" id="bub">${L.length?'':'<p class="empty">Ouvre un drop pour commencer</p>'}</div>`:`<div class="pgr" id="pgr"></div>`}</div>`;
 }
 function tickHTML(){mkInit();const L=S.mk.list.filter(l=>!l.mine).slice().sort((a,b)=>Math.abs(chg(b))-Math.abs(chg(a))).slice(0,8);if(!L.length)return '';
   const one=L.map(l=>`<span class="ti${chg(l)>0?' gn':''}"><b>${esc(C[l.cid].t)}</b>${chgHTML(l)}</span>`).join('');return `<div class="tick" aria-hidden="true"><div class="tk">${one}${one}</div></div>`}
@@ -257,6 +262,7 @@ function vProfil(){
    <div class="stys"><span class="styk">Tes styles <small>×2,5 de chances</small></span><div class="styl">${STYLES.slice(1).map(([g,n])=>`<button class="chip" data-act="sty" data-v="${g}" aria-pressed="${(S.styles||[]).includes(g)}">${n}</button>`).join('')}</div></div>
    <div class="pq"><button class="pqa pq-fr" data-act="gofriends"><span class="pqi">${ICON.users}</span><b>Amis</b><small>${nf?nf+' ami'+(nf>1?'s':''):'Aucun'}${pend?' · '+pend+' nouveau'+(pend>1?'x':''):''}</small></button><button class="pqa pq-inv" data-act="invite"><span class="pqi">${ICON.share}</span><b>Inviter</b><small>Partage ton lien</small></button><button class="pqa pq-top" data-act="prs" data-v="${profSub==='top'?'vitrine':'top'}" aria-pressed="${profSub==='top'}"><span class="pqi">${profSub==='top'?ICON.grid:ICON.star}</span><b>${profSub==='top'?'Vitrines':'Classement'}</b><small>${profSub==='top'?'Retour':'Top joueurs'}</small></button></div>
    <button class="statb glass" data-act="mystats"><span class="pqi">${ICON.gem}</span><span><b>Mes stats</b><small>Drops ouverts, chance, meilleur tirage…</small></span><i>›</i></button>
+   <button class="statb glass lblb" data-act="label"><span class="pqi" style="background:#7c5cff;color:#fff">${ICON.users}</span><span><b>Mon label</b><small>${window.LABEL&&LABEL.sub?esc(LABEL.sub()):'Monte ton label avec tes potes'}</small></span><i>›</i></button>
    ${profSub==='top'?`<div class="plist">${board().map(boardRow).join('')}</div>`:vVitrine()}</div>`;
 }
 function vitInit(){if(!Array.isArray(S.vits)||!S.vits.length)S.vits=[{n:'Ma vitrine',ids:(S.fav||[]).slice(0,6)}];S.vits.forEach(v=>{v.ids=(v.ids||[]).filter(id=>C[id]&&own(id)).slice(0,6)});S.vi=Math.min(S.vi|0,S.vits.length-1);S.fav=S.vits[S.vi].ids}
@@ -336,7 +342,7 @@ function render(){
 }
 function layout(){
   const h=$('pgr');
-  if(tab==='collection'){if($('bub'))initBub();if(h)pager(h,colList(),artistRow,{cellH:66,minW:320,gap:8,empty:'Ouvre un drop pour commencer'})}
+  if(tab==='collection'){if($('bub'))initBub();if(h)pager(h,colList(),artistRow,{cellH:66,minW:320,gap:8,empty:'Ouvre un drop pour commencer'});const hs=$('pgs');if(hs)pager(hs,sonsList(),tileBtn,{minT:100,empty:sonsF==='dup'?'Aucun double':'Aucun son'})}
   if(tab==='shop'&&h){if(shopSub==='encheres')mkLayout();else if(shopSub==='echanges'){if(window.SOC)SOC.layout(h)}else if(shopSub==='jetons')pager(h,shopItems(),x=>x,{cellH:jetSub==='packs'?190:188,cols:2,gap:10})}
   
   if(tab==='shop'&&shopSub==='saison'&&seaSub!=='missions'){const tk=$('trk'),v=tk&&tk.closest('.view');const t=tierNow();if(v&&!v._same&&t>2&&t<TIERS){const c=tk.children[t-2];if(c)v.scrollTop=Math.max(0,c.offsetTop-v.clientHeight*.35)}}
@@ -542,22 +548,22 @@ function crkGeo(){const R=Math.random,n=S.set.lite?6:10,a0=R()*360,ang=[];let ac
   let t=a0;for(let k=0;k<n;k++){ang.push(t);t+=w[k]/acc*360}
   const P=(a,r)=>{const q=a*Math.PI/180;return [50+Math.cos(q)*r,50+Math.sin(q)*r]};
   const r1=16+R()*8,r2=34+R()*6;
-  const rad=ang.map(a=>[P(a+(R()-.5)*8,r1),P(a+(R()-.5)*10,r2),P(a+(R()-.5)*6,80)]);
+  const rad=ang.map(a=>{const j=()=>(R()-.5)*9;return [P(a+j(),r1),P(a+j(),(r1+r2)/2),P(a+j(),r2),P(a+j(),42),P(a+(R()-.5)*5,80)]});
   const mid=ang.map((a,k)=>{const b=k+1<n?ang[k+1]:ang[0]+360;return P((a+b)/2+(R()-.5)*6,r1+(R()-.5)*5)});
   return CRK={n,ang,rad,mid}}
 function crackSVG(){const g=crkGeo(),f=p=>p[0].toFixed(1)+' '+p[1].toFixed(1),cl=p=>{const dx=p[0]-50,dy=p[1]-50,d=Math.hypot(dx,dy),m=Math.min(1,49/d);return [50+dx*m,50+dy*m]};let d='',e='';
-  g.rad.forEach(r=>{d+=`M50 50L${f(r[0])}L${f(r[1])}L${f(cl(r[2]))}`});
+  g.rad.forEach(r=>{d+=`M50 50`+r.map(p=>`L${f(cl(p))}`).join('')});
   g.rad.forEach((r,k)=>{const q=g.rad[(k+1)%g.n];e+=`M${f(r[0])}L${f(g.mid[k])}L${f(q[0])}`});
-  return `<svg class="crk" viewBox="0 0 100 100" aria-hidden="true"><path d="${d}"/><path class="ring" d="${e}"/></svg>`}
+  return `<svg class="crk" viewBox="0 0 100 100" aria-hidden="true"><path class="glow" d="${d}${e}"/><path d="${d}"/><path class="ring" d="${e}"/></svg>`}
 function shatter(){const op=$('op');if(!op)return;const pl=op.querySelector('.pl'),bvr=op.querySelector('.bv .bvr');if(!pl||!bvr)return;const inner=bvr.innerHTML;const g=CRK||crkGeo();CRK=null;const R=Math.random;let h='';
   const poly=pts=>'polygon('+pts.map(p=>p[0].toFixed(1)+'% '+p[1].toFixed(1)+'%').join(',')+')';
   const piece=(pts,dist,del)=>{let cx=0,cy=0;pts.forEach(p=>{cx+=p[0];cy+=p[1]});cx=cx/pts.length-50;cy=cy/pts.length-50;const m=Math.hypot(cx,cy)||1;
-    h+=`<div class="shd" style="clip-path:${poly(pts)};transform-origin:${(cx+50).toFixed(0)}% ${(cy+50).toFixed(0)}%;--x:${(cx/m*dist).toFixed(1)}cqw;--y:${(cy/m*dist-8).toFixed(1)}cqw;--r:${((R()-.5)*300).toFixed(0)}deg;--ax:${(R()-.5).toFixed(2)};--ay:${(R()-.5).toFixed(2)};--g:${(40+R()*50).toFixed(0)}cqw;animation-delay:${del}ms;animation-duration:${(950+R()*450).toFixed(0)}ms"><div class="bvr">${inner}</div></div>`};
+    h+=`<div class="shd" style="clip-path:${poly(pts)};transform-origin:${(cx+50).toFixed(0)}% ${(cy+50).toFixed(0)}%;--x:${(cx/m*dist).toFixed(1)}cqw;--y:${(cy/m*dist-8).toFixed(1)}cqw;--r:${((R()-.5)*300).toFixed(0)}deg;--ax:${(R()-.5).toFixed(2)};--ay:${(R()-.5).toFixed(2)};--g:${(20+R()*30).toFixed(0)}cqw;--z:${(40+R()*200).toFixed(0)}px;animation-delay:${del}ms;animation-duration:${(1000+R()*450).toFixed(0)}ms"><div class="bvr">${inner}</div><i class="shl" style="--a:${(R()*360).toFixed(0)}deg"></i></div>`};
   for(let k=0;k<g.n;k++){const a=g.rad[k],b=g.rad[(k+1)%g.n];
     piece([[50,50],a[0],g.mid[k],b[0]],18+R()*14,0);
-    piece([a[0],a[1],a[2],b[2],b[1],b[0],g.mid[k]],42+R()*34,(R()*40)|0)}
+    piece([...a,...b.slice().reverse(),g.mid[k]],42+R()*34,(R()*40)|0)}
   const cs=[RAR[(reveal&&reveal.res[reveal.i]?reveal.res[reveal.i].c.r:0)].c,'#fff','#1a1a20','#2a2a32'];
-  for(let k=0;k<(S.set.lite?6:18);k++){const q=R()*Math.PI*2,d=30+R()*60;h+=`<i class="dbr" style="--x:${(Math.cos(q)*d).toFixed(1)}cqw;--y:${(Math.sin(q)*d-10).toFixed(1)}cqw;--r:${((R()-.5)*720).toFixed(0)}deg;--s:${(1+R()*2.6).toFixed(1)}cqw;--c:${cs[k%cs.length]};animation-delay:${(R()*60)|0}ms"></i>`}
+  for(let k=0;k<(S.set.lite?8:26);k++){const q=R()*Math.PI*2,d=26+R()*70;h+=`<i class="dbr" style="--x:${(Math.cos(q)*d).toFixed(1)}cqw;--y:${(Math.sin(q)*d-10).toFixed(1)}cqw;--r:${((R()-.5)*720).toFixed(0)}deg;--s:${(1+R()*2.6).toFixed(1)}cqw;--c:${cs[k%cs.length]};animation-delay:${(R()*60)|0}ms"></i>`}
   const old=pl.querySelector('.shards');if(old)old.remove();const d=document.createElement('div');d.className='shards';d.innerHTML=h;pl.appendChild(d);op.classList.add('brk');
   const st=op.querySelector('.stage');if(st&&!S.set.lite){st.classList.remove('boomk');void st.offsetWidth;st.classList.add('boomk');setTimeout(()=>st.classList.remove('boomk'),600)}}
 const acHTML=(B,x,b,N,full)=>`<div class="acp${full?' full':''}" id="acp"><span class="acv" style="background:${esc(B.art)}"><i class="gh" style="--rc:${RAR[x.c.r].c}"></i></span><span class="acm"><b>${esc(B.t)}</b><span class="acb"><i id="acbi" style="width:${b/N*100}%"></i></span></span><em><span id="acn">${b}</span>/${N}</em></div>`;
@@ -760,7 +766,7 @@ function renderMenu(){
      <h3 class="msec">Thème</h3>
      <div class="skrow">${SKINS.map(([id,n,pp])=>{const lk=pp&&!on;return `<button class="skin2" data-act="${lk?'needpass':'skin'}" data-s="${id}" aria-pressed="${(S.set.skin||'auto')===id}"><span class="pv" style="--pv:${SKPV[id]}">${lk?'<u class="pro">Pro</u>':''}</span><small>${n}</small></button>`}).join('')}</div>
      <div class="mtg"><div class="set"><span class="ic" style="--icbg:#7c5cff">${ICON.play}</span><b>Sons</b><button class="sw" role="switch" aria-checked="${S.set.snd!==false}" data-act="snd" aria-label="Sons"></button></div><div class="set"><span class="ic" style="--icbg:#ef5466">${ICON.play}</span><b>Extraits</b><button class="sw" role="switch" aria-checked="${S.set.prev!==false}" data-act="prev" aria-label="Extraits musicaux"></button></div><div class="set"><span class="ic" style="--icbg:#30a46c">${ICON.bolt}</span><b>Mode économie</b><button class="sw" role="switch" aria-checked="${!!S.set.lite}" data-act="lite" aria-label="Mode économie"></button></div></div>
-     <div class="mgrid">${[['events','#d6336c',ICON.cal,'Événements',liveEv()?'En cours':''],['!cat','#2b8a3e',ICON.search,'Catalogue',`${ARTISTS.length} artistes`],['rar','#e9a23b',ICON.gem,'Raretés',''],['code','#ff7a3d',ICON.gift,'Code',''],['idee','#9c36b5',ICON.star,'Tes idées','Améliore le jeu'],['how','#3a8dde',ICON.help,'Aide',''],['compte','#4c6ef5',ICON.users,'Compte','']].map(([p2,bg,ic,t,sm])=>`<button class="mt" data-act="${p2[0]==='!'?p2.slice(1):'mpage'}" data-p="${p2}"><span class="ic" style="--icbg:${bg}">${ic}</span><b>${t}</b>${sm?`<small>${sm}</small>`:''}</button>`).join('')}</div>
+     <div class="mgrid">${[['events','#d6336c',ICON.cal,'Événements',liveEv()?'En cours':''],['!label','#7c5cff',ICON.users,'Label',window.LABEL&&LABEL.sub?LABEL.sub():'Avec tes potes'],['!cat','#2b8a3e',ICON.search,'Catalogue',`${ARTISTS.length} artistes`],['rar','#e9a23b',ICON.gem,'Raretés',''],['code','#ff7a3d',ICON.gift,'Code',''],['idee','#9c36b5',ICON.star,'Tes idées','Améliore le jeu'],['how','#3a8dde',ICON.help,'Aide',''],['compte','#4c6ef5',ICON.users,'Compte','']].map(([p2,bg,ic,t,sm])=>`<button class="mt" data-act="${p2[0]==='!'?p2.slice(1):'mpage'}" data-p="${p2}"><span class="ic" style="--icbg:${bg}">${ic}</span><b>${t}</b>${sm?`<small>${sm}</small>`:''}</button>`).join('')}</div>
      <button class="mlink" data-act="mpage" data-p="set">Réinitialiser les réglages</button>`}
   else if(p==='compte'){b=top('Compte')+(window.CL?CL.page():'<p class="cap">Indisponible hors ligne</p>')}
   else if(p==='events'){b=top('Événements')+`<h2>Événements</h2>`+EVENTS.filter(x=>evState(x)!=='past').sort((a,b)=>new Date(a.s)-new Date(b.s)).map(x=>{const st=evState(x);return `<div class="evc"><i class="sw2" style="--evbg:${x.bg}"></i><div><b>${x.n}</b><small>${x.d}</small></div><em>${st==='live'?`<span data-until="${x.e}">${dur(new Date(x.e)-now())}</span>`:fdate(x.s)}</em></div>`}).join('')}
@@ -794,7 +800,8 @@ document.addEventListener('click',e=>{
     case 'spot':closeMenu();spotFlow();break;
     case 'spotoff':S.spot=null;save();closeDD();toast('Spotify déconnecté');render();break;
     case 'claim':claim();break;
-    case 'colv':colView=t.dataset.v;render();break;
+    case 'colv':colView=t.dataset.v;try{localStorage.setItem('td-colv',colView)}catch(_){}render();break;
+    case 'sonsf':sonsF=t.dataset.v;render();break;
     case 'colg':colG=t.dataset.v;render();break;
     case 'cat':closeMenu();closeDD();stack=[{type:'cat'}];renderStack();break;
     case 'cats':catScope=t.dataset.v;renderStack(true);break;

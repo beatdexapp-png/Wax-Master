@@ -1,5 +1,5 @@
-const CACHE='waxdrop-v39';
-const SHELL=['/','/index.html','/style.css','/data.js','/catalog.js','/app.js','/cloud.js','/eco.js','/social.js','/vendor/motion.js','/fx.js','/share.js','/stats.js','/preview.js','/polish.js','/vendor/supabase.js','/manifest.webmanifest','/icons/icon-192.png','/icons/icon-512.png'];
+const CACHE='waxdrop-v40';
+const SHELL=['/','/index.html','/style.css','/data.js','/catalog.js','/app.js','/cloud.js','/eco.js','/social.js','/vendor/motion.js','/fx.js','/share.js','/stats.js','/preview.js','/polish.js','/events.js','/labels.js','/vendor/supabase.js','/manifest.webmanifest','/icons/icon-192.png','/icons/icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 // Réseau d'abord, en revalidant toujours auprès du serveur (pas de copie vieille de 10 min), cache seulement hors ligne

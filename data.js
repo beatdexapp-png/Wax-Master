@@ -110,10 +110,17 @@ const GEN={FR:'Rap FR',US:'Rap US',UK:'Rap UK'};
 const GW={FR:1.6,US:1,UK:1};
 const UND=['So La Lune','Jeune Morty','Jolagreen23','La Fève','8ruki','Yvnnis','Kerchak','Rounhaa','Luv Resval','Prince Waly','H JeuneCrack'];
 const EVENTS=[
- {n:'Nuit Underground',s:'2026-10-10T18:00',e:'2026-10-14T23:59',d:'Rappeurs underground ×4',fx:{artists:UND,mult:4},bg:'linear-gradient(135deg,#6b2bd9,#d6336c)'},
- {n:'Âge d’or',s:'2026-10-17T00:00',e:'2026-10-19T23:59',d:'Chance Divine ×2',fx:{divin:2},bg:'linear-gradient(135deg,#a87a22,#f3e3b5)'},
- {n:'Drill Session',s:'2026-10-24T00:00',e:'2026-10-26T23:59',d:'Gazo, Tiakola, SDM, Kerchak ×4',fx:{artists:['Gazo','Tiakola','SDM','Kerchak'],mult:4},bg:'linear-gradient(135deg,#1c4fa3,#20c997)'},
- {n:'Halloween',s:'2026-10-30T00:00',e:'2026-11-02T23:59',d:'Maxis à 50 jetons',fx:{cost:50},bg:'linear-gradient(135deg,#1a0f05,#f59f00)'},
- {n:'UK Night',s:'2026-11-07T00:00',e:'2026-11-09T23:59',d:'Rap UK ×3',fx:{genre:'UK',mult:3},bg:'linear-gradient(135deg,#0b1d4a,#c92a2a)'},
- {n:'Nuit US',s:'2026-11-14T00:00',e:'2026-11-16T23:59',d:'Rap US ×3',fx:{genre:'US',mult:3},bg:'linear-gradient(135deg,#c92a2a,#1c4fa3)'},
+ {id:1,n:'Nuit Underground',s:'2026-10-10T18:00',e:'2026-10-14T23:59',d:'Underground ×4',fx:{artists:UND,mult:4},bg:'linear-gradient(135deg,#6b2bd9,#d6336c)'},
+ {id:2,n:'Âge d’or',s:'2026-10-17T00:00',e:'2026-10-19T23:59',d:'Chance Divine ×2',fx:{divin:2},bg:'linear-gradient(135deg,#a87a22,#f3e3b5)'},
+ {id:3,n:'Drill Session',s:'2026-10-24T00:00',e:'2026-10-26T23:59',d:'Gazo, Tiakola, SDM, Kerchak',fx:{artists:['Gazo','Tiakola','SDM','Kerchak'],mult:4},bg:'linear-gradient(135deg,#1c4fa3,#20c997)'},
+ {id:4,n:'Cloud Nine',s:'2026-10-27T00:00',e:'2026-10-29T23:59',d:'PNL, So La Lune, Jolagreen23…',fx:{artists:['PNL','So La Lune','Jolagreen23','Luv Resval','La Fève','8ruki'],mult:4},bg:'linear-gradient(135deg,#2b1d6b,#5aa9ff)'},
+ {id:5,n:'Halloween',s:'2026-10-30T00:00',e:'2026-11-02T23:59',d:'Drops à 50 · Freeze, Kaaris, Ziak…',fx:{cost:50,artists:['Freeze Corleone','Kaaris','Ziak','Rounhaa','Kalash Criminel'],mult:4},bg:'linear-gradient(135deg,#1a0f05,#f59f00)'},
+ {id:6,n:'Marseille',s:'2026-11-03T00:00',e:'2026-11-06T23:59',d:'Jul, SCH, Naps, Soso Maness…',fx:{artists:['Jul','SCH','Naps','Soso Maness',"L'Algérino",'Alpha Wann'],mult:4},bg:'linear-gradient(135deg,#0b5ea8,#41c7ff)'},
+ {id:7,n:'UK Night',s:'2026-11-07T00:00',e:'2026-11-09T23:59',d:'Rap UK ×3',fx:{genre:'UK',mult:3},ic:['Central Cee','Dave','Stormzy','Skepta'],bg:'linear-gradient(135deg,#0b1d4a,#c92a2a)'},
+ {id:8,n:'Les Légendes',s:'2026-11-10T00:00',e:'2026-11-13T23:59',d:'Booba, Rohff, Kery James, IAM…',fx:{artists:['Booba','Rohff','Kery James','IAM','Suprême NTM',"Rim'K"],mult:4},bg:'linear-gradient(135deg,#3a2a12,#e9c46a)'},
+ {id:9,n:'Nuit US',s:'2026-11-14T00:00',e:'2026-11-16T23:59',d:'Rap US ×3',fx:{genre:'US',mult:3},ic:['Drake','Travis Scott','Kendrick Lamar','Future'],bg:'linear-gradient(135deg,#c92a2a,#1c4fa3)'},
+ {id:10,n:'Nouvelle Vague',s:'2026-11-17T00:00',e:'2026-11-20T23:59',d:'Tiakola, Werenoi, Theodora…',fx:{artists:['Tiakola','Werenoi','Theodora','Green Montana','Guy2Bezbar','Bekar'],mult:4},bg:'linear-gradient(135deg,#ff5f86,#7c5cff)'},
+ {id:11,n:'Âge d’or',s:'2026-11-21T00:00',e:'2026-11-23T23:59',d:'Chance Divine ×2',fx:{divin:2},bg:'linear-gradient(135deg,#a87a22,#f3e3b5)'},
+ {id:12,n:'Rap Belge',s:'2026-11-24T00:00',e:'2026-11-27T23:59',d:'Damso, Hamza, Shay, Krisy…',fx:{artists:['Damso','Hamza','Shay','Krisy','Isha','Frenetik'],mult:4},bg:'linear-gradient(135deg,#111,#ffd23d 55%,#e5484d)'},
+ {id:13,n:'Black Friday',s:'2026-11-28T00:00',e:'2026-11-30T23:59',d:'Drops à 50 wax coins',fx:{cost:50},bg:'linear-gradient(135deg,#0a0a0a,#3a3a44)'},
 ];

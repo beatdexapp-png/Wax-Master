@@ -12,7 +12,7 @@
     S.coins=w.coins;S.gold=w.gold;S.bonus=w.bonus;S.dust=w.dust;
     var o={};for(var k in (w.owned||{}))if(C[k])o[k]=w.owned[k];S.owned=o;
     S.freeAt=+new Date(w.free_at)||0;S.xp=w.sxp||0;S.passUntil=w.pass_until?+new Date(w.pass_until):0;S.top=Array.isArray(w.top)?w.top:[];S.styles=Array.isArray(w.styles)?w.styles:[];S.topAt=w.top_at?+new Date(w.top_at):0;
-    var cl=w.claims||{};S.ul=Object.assign({},cl.ul||{});S.sfree=(cl.sf||[]).slice();S.sprem=(cl.sp||[]).slice();S.codes=Object.assign({},cl.codes||{});
+    var cl=w.claims||{};S.ul=Object.assign({},cl.ul||{});S.sfree=(cl.sf||[]).slice();S.sprem=(cl.sp||[]).slice();S.codes=Object.assign({},cl.codes||{});S.evp=cl.evp||{};S.evc=cl.evc||{};
     var d=w.day||{};S.day=d.d===today()?Object.assign(fresh0(),d,{cl:Object.assign({},d.cl||{})}):fresh0();
     save();setCoins();
   };
@@ -133,7 +133,7 @@
     if(r.error){toast(/fetch|network/i.test(r.error.message)?'Connexion impossible, réessaie':r.error.message);return}
     B.list=(r.data.rows||[]).filter(function(x){return C[x.id]});
     B.list.forEach(function(x){LIVE[x.id]=LIVE[x.id]||{};LIVE[x.id].sp=(x.sp||[x.p]).map(Number);LIVE[x.id].real=(x.sp&&x.sp.length?+x.sp[x.sp.length-1]:x.p)});
-    B.meta={buys:r.data.buys,sells:r.data.sells};
+    B.meta={buys:r.data.buys,sells:r.data.sells,pro:!!r.data.pro};
     if(!q&&B.f==='hot'){ECO.ix=+r.data.ix||0;B.tk=B.list.slice()}
     B.t=Date.now();paint();
   }
@@ -153,7 +153,7 @@
     return '<svg class="bxsp '+(cls||'')+(up?' bxup':' bxdn')+'" data-sp="'+id+'" data-w="'+W+'" data-h="'+H+'" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" aria-hidden="true">'+(fill?'<polygon points="0,'+H+' '+pts+' '+W+','+H+'"/>':'')+'<polyline points="'+pts+'"/></svg>';
   }
   function chip(v){return '<span class="bxch2'+cls(v)+'">'+(v>0?'▲ ':v<0?'▼ ':'')+pct(v)+'</span>'}
-  function buyBtn(x,big){return x.can?'<button class="bxb'+(big?' big':'')+'" data-act="bxbuy" data-id="'+x.id+'">'+(big?'Acheter · ':'')+x.buy+' '+coinI+'</button>':'<span class="bxlock">'+ICON.lock+(big?'Packs uniquement':'')+'</span>'}
+  function buyBtn(x,big){return x.can?'<button class="bxb'+(big?' big':'')+'" data-act="bxbuy" data-id="'+x.id+'">'+(big?'Acheter · ':'')+x.buy+' '+coinI+'</button>':'<span class="bxlock">'+ICON.lock+(big?'Divin : WaxDrop Pro':'')+'</span>'}
   /* carte de la grille */
   function cardHTML(x,i,rank){
     var c=C[x.id],R=RAR[c.r];
@@ -211,7 +211,7 @@
     var top='<div class="bxs"><input id="bxq" type="search" placeholder="Chercher un son ou un artiste" value="'+esc(B.q)+'" autocomplete="off"></div>'
       +'<div class="chips">'+[['hot','Tendances'],['top','Les plus chers'],['mine','Mes sons']].map(function(z){return '<button class="chip" data-act="bxf" data-v="'+z[0]+'" aria-pressed="'+(B.f===z[0]&&!B.q)+'">'+z[1]+'</button>'}).join('')+'</div>';
     return top+'<div id="bxl" class="bxlist">'+listHTML()+'</div>'
-      +'<p class="cap bxcap">Achat au cours +5 %, revente −5 %. Encore '+B.meta.buys+' achat'+(B.meta.buys>1?'s':'')+' et '+B.meta.sells+' vente'+(B.meta.sells>1?'s':'')+' aujourd’hui. Mythiques et Divins : packs uniquement.</p>';
+      +'<p class="cap bxcap">Achat au cours +5 %, revente −5 %. '+(B.meta.pro?'WaxDrop Pro : achats et ventes illimités, Divins compris.':'Encore '+Math.max(0,B.meta.buys)+' achat'+(B.meta.buys>1?'s':'')+' et '+Math.max(0,B.meta.sells)+' vente'+(B.meta.sells>1?'s':'')+' aujourd’hui. Divins et illimité : WaxDrop Pro.')+'</p>';
   }
   function listHTML(){
     if(!B.list)return '<p class="cap">Chargement…</p>';
@@ -316,7 +316,7 @@
       +'<div class="bxstat" id="bxstat"></div>'
       +(x.cost?'<p class="cap">Tu l’as acheté '+x.cost+' wax coins en moyenne.</p>':'')
       +'<div class="bxact">'
-      +(x.can?'<button class="pbtn" data-act="bxbuy" data-id="'+id+'">Acheter · '+x.buy+' '+coinI+'</button>':'<button class="pbtn" disabled>Packs uniquement</button>')
+      +(x.can?'<button class="pbtn" data-act="bxbuy" data-id="'+id+'">Acheter · '+x.buy+' '+coinI+'</button>':'<button class="pbtn" data-act="gopass">Divin : avec WaxDrop Pro</button>')
       +'<button class="gbtn" data-act="bxsell" data-id="'+id+'"'+(x.own?'':' disabled')+'>Vendre · '+x.sell+' '+coinI+'</button></div>'
       +(x.own===1?'<p class="cap">C’est ton seul exemplaire : le vendre le retire de ta collection.</p>':'');
     drawChart();
