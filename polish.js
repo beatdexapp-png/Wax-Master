@@ -31,9 +31,10 @@
   /* fermer la fiche coupe l'extrait */
   if(window.MutationObserver&&DD)new MutationObserver(function(){if(!DD.querySelector('.pop')&&!reveal&&window.PV)PV.stop(250)}).observe(DD,{childList:true});
 
-  /* ---------- transition douce entre onglets ---------- */
-  if(typeof setTab==='function'&&document.startViewTransition){var oTab=setTab;window.setTab=function(t){if(lite()||t===tab)return oTab.apply(this,arguments);var a=arguments,self=this;
-    document.documentElement.classList.add('vt');var vt=document.startViewTransition(function(){oTab.apply(self,a)});vt.finished.finally(function(){document.documentElement.classList.remove('vt')});if(window.SFX&&SFX.whoosh)SFX.whoosh()}}
+  /* ---------- changement d'onglet : un seul rendu par image, même si on tape vite ---------- */
+  if(typeof setTab==='function'){var oTab=setTab,pend=null,rq=0;window.setTab=function(t){if(t===tab&&!pend)return oTab.apply(this,arguments);
+    document.querySelectorAll('#tabs button[data-tab]').forEach(function(b){b.setAttribute('aria-current',b.dataset.tab===t?'page':'false')});
+    if(window.SFX&&SFX.whoosh&&t!==tab)SFX.whoosh();pend=t;if(!rq)rq=requestAnimationFrame(function(){rq=0;var x=pend;pend=null;oTab(x)})}}
 
   /* ---------- halo de rareté derrière la carte révélée ---------- */
   if(typeof revealCard==='function'){var oR=revealCard;window.revealCard=function(){var x=reveal&&reveal.res[reveal.i];var r=oR.apply(this,arguments);

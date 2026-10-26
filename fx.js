@@ -47,10 +47,19 @@
       noise(t,d,{ft:'bandpass',f:500,fto:2500+L*1200,q:2,vol:.03+L*.012,a:d*.8});
       noise(t,.12,{ft:'bandpass',f:1800,fto:600,q:2.5,vol:.18,a:.004});tone(180,t,.15,{type:'triangle',to:260,vol:.08})})},
     spinTap:function(){play(function(t){noise(t,.12,{ft:'bandpass',f:1800,fto:600,q:2.5,vol:.16,a:.004});tone(180,t,.15,{type:'triangle',to:260,vol:.07})})},
+    crack:function(){play(function(t){[0,.045,.1,.16].forEach(function(o,i){noise(t+o,.025,{ft:'highpass',f:3500+i*600,vol:.35-i*.05,a:.001})});
+      tone(260,t,.28,{type:'sawtooth',to:150,vol:.035});noise(t,.3,{ft:'bandpass',f:900,fto:300,q:3,vol:.06});tone(55,t,.25,{to:40,vol:.25})})},
     shatter:function(){play(function(t){
-      noise(t,.08,{ft:'highpass',f:2500,vol:.5,a:.001});
-      for(var i=0;i<14;i++){var o=.02+Math.random()*.35;tone(2200+Math.random()*3800,t+o,.08+Math.random()*.12,{type:'triangle',vol:.05+Math.random()*.05,a:.001,rev:true})}
-      noise(t+.02,.6,{ft:'bandpass',f:4000,fto:1200,q:1,vol:.2,rev:true});tone(90,t,.3,{to:45,vol:.5})})},
+      /* impact : grosse caisse + souffle */
+      tone(150,t,.55,{to:34,slide:.3,vol:.85,a:.002});noise(t,.35,{f:1400,fto:90,vol:.45,a:.002});
+      /* la cassure : claquement sec */
+      noise(t,.05,{ft:'highpass',f:2800,vol:.7,a:.001});noise(t+.01,.12,{ft:'bandpass',f:5200,fto:2400,q:1.5,vol:.35,a:.001,rev:true});
+      /* éclats qui tintent, de plus en plus espacés */
+      for(var i=0;i<26;i++){var o=.02+Math.pow(Math.random(),1.7)*.75,f=2400+Math.random()*5200;tone(f,t+o,.05+Math.random()*.14,{type:i%3?'triangle':'sine',vol:.03+Math.random()*.06,a:.001,rev:true,to:f*(.94+Math.random()*.04)})}
+      /* débris qui retombent */
+      for(var k=0;k<9;k++){var q=.35+Math.random()*.6;noise(t+q,.03,{ft:'bandpass',f:1800+Math.random()*2500,q:4,vol:.07+Math.random()*.06,a:.001})}
+      /* traîne brillante */
+      noise(t+.03,1.1,{ft:'highpass',f:5500,vol:.07,a:.05,rev:true});tone(NOTE(96),t+.05,.9,{vol:.025,rev:true})})},
     craft:function(){play(function(t){noise(t,1.1,{ft:'bandpass',f:400,fto:5000,q:1.5,vol:.12,a:.8});
       [72,79,84,88,91].forEach(function(n,i){tone(NOTE(n),t+1.0+i*.05,.9,{type:'triangle',vol:.07,rev:true})});tone(120,t+1.0,.4,{to:50,vol:.5})})},
     level:function(L){play(function(t){var base=[0,72,74,76,79,84][L]||72;tone(NOTE(base),t,.25,{type:'triangle',vol:.1});tone(NOTE(base+7),t+.05,.3,{type:'sine',vol:.06,rev:true})})},

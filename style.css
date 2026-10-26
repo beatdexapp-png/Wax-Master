@@ -574,6 +574,15 @@ svg.crk{position:absolute;left:6%;top:6%;width:88%;height:88%;z-index:2;pointer-
 .shd{position:absolute;inset:0;animation:shd .8s cubic-bezier(.2,.7,.4,1) forwards}
 .shd .bvr{animation:none!important}
 @keyframes shd{to{transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(.75);opacity:0}}
+/* v33 : éclats qui suivent les fissures, en 3D, avec gravité, plus des débris */
+.shards{perspective:600px}
+.shd{animation:shd2 1.1s cubic-bezier(.15,.8,.35,1) both;will-change:transform,opacity;filter:drop-shadow(0 0 .6cqw rgba(255,255,255,.35))}
+@keyframes shd2{0%{transform:none;opacity:1}30%{transform:translate(calc(var(--x)*.62),calc(var(--y)*.62)) rotate3d(var(--ax),var(--ay),.4,calc(var(--r)*.45));opacity:1}100%{transform:translate(var(--x),calc(var(--y) + var(--g))) rotate3d(var(--ax),var(--ay),.4,var(--r)) scale(.82);opacity:0}}
+.dbr{position:absolute;left:50%;top:50%;width:var(--s);height:var(--s);margin:calc(var(--s)/-2);background:var(--c);clip-path:polygon(50% 0,100% 70%,20% 100%);animation:dbr .9s cubic-bezier(.1,.8,.3,1) both;box-shadow:0 0 2cqw var(--c)}
+@keyframes dbr{0%{transform:scale(.3);opacity:1}100%{transform:translate(var(--x),calc(var(--y) + 30cqw)) rotate(var(--r)) scale(1);opacity:0}}
+.crk path.ring{animation-delay:.12s;stroke-width:.6}
+.stage.boomk{animation:boomk .5s cubic-bezier(.36,.07,.19,.97)}
+@keyframes boomk{0%{transform:scale(1)}12%{transform:translate(-1.6%,1%) scale(1.035)}28%{transform:translate(1.4%,-1.2%) scale(1.02)}45%{transform:translate(-.8%,.6%)}65%{transform:translate(.4%,-.3%)}100%{transform:none}}
 /* le son : carré pochette + onde */
 .rvw{width:66%}
 .rsq{position:relative;width:100%;aspect-ratio:1;container-type:inline-size}
@@ -1796,8 +1805,6 @@ body[data-skin="brume"] .mgo,body[data-skin="sable"] .mgo,body[data-skin="lilas"
 .rsq.live .sqw i{animation-duration:calc(var(--u)*.45);box-shadow:0 0 5cqw color-mix(in srgb,var(--wc) 75%,transparent)}
 .rsq.live .sqa{animation:beat .48s ease-in-out infinite alternate}
 @keyframes beat{to{box-shadow:0 2cqw 10cqw rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.2),0 0 26cqw color-mix(in srgb,var(--rc) 50%,transparent)}}
-/* étiquette Extrait · Deezer */
-.pvb{position:absolute;left:50%;top:calc(100% + 12px);transform:translateX(-50%);pointer-events:auto;display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:99px;background:rgba(0,0,0,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;font:600 11px var(--mono);letter-spacing:.06em;text-decoration:none;white-space:nowrap;animation:tin .4s ease-out both}
 .pveq{display:inline-flex;align-items:flex-end;gap:2px;height:11px}
 .pveq i{display:block;width:3px;height:100%;border-radius:2px;background:currentColor;animation:pveqk .7s ease-in-out infinite alternate;transform-origin:bottom}
 .pveq i:nth-child(2){animation-delay:-.25s}.pveq i:nth-child(3){animation-delay:-.5s}
@@ -1811,13 +1818,19 @@ body[data-skin="brume"] .mgo,body[data-skin="sable"] .mgo,body[data-skin="lilas"
 .halo.r3{--hc:rgba(255,194,61,.5)}.halo.r4{--hc:rgba(255,95,134,.55)}.halo.r5{--hc:rgba(232,207,138,.65)}
 @keyframes hin{to{opacity:1}}@keyframes hrot{to{rotate:360deg}}
 .rvw.fly .halo{display:none}
-/* transition entre onglets */
-::view-transition-old(root){animation:vto .18s ease-in both}
-::view-transition-new(root){animation:vti .28s cubic-bezier(.2,.9,.3,1) both}
-@keyframes vto{to{opacity:0;transform:scale(.985)}}
-@keyframes vti{from{opacity:0;transform:scale(1.015)}}
 /* finitions générales */
 .tile{transition:transform .25s cubic-bezier(.2,.9,.3,1),box-shadow .25s}
 @media (hover:hover){.tile:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 8px 22px rgba(0,0,0,.18)}}
 .lite .rsq,.lite .big{transform:none!important}.lite .rsq::before,.lite .halo{display:none}
-@media (prefers-reduced-motion:reduce){.rsq,.big{transform:none!important}.halo,.rsq::before{animation:none}::view-transition-old(root),::view-transition-new(root){animation:none}}
+@media (prefers-reduced-motion:reduce){.rsq,.big{transform:none!important}.halo,.rsq::before{animation:none}}
+/* v33 : albums en grand (fiche artiste, catalogue) */
+.alit{display:flex;flex-direction:column;gap:8px;border-radius:14px;text-align:left}
+.alit .alb{flex:none}
+.alit .alb .alc{top:3%;width:86%}
+.alit .alb .alv{top:6%;left:32%;width:66%}
+.alit .alb .alc span{font-size:8.5cqw}
+.alit .alb .badge{bottom:8%}
+.alcap{display:flex;flex-direction:column;gap:2px;padding:0 4px;min-width:0}
+.alcap b{font:700 14px/1.2 var(--disp);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.alcap small{font:500 11.5px var(--mono);opacity:.6}
+.pgd:has(>.alit:only-child){max-width:440px;margin:0 auto}

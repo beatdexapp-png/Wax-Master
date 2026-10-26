@@ -84,7 +84,7 @@ S.fav=(S.fav||[]).filter(id=>C[id]);S.spot=null;S.pass=null;if(S.mk&&S.mk.list)S
 if(S.freeAt>Date.now()+600e3)S.freeAt=Date.now()+600e3;
 if(!SKINS.some(s=>s[0]===S.set.skin))S.set.skin='auto';
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-let tab='ouvrir';try{const t=localStorage.getItem(KEY+'-t8');if(['ouvrir','collection','shop','bourse','profil'].includes(t))tab=t}catch(e){}
+let tab='ouvrir';
 let seaSub='pass',colView='bulles',colG='Tous',shopSub='hub',jetSub='packs',mkSub='live',profSub='vitrine',catQ='',catScope='artistes',catG='Tous',catOwn='all',reveal=null,menuPage=null,resetArm=false,stack=[];
 
 /* ================= OUTILS ================= */
@@ -133,6 +133,7 @@ const rewardHTML=x=>x.type==='album'?albumHTML(x):plaqueHTML(x);
 function artistRow(A,i){const p=pct(A.ids),n=A.ids.filter(own).length;return `<button class="arow" style="--i:${i%14}" data-act="artist" data-k="${A.key}" aria-label="${esc(A.n)}"><span class="av" style="--avg:${esc(A.avg)}">${esc(A.ini)}</span><span class="art"><b>${esc(A.n)}</b><small>${GEN[A.g]||A.g} · ${n}/${A.ids.length} sons</small><span class="abar"><i style="width:${p}%"></i></span></span><em>${p}%</em></button>`}
 function artistCell(A){const p=pct(A.ids);return `<button class="acell" data-act="artist" data-k="${A.key}" aria-label="${esc(A.n)}"><span class="ar" style="--p:${p}"><span class="av" style="--avg:${esc(A.avg)}">${esc(A.ini)}</span></span><b>${esc(A.n)}</b><small>${p}%</small></button>`}
 const tileBtn=c=>`<button class="it" data-act="see" data-id="${c.id}" aria-label="${esc(c.t)}, ${esc(c.a)}">${tileHTML(c)}</button>`;
+const albBig=A=>`<button class="it alit" data-act="album" data-k="${A.key}" aria-label="${esc(A.t)}">${albumHTML(A)}<span class="alcap"><b>${esc(A.single?'Singles':A.t)}</b><small>${A.y?A.y+' · ':''}${A.ids.filter(own).length}/${A.ids.length}</small></span></button>`;
 const albBtn=A=>`<button class="it" data-act="album" data-k="${A.key}" aria-label="${esc(A.t)}">${albumHTML(A)}</button>`;
 
 /* ================= PAGER ================= */
@@ -141,7 +142,7 @@ function pager(host,items,fn,o){
   if(!items.length){host.innerHTML=`<p class="empty">${o.empty||'Rien ici'}</p>`;return}
   let cols,ch;
   if(o.cellH){cols=o.cols||Math.max(1,Math.floor((w+gap)/((o.minW||320)+gap)));ch=o.cellH}
-  else{cols=Math.max(o.minCols||3,Math.floor((w+gap)/(o.minT+gap)));ch=(w-gap*(cols-1))/cols+(o.extra||0)}
+  else{cols=o.cols||Math.max(o.minCols||3,Math.floor((w+gap)/(o.minT+gap)));ch=(w-gap*(cols-1))/cols+(o.extra||0)}
   host.innerHTML=`<div class="pgv"><div class="pgd" style="grid-template-columns:repeat(${cols},minmax(0,1fr));grid-auto-rows:${ch.toFixed(1)}px;gap:${gap}px"></div></div>`;
   const sc=host.firstChild,g=sc.firstChild,step=cols*Math.max(4,Math.ceil((host.clientHeight||600)/(ch+gap))+2);let n=0;
   const add=()=>{if(n>=items.length)return;g.insertAdjacentHTML('beforeend',items.slice(n,n+step).map(fn).join(''));n+=step};
@@ -364,7 +365,7 @@ function catResults(){const q=catQ.trim()?slug(catQ):'';const okG=x=>catG==='Tou
 function catPager(){const h=$('spgr');if(!h)return;const L=catResults();const c=$('catn');if(c)c.textContent=L.length;
   const sg=$('catsug');if(sg){const q=catQ.trim(),has=q&&ARTISTS.some(A=>A.q===slug(q));sg.innerHTML=q.length>=2&&!has?`<div class="sugb glass"><span>« ${esc(q)} » n’est pas dans le jeu ?</span><button class="pbtn sm" data-act="askart">Proposer l’ajout</button></div>`:''}
   if(catScope==='artistes')pager(h,L,artistCell,{minT:88,extra:30,empty:'Aucun résultat'});
-  else if(catScope==='albums')pager(h,L,albBtn,{minT:140,empty:'Aucun résultat'});
+  else if(catScope==='albums')pager(h,L,albBig,{minT:160,minCols:2,extra:46,empty:'Aucun résultat'});
   else pager(h,L,tileBtn,{minT:92,empty:'Aucun résultat'})}
 function renderStack(keep){
   const p=stack[stack.length-1];if(!p){dt.innerHTML='';return}
@@ -388,7 +389,7 @@ function renderStack(keep){
   if(!keep||!dt.querySelector('.page'))dt.innerHTML=`<div class="scrim" data-act="closestack"></div><div class="page glass">${h}</div>`;
   else dt.querySelector('.page').innerHTML=h;
   if(p.type==='cat')catPager();
-  else if(p.type==='artist')pager($('spgr'),p.items,albBtn,{minT:150,empty:'Aucun album'});
+  else if(p.type==='artist'){const n=p.items.length;pager($('spgr'),p.items,albBig,{minT:160,minCols:2,cols:n<=2?n:undefined,extra:n===1?54:46,empty:'Aucun album'})}
   else if(p.type==='album')pager($('spgr'),RW[p.k].ids.map(id=>C[id]),tileBtn,{minT:92});
 }
 
@@ -536,12 +537,29 @@ function levelUp(){
 function waveBars(c){const R=rng('wb'+c.id);let s='';for(let k=0;k<26;k++){const v=.2+.8*Math.abs(Math.sin(k*.43+R()*2))*(.5+.5*R());s+=`<i style="--h:${v.toFixed(2)};--d:-${(R()*.8).toFixed(2)}s;--u:${(.5+R()*.4).toFixed(2)}s"></i>`}return s}
 function sqHTML(x){const c=x.c,B=c.alk&&RW[c.alk];const ser=S.ser[c.id];
   return `<div class="rsq r${c.r}${c.r===5?' dv':''}" style="--art:${esc(c.img?`url("${c.img}") center/cover no-repeat,${c.bg}`:(B&&B.art||c.bg))};--wc:${WCOL[c.r]};--rc:${RAR[c.r].c}"><div class="sqa"></div><div class="sqw">${waveBars(c)}</div><div class="sqt"><span class="sqr"><i></i>${RAR[c.r].n}</span><b>${esc(c.t)}</b><span>${esc(c.a)}</span></div>${ser?`<em class="sn">#${String(ser).padStart(3,'0')}</em>`:''}</div>`}
-function crackSVG(){const R=Math.random;let d='';for(let k=0;k<7;k++){const a=k/7*Math.PI*2+R()*.5;let x=50,y=50,r=0;d+=`M50 50`;while(r<48){r+=8+R()*9;const b=a+(R()-.5)*.6;x=50+Math.cos(b)*Math.min(r,48);y=50+Math.sin(b)*Math.min(r,48);d+=`L${x.toFixed(1)} ${y.toFixed(1)}`}}
-  return `<svg class="crk" viewBox="0 0 100 100" aria-hidden="true"><path d="${d}"/></svg>`}
-function shatter(){const op=$('op');if(!op)return;const pl=op.querySelector('.pl'),bvr=op.querySelector('.bv .bvr');if(!pl||!bvr)return;const inner=bvr.innerHTML;const n=S.set.lite?6:9;let h='';
-  for(let k=0;k<n;k++){const a0=k/n*360+(Math.random()-.5)*14,a1=(k+1)/n*360+(Math.random()-.5)*14,mid=(a0+a1)/2*Math.PI/180;const P=a=>{const t=a*Math.PI/180;return `${(50+Math.cos(t)*75).toFixed(1)}% ${(50+Math.sin(t)*75).toFixed(1)}%`};
-    const dist=40+Math.random()*30;h+=`<div class="shd" style="clip-path:polygon(50% 50%,${P(a0)},${P((a0+a1)/2)},${P(a1)});--x:${(Math.cos(mid)*dist).toFixed(1)}cqw;--y:${(Math.sin(mid)*dist+10).toFixed(1)}cqw;--r:${((Math.random()-.5)*160).toFixed(0)}deg"><div class="bvr">${inner}</div></div>`}
-  const old=pl.querySelector('.shards');if(old)old.remove();const d=document.createElement('div');d.className='shards';d.innerHTML=h;pl.appendChild(d);op.classList.add('brk')}
+let CRK=null;
+function crkGeo(){const R=Math.random,n=S.set.lite?6:10,a0=R()*360,ang=[];let acc=0;const w=[];for(let k=0;k<n;k++){w.push(.6+R()*.8);acc+=w[k]}
+  let t=a0;for(let k=0;k<n;k++){ang.push(t);t+=w[k]/acc*360}
+  const P=(a,r)=>{const q=a*Math.PI/180;return [50+Math.cos(q)*r,50+Math.sin(q)*r]};
+  const r1=16+R()*8,r2=34+R()*6;
+  const rad=ang.map(a=>[P(a+(R()-.5)*8,r1),P(a+(R()-.5)*10,r2),P(a+(R()-.5)*6,80)]);
+  const mid=ang.map((a,k)=>{const b=k+1<n?ang[k+1]:ang[0]+360;return P((a+b)/2+(R()-.5)*6,r1+(R()-.5)*5)});
+  return CRK={n,ang,rad,mid}}
+function crackSVG(){const g=crkGeo(),f=p=>p[0].toFixed(1)+' '+p[1].toFixed(1),cl=p=>{const dx=p[0]-50,dy=p[1]-50,d=Math.hypot(dx,dy),m=Math.min(1,49/d);return [50+dx*m,50+dy*m]};let d='',e='';
+  g.rad.forEach(r=>{d+=`M50 50L${f(r[0])}L${f(r[1])}L${f(cl(r[2]))}`});
+  g.rad.forEach((r,k)=>{const q=g.rad[(k+1)%g.n];e+=`M${f(r[0])}L${f(g.mid[k])}L${f(q[0])}`});
+  return `<svg class="crk" viewBox="0 0 100 100" aria-hidden="true"><path d="${d}"/><path class="ring" d="${e}"/></svg>`}
+function shatter(){const op=$('op');if(!op)return;const pl=op.querySelector('.pl'),bvr=op.querySelector('.bv .bvr');if(!pl||!bvr)return;const inner=bvr.innerHTML;const g=CRK||crkGeo();CRK=null;const R=Math.random;let h='';
+  const poly=pts=>'polygon('+pts.map(p=>p[0].toFixed(1)+'% '+p[1].toFixed(1)+'%').join(',')+')';
+  const piece=(pts,dist,del)=>{let cx=0,cy=0;pts.forEach(p=>{cx+=p[0];cy+=p[1]});cx=cx/pts.length-50;cy=cy/pts.length-50;const m=Math.hypot(cx,cy)||1;
+    h+=`<div class="shd" style="clip-path:${poly(pts)};transform-origin:${(cx+50).toFixed(0)}% ${(cy+50).toFixed(0)}%;--x:${(cx/m*dist).toFixed(1)}cqw;--y:${(cy/m*dist-8).toFixed(1)}cqw;--r:${((R()-.5)*300).toFixed(0)}deg;--ax:${(R()-.5).toFixed(2)};--ay:${(R()-.5).toFixed(2)};--g:${(40+R()*50).toFixed(0)}cqw;animation-delay:${del}ms;animation-duration:${(950+R()*450).toFixed(0)}ms"><div class="bvr">${inner}</div></div>`};
+  for(let k=0;k<g.n;k++){const a=g.rad[k],b=g.rad[(k+1)%g.n];
+    piece([[50,50],a[0],g.mid[k],b[0]],18+R()*14,0);
+    piece([a[0],a[1],a[2],b[2],b[1],b[0],g.mid[k]],42+R()*34,(R()*40)|0)}
+  const cs=[RAR[(reveal&&reveal.res[reveal.i]?reveal.res[reveal.i].c.r:0)].c,'#fff','#1a1a20','#2a2a32'];
+  for(let k=0;k<(S.set.lite?6:18);k++){const q=R()*Math.PI*2,d=30+R()*60;h+=`<i class="dbr" style="--x:${(Math.cos(q)*d).toFixed(1)}cqw;--y:${(Math.sin(q)*d-10).toFixed(1)}cqw;--r:${((R()-.5)*720).toFixed(0)}deg;--s:${(1+R()*2.6).toFixed(1)}cqw;--c:${cs[k%cs.length]};animation-delay:${(R()*60)|0}ms"></i>`}
+  const old=pl.querySelector('.shards');if(old)old.remove();const d=document.createElement('div');d.className='shards';d.innerHTML=h;pl.appendChild(d);op.classList.add('brk');
+  const st=op.querySelector('.stage');if(st&&!S.set.lite){st.classList.remove('boomk');void st.offsetWidth;st.classList.add('boomk');setTimeout(()=>st.classList.remove('boomk'),600)}}
 const acHTML=(B,x,b,N,full)=>`<div class="acp${full?' full':''}" id="acp"><span class="acv" style="background:${esc(B.art)}"><i class="gh" style="--rc:${RAR[x.c.r].c}"></i></span><span class="acm"><b>${esc(B.t)}</b><span class="acb"><i id="acbi" style="width:${b/N*100}%"></i></span></span><em><span id="acn">${b}</span>/${N}</em></div>`;
 function revealCard(){
   const R=reveal,x=R.res[R.i],r=x.c.r;R.stage='shown';hint('');stamp('',false);
@@ -550,7 +568,7 @@ function revealCard(){
   const show=()=>{const o=$('op');if(!o)return;o.classList.remove('rush','crack');o.classList.add('out');const box=$('rvc');
     if(box&&!box.firstChild){box.innerHTML=`<div class="rvw"><span class="tag${x.isNew?'':' dup'}">${x.isNew?'Nouveau':'Double'}</span>${sqHTML(x)}</div>`;const sq=box.querySelector('.rsq');if(sq&&A.busy)sq.classList.add('em');if(window.PV)PV.play(x.c)}trayFill()};
   const TS=brk?980:480;
-  if(brk){after(430,()=>{op.classList.add('crack');const pl=op.querySelector('.pl');if(pl&&!pl.querySelector('.crk'))pl.insertAdjacentHTML('beforeend',crackSVG())});
+  if(brk){after(430,()=>{op.classList.add('crack');if(window.SFX&&SFX.crack)SFX.crack();const pl=op.querySelector('.pl');if(pl&&!pl.querySelector('.crk'))pl.insertAdjacentHTML('beforeend',crackSVG())});
     after(TS,()=>{flash(RAR[r].c);shatter();show()})}
   else after(TS,show);
   after(TS+160,()=>{if(r>=1)burst(r);if(r>=2)shock([RAR[r].c])});
