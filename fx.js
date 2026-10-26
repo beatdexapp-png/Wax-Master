@@ -76,6 +76,8 @@
     coin:function(){play(function(t){tone(NOTE(88),t,.12,{vol:.07});tone(NOTE(93),t+.07,.25,{vol:.07,rev:true})})},
     buy:function(){play(function(t){tone(NOTE(79),t,.1,{type:'triangle',vol:.08});tone(NOTE(86),t+.07,.2,{type:'triangle',vol:.08})})},
     sell:function(){play(function(t){tone(NOTE(86),t,.1,{type:'triangle',vol:.08});tone(NOTE(79),t+.07,.2,{type:'triangle',vol:.08})})},
+    flip:function(){play(function(t){noise(t,.16,{ft:'bandpass',f:1200,fto:3800,q:1.4,vol:.06,a:.02});tone(NOTE(84),t+.08,.18,{vol:.03,rev:true})})},
+    whoosh:function(){play(function(t){noise(t,.22,{ft:'bandpass',f:500,fto:2200,q:.9,vol:.035,a:.08})})},
     reward:function(){play(function(t){[72,76,79,84,88].forEach(function(n,i){tone(NOTE(n),t+i*.07,.4,{vol:.07,rev:true})})})}
   };
 

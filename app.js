@@ -469,7 +469,7 @@ const lvlHTML=L=>RAR.slice(1).map((R,i)=>`<i class="${i+1<=L?'on':''}" style="--
 function trayFill(){const R=reveal,t=$('tray');if(!R||!t)return;
   t.innerHTML=R.res.map((x,k)=>(k<R.i||(k===R.i&&R.stage==='shown'))?`<i class="on" style="background:${x.c.bg};--wc:${WCOL[x.c.r]}"></i>`:`<i class="${k===R.i&&R.stage!=='seal'?'cur':''}"></i>`).join('')}
 function showOpening(){
-  const R=reveal;hardStop();const sl=PK[R.kind]?PK[R.kind].n:R.kind==='drop'?'Drop numéroté':R.secret?'Édition secrète':'Vol. 01';
+  const R=reveal;hardStop();if(window.PV){PV.stop();PV.prefetch(R.res.map(y=>y.c))}const sl=PK[R.kind]?PK[R.kind].n:R.kind==='drop'?'Drop numéroté':R.secret?'Édition secrète':'Vol. 01';
   ov.innerHTML=`<div class="ov op lv-0 k-${R.kind}${R.secret||R.kind==='drop'?' secret':''}" id="op" data-act="op" style="--rc:${RAR[0].c}">
     <div class="L blk"></div><div class="L glow"></div><div class="L speed"></div><div class="L grays"><i></i></div><div class="L beam"></div>
     <div class="optop"><div class="lvl" id="lvl">${lvlHTML(0)}</div><button class="skip" data-act="skipall">Passer</button></div>
@@ -535,7 +535,7 @@ function levelUp(){
 }
 function waveBars(c){const R=rng('wb'+c.id);let s='';for(let k=0;k<26;k++){const v=.2+.8*Math.abs(Math.sin(k*.43+R()*2))*(.5+.5*R());s+=`<i style="--h:${v.toFixed(2)};--d:-${(R()*.8).toFixed(2)}s;--u:${(.5+R()*.4).toFixed(2)}s"></i>`}return s}
 function sqHTML(x){const c=x.c,B=c.alk&&RW[c.alk];const ser=S.ser[c.id];
-  return `<div class="rsq${c.r===5?' dv':''}" style="--art:${esc(c.img?`url("${c.img}") center/cover no-repeat,${c.bg}`:(B&&B.art||c.bg))};--wc:${WCOL[c.r]};--rc:${RAR[c.r].c}"><div class="sqa"></div><div class="sqw">${waveBars(c)}</div><div class="sqt"><span class="sqr"><i></i>${RAR[c.r].n}</span><b>${esc(c.t)}</b><span>${esc(c.a)}</span></div>${ser?`<em class="sn">#${String(ser).padStart(3,'0')}</em>`:''}</div>`}
+  return `<div class="rsq r${c.r}${c.r===5?' dv':''}" style="--art:${esc(c.img?`url("${c.img}") center/cover no-repeat,${c.bg}`:(B&&B.art||c.bg))};--wc:${WCOL[c.r]};--rc:${RAR[c.r].c}"><div class="sqa"></div><div class="sqw">${waveBars(c)}</div><div class="sqt"><span class="sqr"><i></i>${RAR[c.r].n}</span><b>${esc(c.t)}</b><span>${esc(c.a)}</span></div>${ser?`<em class="sn">#${String(ser).padStart(3,'0')}</em>`:''}</div>`}
 function crackSVG(){const R=Math.random;let d='';for(let k=0;k<7;k++){const a=k/7*Math.PI*2+R()*.5;let x=50,y=50,r=0;d+=`M50 50`;while(r<48){r+=8+R()*9;const b=a+(R()-.5)*.6;x=50+Math.cos(b)*Math.min(r,48);y=50+Math.sin(b)*Math.min(r,48);d+=`L${x.toFixed(1)} ${y.toFixed(1)}`}}
   return `<svg class="crk" viewBox="0 0 100 100" aria-hidden="true"><path d="${d}"/></svg>`}
 function shatter(){const op=$('op');if(!op)return;const pl=op.querySelector('.pl'),bvr=op.querySelector('.bv .bvr');if(!pl||!bvr)return;const inner=bvr.innerHTML;const n=S.set.lite?6:9;let h='';
@@ -548,7 +548,7 @@ function revealCard(){
   const op=$('op');const brk=!!x.isNew;
   op.classList.add('rush');kick(true);
   const show=()=>{const o=$('op');if(!o)return;o.classList.remove('rush','crack');o.classList.add('out');const box=$('rvc');
-    if(box&&!box.firstChild){box.innerHTML=`<div class="rvw"><span class="tag${x.isNew?'':' dup'}">${x.isNew?'Nouveau':'Double'}</span>${sqHTML(x)}</div>`;const sq=box.querySelector('.rsq');if(sq&&A.busy)sq.classList.add('em')}trayFill()};
+    if(box&&!box.firstChild){box.innerHTML=`<div class="rvw"><span class="tag${x.isNew?'':' dup'}">${x.isNew?'Nouveau':'Double'}</span>${sqHTML(x)}</div>`;const sq=box.querySelector('.rsq');if(sq&&A.busy)sq.classList.add('em');if(window.PV)PV.play(x.c)}trayFill()};
   const TS=brk?980:480;
   if(brk){after(430,()=>{op.classList.add('crack');const pl=op.querySelector('.pl');if(pl&&!pl.querySelector('.crk'))pl.insertAdjacentHTML('beforeend',crackSVG())});
     after(TS,()=>{flash(RAR[r].c);shatter();show()})}
@@ -566,13 +566,13 @@ function revealCard(){
     if(prog){build();set();const p=$('acp');if(p)p.classList.add('done');if(full)stamp('Album complet',false)}hint(x.isNew?'Nouveau':'Double')});
 }
 function nextCard(){
-  const R=reveal;const w=$('rvc').querySelector('.rvw');if(w){w.classList.remove('pop','done');w.classList.add('fly')}const ap=$('acp');if(ap)ap.classList.add('away');
+  const R=reveal;if(window.PV)PV.stop(250);const w=$('rvc').querySelector('.rvw');if(w){w.classList.remove('pop','done');w.classList.add('fly')}const ap=$('acp');if(ap)ap.classList.add('away');
   run(230,()=>{const box=$('rvc');if(box)box.innerHTML='';const aw=$('acw');if(aw)aw.innerHTML='';stamp('',false);const o_=$('op');if(o_){o_.classList.remove('brk','crack','rush');o_.querySelectorAll('.shards,.crk').forEach(e=>e.remove())}
     if(R.i+1>=R.res.length){showSummary();return}
     R.i++;R.lv=0;R.stage='spin';const op=$('op');op.classList.remove('out');applyLevel(0,false);trayFill();hint('Touche')});
 }
 function showSummary(){
-  hardStop();const R=reveal;if(!R)return;R.stage='sum';try{S.lastDrop=R.res.slice().sort((a,b)=>b.c.r-a.c.r)[0].c.id;save()}catch(_){}const nn=R.res.filter(x=>x.isNew).length;
+  hardStop();if(window.PV)PV.stop(400);const R=reveal;if(!R)return;R.stage='sum';try{S.lastDrop=R.res.slice().sort((a,b)=>b.c.r-a.c.r)[0].c.id;save()}catch(_){}const nn=R.res.filter(x=>x.isNew).length;
   const again=canFree()||S.coins>=cost();
   ov.innerHTML=`<div class="ov sumv"><h2>${nn} nouveau${nn>1?'x':''}</h2>${R.gain?`<p class="gain">+${R.gain} ${coinI}</p>`:''}
     <div class="sumg${R.res.length<5?' s3':''}">${R.res.map((x,k)=>`<button class="it" style="animation-delay:${k*.06}s" data-act="see" data-id="${x.c.id}"><span class="tag${x.isNew?'':' dup'}">${x.isNew?'Nouveau':'Double'}</span>${tileHTML(x.c,{nocount:1,lock:false})}</button>`).join('')}</div>
@@ -584,7 +584,7 @@ function showUnlock(i){
    <p class="hint">${x.type==='album'?'Album complété':'Disque de platine'}</p><div class="uw">${rewardHTML(x)}</div><h2 style="text-align:center">${esc(x.type==='album'?x.t:x.n)}</h2>
    <p class="gain">+${x.type==='album'?ALB_BONUS:ART_BONUS} ${coinI}</p><button class="pbtn" data-act="unext" data-i="${i+1}">${i+1<R.ul.length?'Suivante':'Continuer'}</button></div>`;
 }
-function closeOv(){hardStop();ov.innerHTML='';reveal=null;render()}
+function closeOv(){hardStop();if(window.PV)PV.stop(300);ov.innerHTML='';reveal=null;render()}
 
 /* ================= MARCHÉ ================= */
 const mkMax=()=>5;
@@ -741,7 +741,7 @@ function renderMenu(){
     b=top('')+`<div class="mhero">${avHTML('mav')}<div class="mhn"><b>${esc(nm)}</b><small>${window.CL&&CL.user?'Compte connecté':'Non connecté'}</small></div>${on?'<span class="pro big">Pro</span>':`<button class="mgo" data-act="gopass"><em class="pro">Pro</em>4,99 €</button>`}</div>
      <h3 class="msec">Thème</h3>
      <div class="skrow">${SKINS.map(([id,n,pp])=>{const lk=pp&&!on;return `<button class="skin2" data-act="${lk?'needpass':'skin'}" data-s="${id}" aria-pressed="${(S.set.skin||'auto')===id}"><span class="pv" style="--pv:${SKPV[id]}">${lk?'<u class="pro">Pro</u>':''}</span><small>${n}</small></button>`}).join('')}</div>
-     <div class="mtg"><div class="set"><span class="ic" style="--icbg:#7c5cff">${ICON.play}</span><b>Sons</b><button class="sw" role="switch" aria-checked="${S.set.snd!==false}" data-act="snd" aria-label="Sons"></button></div><div class="set"><span class="ic" style="--icbg:#30a46c">${ICON.bolt}</span><b>Mode économie</b><button class="sw" role="switch" aria-checked="${!!S.set.lite}" data-act="lite" aria-label="Mode économie"></button></div></div>
+     <div class="mtg"><div class="set"><span class="ic" style="--icbg:#7c5cff">${ICON.play}</span><b>Sons</b><button class="sw" role="switch" aria-checked="${S.set.snd!==false}" data-act="snd" aria-label="Sons"></button></div><div class="set"><span class="ic" style="--icbg:#ef5466">${ICON.play}</span><b>Extraits</b><button class="sw" role="switch" aria-checked="${S.set.prev!==false}" data-act="prev" aria-label="Extraits musicaux"></button></div><div class="set"><span class="ic" style="--icbg:#30a46c">${ICON.bolt}</span><b>Mode économie</b><button class="sw" role="switch" aria-checked="${!!S.set.lite}" data-act="lite" aria-label="Mode économie"></button></div></div>
      <div class="mgrid">${[['events','#d6336c',ICON.cal,'Événements',liveEv()?'En cours':''],['!cat','#2b8a3e',ICON.search,'Catalogue',`${ARTISTS.length} artistes`],['rar','#e9a23b',ICON.gem,'Raretés',''],['code','#ff7a3d',ICON.gift,'Code',''],['idee','#9c36b5',ICON.star,'Tes idées','Améliore le jeu'],['how','#3a8dde',ICON.help,'Aide',''],['compte','#4c6ef5',ICON.users,'Compte','']].map(([p2,bg,ic,t,sm])=>`<button class="mt" data-act="${p2[0]==='!'?p2.slice(1):'mpage'}" data-p="${p2}"><span class="ic" style="--icbg:${bg}">${ic}</span><b>${t}</b>${sm?`<small>${sm}</small>`:''}</button>`).join('')}</div>
      <button class="mlink" data-act="mpage" data-p="set">Réinitialiser les réglages</button>`}
   else if(p==='compte'){b=top('Compte')+(window.CL?CL.page():'<p class="cap">Indisponible hors ligne</p>')}

@@ -1784,3 +1784,40 @@ body[data-skin="brume"] .mgo,body[data-skin="sable"] .mgo,body[data-skin="lilas"
 .stblur{filter:blur(7px);opacity:.6;display:flex;flex-direction:column;gap:8px;padding:6px;pointer-events:none}
 .stlock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:14px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.25))}
 .stlock small{color:var(--fg2);max-width:300px}.stlock .pbtn{height:46px;margin-top:6px}
+/* ===== v32 : finitions ===== */
+/* inclinaison 3D + reflet holo (Ultra rare et plus) */
+.rsq,.big{--rx:0deg;--ry:0deg;--mx:50%;--my:30%;transform:perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));transition:transform .5s cubic-bezier(.2,.9,.3,1);will-change:transform}
+.rsq.tilting,.big.tilting{transition:transform .08s linear}
+.rsq::after{content:"";position:absolute;inset:0;border-radius:9%;pointer-events:none;z-index:3;background:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.22),transparent 45%);mix-blend-mode:soft-light;opacity:.9}
+.rsq.r2::before,.rsq.r3::before,.rsq.r4::before,.rsq.r5::before{content:"";position:absolute;inset:0;border-radius:9%;pointer-events:none;z-index:2;
+  background:linear-gradient(115deg,transparent 20%,rgba(255,80,180,.35) 36%,rgba(80,220,255,.35) 46%,rgba(255,240,120,.35) 56%,transparent 72%);background-size:250% 250%;background-position:var(--mx) var(--my);mix-blend-mode:color-dodge;opacity:.55;animation:holo 6s ease-in-out infinite}
+@keyframes holo{0%,100%{filter:hue-rotate(0)}50%{filter:hue-rotate(40deg)}}
+/* l'onde danse pendant l'extrait */
+.rsq.live .sqw i{animation-duration:calc(var(--u)*.45);box-shadow:0 0 5cqw color-mix(in srgb,var(--wc) 75%,transparent)}
+.rsq.live .sqa{animation:beat .48s ease-in-out infinite alternate}
+@keyframes beat{to{box-shadow:0 2cqw 10cqw rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.2),0 0 26cqw color-mix(in srgb,var(--rc) 50%,transparent)}}
+/* étiquette Extrait · Deezer */
+.pvb{position:absolute;left:50%;top:calc(100% + 12px);transform:translateX(-50%);pointer-events:auto;display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:99px;background:rgba(0,0,0,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;font:600 11px var(--mono);letter-spacing:.06em;text-decoration:none;white-space:nowrap;animation:tin .4s ease-out both}
+.pveq{display:inline-flex;align-items:flex-end;gap:2px;height:11px}
+.pveq i{display:block;width:3px;height:100%;border-radius:2px;background:currentColor;animation:pveqk .7s ease-in-out infinite alternate;transform-origin:bottom}
+.pveq i:nth-child(2){animation-delay:-.25s}.pveq i:nth-child(3){animation-delay:-.5s}
+@keyframes pveqk{from{transform:scaleY(.25)}to{transform:scaleY(1)}}
+.pvsee .pveq i{animation-play-state:paused;transform:scaleY(.45)}
+.pvsee.on .pveq i{animation-play-state:running}
+.pvsee{align-self:center;gap:8px}
+.pvsee small{font-size:10px;opacity:.55;margin-left:4px}
+/* halo tournant derrière les grosses raretés */
+.rvw .halo{position:absolute;inset:-22%;z-index:-1;border-radius:50%;pointer-events:none;background:conic-gradient(from 0deg,transparent,var(--hc) 12%,transparent 25%,var(--hc) 37%,transparent 50%,var(--hc) 62%,transparent 75%,var(--hc) 87%,transparent);-webkit-mask:radial-gradient(closest-side,transparent 52%,#000 62%,transparent 100%);mask:radial-gradient(closest-side,transparent 52%,#000 62%,transparent 100%);opacity:0;animation:hin .9s ease-out forwards,hrot 14s linear infinite}
+.halo.r3{--hc:rgba(255,194,61,.5)}.halo.r4{--hc:rgba(255,95,134,.55)}.halo.r5{--hc:rgba(232,207,138,.65)}
+@keyframes hin{to{opacity:1}}@keyframes hrot{to{rotate:360deg}}
+.rvw.fly .halo{display:none}
+/* transition entre onglets */
+::view-transition-old(root){animation:vto .18s ease-in both}
+::view-transition-new(root){animation:vti .28s cubic-bezier(.2,.9,.3,1) both}
+@keyframes vto{to{opacity:0;transform:scale(.985)}}
+@keyframes vti{from{opacity:0;transform:scale(1.015)}}
+/* finitions générales */
+.tile{transition:transform .25s cubic-bezier(.2,.9,.3,1),box-shadow .25s}
+@media (hover:hover){.tile:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 8px 22px rgba(0,0,0,.18)}}
+.lite .rsq,.lite .big{transform:none!important}.lite .rsq::before,.lite .halo{display:none}
+@media (prefers-reduced-motion:reduce){.rsq,.big{transform:none!important}.halo,.rsq::before{animation:none}::view-transition-old(root),::view-transition-new(root){animation:none}}
