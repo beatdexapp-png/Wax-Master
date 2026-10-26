@@ -29,7 +29,10 @@
   async function open(){if(!sb()){toast('Connexion requise');return}closeMenu();menuPage='label';
     sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass lbsh" role="dialog" aria-label="Label"><div class="grab"></div><p class="cap">Chargement…</p></div>';
     if(await call('label_me'))paint()}
-  window.LABEL={open:open,sub:function(){return D&&D.label?D.label.name+' · #'+D.label.rank:null}};
+  function pill(){if(!window.CL||!CL.user)return '';var L=D&&D.label;
+    return L?'<button class="lbp glass" data-act="label">'+badge(L,'sm')+'<span><b>'+esc(L.name)+'</b><small>#'+L.rank+' · '+n(L.week)+' pts</small></span></button>'
+      :'<button class="lbp glass new" data-act="label"><span class="lbp0">'+ICON.users+'</span><span><b>Labels</b><small>Joue avec tes potes</small></span></button>'}
+  window.LABEL={open:open,pill:pill,sub:function(){return D&&D.label?D.label.name+' · #'+D.label.rank:null}};
   document.addEventListener('click',async function(e){var t=e.target.closest('[data-act]');if(!t)return;var a=t.dataset.act;
     if(a==='label'){e.stopPropagation();open();return}
     if(!/^lb/.test(a))return;e.stopPropagation();
@@ -46,5 +49,5 @@
     else if(a==='lbclaim'){var k=+t.dataset.t;ok=await call('label_claim',{p_tier:k});if(ok){if(window.ECO&&ECO.sync)ECO.sync();rewardPop(k===0?{coins:200}:k===1?{maxi:2}:{gold:1,coins:300})}}
     t.disabled=false;if(ok){if(a==='lbcreate'){toast('Label créé');if(window.ECO&&ECO.sync)ECO.sync()}paint()}},true);
   /* charge le label en fond pour l'afficher dans le profil */
-  setTimeout(function(){if(sb()&&CL.user)sb().rpc('label_me').then(function(r){if(!r.error){D=r.data;if(tab==='profil'&&!stack.length)render()}})},4000);
+  setTimeout(function(){if(sb()&&CL.user)sb().rpc('label_me').then(function(r){if(!r.error){D=r.data;if((tab==='profil'||tab==='ouvrir')&&!stack.length&&!reveal)render()}})},4000);
 })();

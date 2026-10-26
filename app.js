@@ -11,7 +11,7 @@ const FRIENDS=['soso.lune','mvp_sinna','oz.92i','wave.95','mel_zer'];
 const DUST_GET=[5,10,25,60,150,400],DUST_COST=[40,80,200,500,1200,3000];
 const WCOL=['rgba(255,255,255,.78)','#7cc0ff','#d4a3ff','#ffd36b','#ff8fab','#8a6420'];
 const SEASON_END='2026-11-30T23:59',SEASON_START='2026-10-01T00:00',TIERS=30,TIER_XP=100;
-const MISS=[{k:'open',n:3,t:'Ouvre 3 drops',c:80,x:60},{k:'newT',n:5,t:'Trouve 5 nouveaux sons',c:100,x:80},{k:'buy',n:1,t:'Achète un son à la Bourse',c:50,x:40},{k:'recycle',n:1,t:'Recycle un double',c:50,x:40},{k:'trade',n:1,t:'Propose un échange',c:60,x:40},{k:'sell',n:1,t:'Vends un son à la Bourse',c:60,x:40}];
+const MISS=[{k:'open',n:3,t:'Ouvre 3 drops',c:80,x:60},{k:'newT',n:5,t:'Trouve 5 nouveaux sons',c:100,x:80},{k:'buy',n:1,t:'Achète un son à la Bourse',c:50,x:40},{k:'recycle',n:1,t:'Recycle un double',c:50,x:40},{k:'trade',n:1,t:'Propose un échange',c:60,x:40},{k:'sell',n:1,t:'Vends un son à la Bourse',c:60,x:40},{k:'topA',n:1,t:'Drop un son de ton top',c:120,x:80},{k:'rare',n:3,t:'Trouve 3 sons Ultra rare ou mieux',c:90,x:60},{k:'leg',n:1,t:'Trouve un Légendaire ou mieux',c:150,x:100},{k:'evc',n:3,t:'Drop 3 sons de l’événement',c:100,x:60},{k:'craft',n:1,t:'Fabrique un son avec ta poussière',c:60,x:40}];
 
 function hash(s){let h=1779033703^s.length;for(let i=0;i<s.length;i++){h=Math.imul(h^s.charCodeAt(i),3432918353);h=h<<13|h>>>19}return h>>>0}
 function rng(s){let a=hash(s);return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -113,7 +113,10 @@ const extras=()=>CARDS.reduce((s,c)=>s+Math.max(0,(S.owned[c.id]||0)-1),0);
 function day(){if(S.day.d!==today())S.day={d:today(),open:0,newT:0,bid:0,recycle:0,trade:0,sell:0,cl:{}};return S.day}
 function addXP(n){S.xp=(S.xp||0)+n}
 const tierNow=()=>Math.min(TIERS,Math.floor((S.xp||0)/TIER_XP));
-function todayMissions(){const R=rng('miss'+today());const rest=MISS.slice(1);const a=rest.splice(Math.floor(R()*rest.length),1)[0],b=rest.splice(Math.floor(R()*rest.length),1)[0];return[MISS[0],a,b]}
+function topArtist(){const T=S.top||[];if(!T.length)return null;const d=new Date(),doy=Math.floor((Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate())-Date.UTC(d.getUTCFullYear(),0,0))/864e5);return RW[T[doy%T.length]]||null}
+function todayMissions(){const R=rng('miss'+today());const A=topArtist(),out=[MISS[0]];
+  if(A)out.push(Object.assign({},MISS.find(m=>m.k==='topA'),{t:`Drop un son de ${A.n}`,av:A.avg}));
+  const rest=MISS.slice(1).filter(m=>m.k!=='topA'&&(m.k!=='evc'||liveEv()));while(out.length<5&&rest.length)out.push(rest.splice(Math.floor(R()*rest.length),1)[0]);return out}
 const missReady0=()=>{const d=day();return todayMissions().some(m=>!d.cl[m.k]&&d[m.k]>=m.n)};
 const seasonReady0=()=>{const t=tierNow();for(let i=1;i<=t;i++){if(!S.sfree.includes(i))return true;if(hasPass()&&!S.sprem.includes(i))return true}return false};
 function toast(t){document.querySelectorAll('.toast').forEach(x=>x.remove());const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2400)}
@@ -191,7 +194,7 @@ const ART={
 function vOuvrir(){
   const e=liveEv(),nx=nextEv(),cst=cost(),free=canFree(),can=free||S.coins>=cst;const dp=curDrop();const left=Math.max(0,DROP_LIMIT-(S.drop[dp.w]||0)-((hash('ds'+dp.w)%120)+Math.floor((now()-(dp.w*48*3600e3))/(48*3600e3)*260)));
   const evp=e?`<button class="evp glass" data-act="events">${window.evAvatars?evAvatars(e,'sm'):''}<span class="evk">Événement</span><i class="ldot"></i><b>${e.n}</b><span data-until="${e.e}">${dur(new Date(e.e)-now())}</span></button>`:nx?`<button class="evp glass" data-act="events"><span class="evk">Prochain</span><b>${nx.n}</b><span>${fdate(nx.s)}</span></button>`:'';
-  return `<div class="view v-open">${evp}
+  return `<div class="view v-open"><div class="otop">${evp}${window.LABEL&&LABEL.pill?LABEL.pill():''}</div>
    <div class="obg" aria-hidden="true"><i class="og1"></i><i class="og2"></i><i class="og3"></i><span class="ogrid"></span><span class="orays"></span>${Array.from({length:14},(_,i)=>`<b style="--x:${(i*37)%100};--y:${(i*53)%100};--d:${(i%7)*.9}s;--s:${2+(i%3)}px"></b>`).join('')}</div><div class="ofx" aria-hidden="true"><i class="n1">♪</i><i class="n2">♫</i><i class="n3">♪</i><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>
    <div class="mbox" data-act="open" data-m="${free?'free':'pay'}" role="button" tabindex="0" aria-label="Ouvrir un drop"><div class="maxi"><div class="mv" style="--lc:${e?'#ff5f86':'#c9c3b5'}"></div><div class="ms glass"><b>Wax<br>Drop</b><span>Vol. 01</span><em>5 sons</em></div></div></div>
    <div class="obar"><button class="pbtn" data-act="open" data-m="${free?'free':'pay'}" ${can?'':'disabled'}>${free?(S.bonus>0?`Ouvrir · ${S.bonus} offert${S.bonus>1?'s':''}`:'Ouvrir · Gratuit'):`Ouvrir · ${cst} ${coinI}`}</button><button class="gbtn sq" data-act="openall" aria-label="Ouverture express" ${can?'':'disabled'}>${ICON.bolt}</button></div>
@@ -201,7 +204,7 @@ function vOuvrir(){
   </div>`;
 }
 function colList(){return ownedArtists().filter(A=>colG==='Tous'||A.st===colG).sort((a,b)=>pct(b.ids)-pct(a.ids)||a.n.localeCompare(b.n))}
-let sonsF='all';
+let sonsF='all',catF=false;
 function sonsList(){const L=CARDS.filter(c=>{const n=S.owned[c.id]||0;return n>0&&(sonsF==='all'||(sonsF==='dup'?n>1:c.r===+sonsF))});return L.sort((a,b)=>b.r-a.r||(S.owned[b.id]||0)-(S.owned[a.id]||0)||a.t.localeCompare(b.t))}
 function sonsChips(){const all=CARDS.filter(c=>own(c.id));const cnt=r=>all.filter(c=>c.r===r).length,dup=all.filter(c=>(S.owned[c.id]||0)>1).length;
   return `<div class="chips scr sonsf">${[['all','Tous',all.length],['dup','Doubles',dup],...[5,4,3,2,1,0].map(r=>[String(r),RAR[r].n,cnt(r)])].filter(x=>x[0]==='all'||x[2]).map(([k,n,v])=>`<button class="chip" data-act="sonsf" data-v="${k}" aria-pressed="${sonsF===k}"${/^\d$/.test(k)?` style="--rc:${RAR[+k].c}"`:''}>${/^\d$/.test(k)?'<i class="rdot"></i>':''}${n}<small>${v}</small></button>`).join('')}</div>`}
@@ -244,7 +247,7 @@ function vShop(){
     body=`${tickHTML()}<div class="chips">${[['live','Marché'],['mine',`Mes ventes ${mine}/${mkMax()}`],['sell',`Vendre · ${dups}`]].map(([k,n])=>`<button class="chip" data-act="mks" data-v="${k}" aria-pressed="${mkSub===k}">${n}</button>`).join('')}</div><div class="pgr" id="pgr"></div>`}
   else if(shopSub==='echanges'){head=subHead('Amis');body=window.SOC?SOC.body():'<p class="cap">Connexion requise</p>'}
   else if(shopSub==='pass'){const on=hasPass();head=subHead('WaxDrop Pro');
-    const perks=[['chart','Bourse en détail','Historique 7 et 30 jours, variations, volatilité de chaque son'],['clock','Drop gratuit toutes les 5 min','Deux fois plus souvent'],['gift','1 drop offert chaque jour','À récupérer ici, tous les jours'],['gold','1 Drop Or chaque lundi','Légendaire garanti à chaque fois'],['theme','Thèmes Minuit et Nacre','Pour personnaliser ton app']];
+    const perks=[['chart','Bourse en détail','Historique 7 et 30 jours, variations, volatilité de chaque son'],['clock','Drop gratuit toutes les 5 min','Deux fois plus souvent'],['gift','1 drop offert chaque jour','À récupérer ici, tous les jours'],['gold','1 Drop Or chaque lundi','Légendaire garanti à chaque fois'],['theme','Thèmes Minuit et Nacre','Pour personnaliser ton app'],['chart','Bourse sans limite','Achats et ventes illimités, Divins compris'],['gift','Défis d’événement ×2','Chaque son de l’événement compte double'],['gold','Label boosté','+50 % de points pour ton label, création offerte'],['chart','Stats détaillées','Chance, meilleur tirage, valeur, styles, pour toi et tes amis']];
     const PI={chart:'<path d="M4 19h16"/><path d="M5 15l4-5 3.5 3L19 6"/><path d="M15 6h4v4"/>',clock:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 3h6"/>',gift:'<rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18M12 8v13M12 8c-2-4-6-4-6-1.5S9 8 12 8c3 0 6-.5 6-1.5S14 4 12 8"/>',gold:'<circle cx="12" cy="12" r="8"/><path d="M12 7l1.5 3 3.3.5-2.4 2.3.6 3.3-3-1.6-3 1.6.6-3.3-2.4-2.3 3.3-.5z"/>',theme:'<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/>'};
     body=`<div class="psp"><div class="psh"><div class="psart">${ART.pass}</div><div class="psht"><span class="psk">Pour les vrais collectionneurs</span><b>WaxDrop Pro.<br>Les données, et plus de drops.</b>${on?`<span class="pson">${ICON.check}Actif jusqu’au ${new Date(S.passUntil).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}</span>`:`<span class="psprice"><b>4,99 €</b> / mois</span>`}</div></div>
      <div class="psbar">${on?`${!day().pd?'<button class="pbtn" data-act="claim">Drop du jour</button>':'<button class="pbtn" disabled>Drop du jour récupéré</button>'}<button class="gbtn" data-act="passmanage">Gérer</button>`:`<button class="pbtn pscta" data-act="buy" data-k="pass">S’abonner · 4,99 € / mois</button>`}</div>
@@ -271,16 +274,16 @@ function vVitrine(){vitInit();const pl=ARTISTS.filter(A=>S.ul[A.key]);const al=A
    <div class="vtabs">${S.vits.map((v,k)=>`<button class="chip" data-act="vsel" data-i="${k}" aria-pressed="${k===S.vi}">${esc(v.n)}</button>`).join('')}${S.vits.length<3?`<button class="chip add" data-act="vnew" aria-label="Nouvelle vitrine">+</button>`:''}<button class="chip" data-act="vedit" aria-label="Renommer la vitrine">${ICON.pen}</button></div>
    <div class="vitg">${(()=>{const F=S.fav.map(id=>C[id]);while(F.length<6)F.push(null);return F.map(c=>c?tileBtn(c):'<button class="fslot" data-act="vpick">'+ICON.plus+'<span>Ajouter</span></button>').join('')})()}</div>
    ${pl.length?`<div class="wall">${pl.map(A=>`<button data-act="seepl" data-k="${A.key}">${plaqueHTML(A)}</button>`).join('')}</div>`:''}`}
-const MI={buy:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',open:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/>',newT:'<path d="M12 3l2.2 5.6L20 9.3l-4.4 3.9L17 19l-5-3-5 3 1.4-5.8L4 9.3l5.8-.7z"/>',bid:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',recycle:'<path d="M7 19H4l3-5M17 19h3l-3-5M12 4l-2 3h4z"/><path d="M9 14l3-5 3 5"/>',sell:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',trade:'<path d="M7 7h12l-3-3M17 17H5l3 3"/>'};
+const MI={rare:'<path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/>',leg:'<path d="M6 3h12l3 6-9 12L3 9z"/><path d="M3 9h18"/>',evc:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',craft:'<path d="M12 3v6M9 6h6"/><circle cx="12" cy="15" r="6"/>',buy:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',open:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/>',newT:'<path d="M12 3l2.2 5.6L20 9.3l-4.4 3.9L17 19l-5-3-5 3 1.4-5.8L4 9.3l5.8-.7z"/>',bid:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',recycle:'<path d="M7 19H4l3-5M17 19h3l-3-5M12 4l-2 3h4z"/><path d="M9 14l3-5 3 5"/>',sell:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',trade:'<path d="M7 7h12l-3-3M17 17H5l3 3"/>'};
 function vMissions(){const d=day();const L=todayMissions();const tm=new Date();tm.setHours(24,0,0,0);const done=L.filter(m=>d.cl[m.k]).length;
-  return `<div class="mhead"><div><b>Missions du jour</b><small>Nouvelles dans <span data-clock="${+tm}">${clock(+tm-now())}</span></small></div><div class="mbonus${done>=L.length?' ok':''}">${done>=L.length&&!d.cl.all?`<button class="pbtn" data-act="mall" style="height:38px">Bonus · 1 drop</button>`:`<span>${d.cl.all?ICON.check+'Bonus récupéré':`${done}/${L.length} · bonus 1 drop`}</span>`}</div></div>
-   <div class="mlist3">${L.map((m,ix)=>{const v=Math.min(d[m.k]||0,m.n),ok=v>=m.n,cl=d.cl[m.k];return `<div class="mcard${ok?' ok':''}${cl?' cl':''}" style="--p:${v/m.n*100};--i:${ix}"><span class="mring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${MI[m.k]||''}</svg></span><div class="mtx"><b>${m.t}</b><small>${v}/${m.n}</small><span class="mrw"><em>+${m.c} ${coinI}</em><em>+${m.x} XP</em></span></div><button class="mbtn" data-act="mclaim" data-k="${m.k}" ${ok&&!cl?'':'disabled'}>${cl?ICON.check:ok?'Prendre':`${Math.round(v/m.n*100)} %`}</button></div>`}).join('')}</div>`}
+  return `<div class="mhead"><div><b>Missions du jour</b><small>Nouvelles dans <span data-clock="${+tm}">${clock(+tm-now())}</span></small></div><div class="mbonus${done>=L.length?' ok':''}">${done>=L.length&&!d.cl.all?`<button class="pbtn" data-act="mall" style="height:38px">Bonus · 1 drop + 100</button>`:`<span>${d.cl.all?ICON.check+'Bonus récupéré':`${done}/${L.length} · bonus 1 drop`}</span>`}</div></div>
+   <div class="mlist3">${L.map((m,ix)=>{const v=Math.min(d[m.k]||0,m.n),ok=v>=m.n,cl=d.cl[m.k];return `<div class="mcard${ok?' ok':''}${cl?' cl':''}" style="--p:${v/m.n*100};--i:${ix}"><span class="mring${m.av?' mav':''}"${m.av?` style="--mav:${esc(m.av)}"`:''}>${m.av?'':`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${MI[m.k]||MI.open||''}</svg>`}</span><div class="mtx"><b>${m.t}</b><small>${v}/${m.n}</small><span class="mrw"><em>+${m.c} ${coinI}</em><em>+${m.x} XP</em></span></div><button class="mbtn" data-act="mclaim" data-k="${m.k}" ${ok&&!cl?'':'disabled'}>${cl?ICON.check:ok?'Prendre':`${Math.round(v/m.n*100)} %`}</button></div>`}).join('')}</div>`}
 const rwIcon=r=>r.gold?'<i class="mini gold"></i>':r.maxi?'<i class="mini"></i>':r.coins?coinI:dustI;
 const rwShort=r=>r.gold?'Drop Or':r.maxi?`×${r.maxi}`:r.coins?r.coins:r.dust;
 function trackHTML(){const t=tierNow(),hp=hasPass();let h='';for(let i=1;i<=TIERS;i++){const {f,p}=seasonRewards(i);const un=i<=t,fc=S.sfree.includes(i),pc=S.sprem.includes(i);
     h+=`<div class="tcol${un?' un':''}${i===t+1?' nx':''}${i%10===0?' tbig':''}"><span class="tnum">${i}</span><button class="tcell${un&&!fc?' ready':''}" data-act="sclaim" data-i="${i}" data-t="f" ${un&&!fc?'':'disabled'} aria-label="Palier ${i}">${rwIcon(f)}<b>${rwShort(f)}</b>${fc?'<u>'+ICON.check+'</u>':''}</button><button class="tcell pr" data-act="sclaim" data-i="${i}" data-t="p" ${un&&!pc&&hp?'':'disabled'} aria-label="Palier ${i} premium">${rwIcon(p)}<b>${rwShort(p)}</b>${pc?'<u>'+ICON.check+'</u>':hp?'':'<u>'+ICON.lock+'</u>'}</button></div>`}
   return h}
-function vSaisonTab(){return `<div class="view v-sea vs">${subHead('Missions')}${vMissions()}<p class="cap">Chaque mission donne des wax coins et de l’XP. Fais les 3 pour gagner un drop bonus.</p></div>`}
+function vSaisonTab(){return `<div class="view v-sea vs">${subHead('Missions')}${vMissions()}<p class="cap">Chaque mission donne des wax coins et de l’XP. Fais les 5 pour gagner un drop bonus et 100 wax coins.</p></div>`}
 function vSaison(){return ''}
 const missReady=()=>missReady0()||(todayMissions().every(m=>day().cl[m.k])&&!day().cl.all);
 const seasonReady=()=>false;
@@ -291,7 +294,7 @@ function seasonRow(i){const t=tierNow(),{f,p}=seasonRewards(i);const un=i<=t;con
 function score(){return CARDS.filter(c=>own(c.id)).length*10+ALBUMS.filter(A=>S.ul[A.key]).length*100+ARTISTS.filter(A=>S.ul[A.key]).length*500}
 function board(){if(window.CL&&CL.top)return CL.board();const days=Math.max(1,(now()-new Date(SEASON_START))/864e5);const me=score();
   const L=[];L.push({n:'Toi',s:me,me:true});L.sort((a,b)=>b.s-a.s);return L.map((x,i)=>({...x,r:i+1}))}
-const boardRow=x=>`<div class="brow${x.me?' me':''}${x.r<=3?' r'+x.r:''}"><span class="rk">${x.r}</span><span class="av" style="--avg:${x.av?`url('${esc(x.av)}') center/cover no-repeat,#333`:`linear-gradient(140deg,hsl(${hash(x.n)%360} 46% 60%),hsl(${(hash(x.n)+40)%360} 44% 34%))`}">${x.av?'':esc(x.n.slice(0,2).toUpperCase())}</span><b>${esc(x.n)}</b><em>${x.s.toLocaleString('fr-FR')}</em></div>`;
+const boardRow=x=>`<button class="brow${x.me?' me':''}${x.r<=3?' r'+x.r:''}" data-act="${x.me?'mystats':'frstats'}" data-p="${esc(x.n)}"><span class="rk">${x.r}</span><span class="av" style="--avg:${x.av?`url('${esc(x.av)}') center/cover no-repeat,#333`:`linear-gradient(140deg,hsl(${hash(x.n)%360} 46% 60%),hsl(${(hash(x.n)+40)%360} 44% 34%))`}">${x.av?'':esc(x.n.slice(0,2).toUpperCase())}</span><b>${esc(x.n)}</b><em>${x.s.toLocaleString('fr-FR')}</em><i class="bchev">›</i></button>`;
 
 /* ===== bulles ===== */
 const BB={nodes:[],raf:0,drag:null,calm:0,w:0,h:0};
@@ -380,9 +383,10 @@ function renderStack(keep){
   if(p.type==='cat'){
     h=`<div class="ph">${back}<div class="pn"><b>Catalogue</b><span><span id="catn">0</span> résultats</span></div></div>
      <input class="search glass" id="cq" type="search" placeholder="Artiste, album ou son" value="${esc(catQ)}" autocomplete="off" aria-label="Rechercher">
-     <div class="vh wrap"><div class="seg glass">${[['artistes','Artistes'],['albums','Albums'],['titres','Sons']].map(([k,n])=>`<button data-act="cats" data-v="${k}" aria-pressed="${catScope===k}">${n}</button>`).join('')}</div>
-      <div class="seg glass sm scr">${STYLES.map(([g,n])=>`<button data-act="catg" data-v="${g}" aria-pressed="${catG===g}">${n}</button>`).join('')}</div>
-      <div class="seg glass sm">${[['all','Tout'],['own','À moi'],['miss','Manque']].map(([k,n])=>`<button data-act="cato" data-v="${k}" aria-pressed="${catOwn===k}">${n}</button>`).join('')}</div></div>
+     <div class="vh catvh"><div class="seg glass">${[['artistes','Artistes'],['albums','Albums'],['titres','Sons']].map(([k,n])=>`<button data-act="cats" data-v="${k}" aria-pressed="${catScope===k}">${n}</button>`).join('')}</div>
+      <button class="gbtn catfb${catF?' on':''}" data-act="catf" aria-expanded="${!!catF}">Filtres${(catG!=='Tous')+(catOwn!=='all')?`<u>${(catG!=='Tous')+(catOwn!=='all')}</u>`:''}</button></div>
+     ${catF?`<div class="catfp glass"><span class="lbl">Style</span><div class="chips wrap">${STYLES.map(([g,n])=>`<button class="chip" data-act="catg" data-v="${g}" aria-pressed="${catG===g}">${n}</button>`).join('')}</div>
+      <span class="lbl">Collection</span><div class="chips">${[['all','Tout'],['own','À moi'],['miss','Il me manque']].map(([k,n])=>`<button class="chip" data-act="cato" data-v="${k}" aria-pressed="${catOwn===k}">${n}</button>`).join('')}</div></div>`:''}
      <div id="catsug"></div><div class="pgr" id="spgr"></div>`;
   }else if(p.type==='artist'){const A=RW[p.k];const n=A.ids.filter(own).length,pc=pct(A.ids);
     p.items=[...A.albums.map(k=>RW[k]),...(A.sgk?[RW[A.sgk]]:[])];
@@ -544,7 +548,7 @@ function waveBars(c){const R=rng('wb'+c.id);let s='';for(let k=0;k<26;k++){const
 function sqHTML(x){const c=x.c,B=c.alk&&RW[c.alk];const ser=S.ser[c.id];
   return `<div class="rsq r${c.r}${c.r===5?' dv':''}" style="--art:${esc(c.img?`url("${c.img}") center/cover no-repeat,${c.bg}`:(B&&B.art||c.bg))};--wc:${WCOL[c.r]};--rc:${RAR[c.r].c}"><div class="sqa"></div><div class="sqw">${waveBars(c)}</div><div class="sqt"><span class="sqr"><i></i>${RAR[c.r].n}</span><b>${esc(c.t)}</b><span>${esc(c.a)}</span></div>${ser?`<em class="sn">#${String(ser).padStart(3,'0')}</em>`:''}</div>`}
 let CRK=null;
-function crkGeo(){const R=Math.random,n=S.set.lite?6:10,a0=R()*360,ang=[];let acc=0;const w=[];for(let k=0;k<n;k++){w.push(.6+R()*.8);acc+=w[k]}
+function crkGeo(){const R=Math.random,n=S.set.lite?5:8,a0=R()*360,ang=[];let acc=0;const w=[];for(let k=0;k<n;k++){w.push(.6+R()*.8);acc+=w[k]}
   let t=a0;for(let k=0;k<n;k++){ang.push(t);t+=w[k]/acc*360}
   const P=(a,r)=>{const q=a*Math.PI/180;return [50+Math.cos(q)*r,50+Math.sin(q)*r]};
   const r1=16+R()*8,r2=34+R()*6;
@@ -555,7 +559,7 @@ function crackSVG(){const g=crkGeo(),f=p=>p[0].toFixed(1)+' '+p[1].toFixed(1),cl
   g.rad.forEach(r=>{d+=`M50 50`+r.map(p=>`L${f(cl(p))}`).join('')});
   g.rad.forEach((r,k)=>{const q=g.rad[(k+1)%g.n];e+=`M${f(r[0])}L${f(g.mid[k])}L${f(q[0])}`});
   return `<svg class="crk" viewBox="0 0 100 100" aria-hidden="true"><path class="glow" d="${d}${e}"/><path d="${d}"/><path class="ring" d="${e}"/></svg>`}
-function shatter(){const op=$('op');if(!op)return;const pl=op.querySelector('.pl'),bvr=op.querySelector('.bv .bvr');if(!pl||!bvr)return;const inner=bvr.innerHTML;const g=CRK||crkGeo();CRK=null;const R=Math.random;let h='';
+function shatter(){const op=$('op');if(!op)return;const pl=op.querySelector('.pl'),bvr=op.querySelector('.bv .bvr');if(!pl||!bvr)return;let inner='';bvr.querySelectorAll(':scope>i,:scope>.bvl').forEach(e=>{if(e.classList.contains('bvl')||getComputedStyle(e).opacity>.05)inner+=e.outerHTML.replace('<i ','<i style="opacity:1" ')});const g=CRK||crkGeo();CRK=null;const R=Math.random;let h='';
   const poly=pts=>'polygon('+pts.map(p=>p[0].toFixed(1)+'% '+p[1].toFixed(1)+'%').join(',')+')';
   const piece=(pts,dist,del)=>{let cx=0,cy=0;pts.forEach(p=>{cx+=p[0];cy+=p[1]});cx=cx/pts.length-50;cy=cy/pts.length-50;const m=Math.hypot(cx,cy)||1;
     h+=`<div class="shd" style="clip-path:${poly(pts)};transform-origin:${(cx+50).toFixed(0)}% ${(cy+50).toFixed(0)}%;--x:${(cx/m*dist).toFixed(1)}cqw;--y:${(cy/m*dist-8).toFixed(1)}cqw;--r:${((R()-.5)*300).toFixed(0)}deg;--ax:${(R()-.5).toFixed(2)};--ay:${(R()-.5).toFixed(2)};--g:${(20+R()*30).toFixed(0)}cqw;--z:${(40+R()*200).toFixed(0)}px;animation-delay:${del}ms;animation-duration:${(1000+R()*450).toFixed(0)}ms"><div class="bvr">${inner}</div><i class="shl" style="--a:${(R()*360).toFixed(0)}deg"></i></div>`};
@@ -563,7 +567,7 @@ function shatter(){const op=$('op');if(!op)return;const pl=op.querySelector('.pl
     piece([[50,50],a[0],g.mid[k],b[0]],18+R()*14,0);
     piece([...a,...b.slice().reverse(),g.mid[k]],42+R()*34,(R()*40)|0)}
   const cs=[RAR[(reveal&&reveal.res[reveal.i]?reveal.res[reveal.i].c.r:0)].c,'#fff','#1a1a20','#2a2a32'];
-  for(let k=0;k<(S.set.lite?8:26);k++){const q=R()*Math.PI*2,d=26+R()*70;h+=`<i class="dbr" style="--x:${(Math.cos(q)*d).toFixed(1)}cqw;--y:${(Math.sin(q)*d-10).toFixed(1)}cqw;--r:${((R()-.5)*720).toFixed(0)}deg;--s:${(1+R()*2.6).toFixed(1)}cqw;--c:${cs[k%cs.length]};animation-delay:${(R()*60)|0}ms"></i>`}
+  for(let k=0;k<(S.set.lite?6:16);k++){const q=R()*Math.PI*2,d=26+R()*70;h+=`<i class="dbr" style="--x:${(Math.cos(q)*d).toFixed(1)}cqw;--y:${(Math.sin(q)*d-10).toFixed(1)}cqw;--r:${((R()-.5)*720).toFixed(0)}deg;--s:${(1+R()*2.6).toFixed(1)}cqw;--c:${cs[k%cs.length]};animation-delay:${(R()*60)|0}ms"></i>`}
   const old=pl.querySelector('.shards');if(old)old.remove();const d=document.createElement('div');d.className='shards';d.innerHTML=h;pl.appendChild(d);op.classList.add('brk');
   const st=op.querySelector('.stage');if(st&&!S.set.lite){st.classList.remove('boomk');void st.offsetWidth;st.classList.add('boomk');setTimeout(()=>st.classList.remove('boomk'),600)}}
 const acHTML=(B,x,b,N,full)=>`<div class="acp${full?' full':''}" id="acp"><span class="acv" style="background:${esc(B.art)}"><i class="gh" style="--rc:${RAR[x.c.r].c}"></i></span><span class="acm"><b>${esc(B.t)}</b><span class="acb"><i id="acbi" style="width:${b/N*100}%"></i></span></span><em><span id="acn">${b}</span>/${N}</em></div>`;
@@ -713,7 +717,7 @@ function needCoins(miss){miss=Math.max(1,miss|0);closeMenu();menuPage='need';
    <button class="gbtn" data-act="gocoins">Voir toutes les offres</button></div>`}
 function passSheet(){closeMenu();closeDD();shopSub='pass';setTab('shop');return;menuPage='pass';
   sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass passsh" role="dialog" aria-label="WaxDrop Pro"><div class="grab"></div><div class="shh"><h2>WaxDrop Pro</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
-   <ul class="perks">${['Bourse en détail : historique 7 et 30 jours, variations, volatilité','Drop gratuit toutes les 5 min au lieu de 10','+1 drop offert chaque jour','1 Drop Or chaque lundi','Thèmes Minuit et Nacre'].map(t=>`<li>${ICON.check}${t}</li>`).join('')}</ul>
+   <ul class="perks">${['Bourse en détail : historique 7 et 30 jours, variations, volatilité','Drop gratuit toutes les 5 min au lieu de 10','+1 drop offert chaque jour','1 Drop Or chaque lundi','Thèmes Minuit et Nacre','Bourse sans limite, Divins compris','Défis d’événement ×2','Label +50 % de points, création offerte','Stats détaillées'].map(t=>`<li>${ICON.check}${t}</li>`).join('')}</ul>
    ${hasPass()?`<p class="cap">Actif jusqu’au ${new Date(S.passUntil).toLocaleDateString('fr-FR',{day:'numeric',month:'long'})}, renouvelé automatiquement.</p><div class="row">${day().pd?'<button class="pbtn" disabled>Drop du jour récupéré</button>':'<button class="pbtn" data-act="claim">Drop du jour</button>'}<button class="gbtn" data-act="passmanage">Gérer</button></div>`:`<button class="pbtn" data-act="buy" data-k="pass">S’abonner · ${PASS_PRICE}</button><p class="cap">Paiement sécurisé par Stripe. Résiliable à tout moment.</p>`}</div>`}
 function vitSheet(){vitInit();closeMenu();menuPage='vit';const V=S.vits[S.vi];
   sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Vitrine"><div class="grab"></div><div class="shh"><h2>Vitrine</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
@@ -805,6 +809,7 @@ document.addEventListener('click',e=>{
     case 'colg':colG=t.dataset.v;render();break;
     case 'cat':closeMenu();closeDD();stack=[{type:'cat'}];renderStack();break;
     case 'cats':catScope=t.dataset.v;renderStack(true);break;
+    case 'catf':catF=!catF;renderStack(true);break;
     case 'catg':catG=t.dataset.v;renderStack(true);break;
     case 'cato':catOwn=t.dataset.v;renderStack(true);break;
     case 'artist':case 'goartist':closeDD();pushPage({type:'artist',k:t.dataset.k});break;

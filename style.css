@@ -1929,7 +1929,7 @@ body[data-skin="brume"] .mgo,body[data-skin="sable"] .mgo,body[data-skin="lilas"
 /* v34 : dock iPhone, aligné et collé en bas */
 .tabs{margin:6px 12px max(8px,calc(env(safe-area-inset-bottom,0px) - 26px))!important;border-radius:999px!important;padding:5px!important}
 .tabs button{border-radius:999px!important}
-html,body{background:var(--bg);overscroll-behavior:none}
+html,body{overscroll-behavior:none}
 /* v34 : cassure, version 3 : facettes éclairées, éclats vers l'écran, lumière dans les fissures */
 .shards{perspective:520px;transform-style:preserve-3d}
 .shd{filter:none!important;animation-name:shd3!important;animation-timing-function:cubic-bezier(.12,.75,.3,1)!important;backface-visibility:hidden}
@@ -1938,3 +1938,32 @@ html,body{background:var(--bg);overscroll-behavior:none}
 .dbr{clip-path:polygon(50% 0,100% 60%,35% 100%,0 40%)!important;box-shadow:none!important;background:linear-gradient(135deg,#fff,var(--c))!important}
 .crk path.glow{stroke:var(--rc);stroke-width:3.2;opacity:.55;filter:blur(1.4px);animation:crk .45s ease-out forwards}
 .crk path{stroke-width:.45!important}.crk path.ring{stroke-width:.35!important}.crk path.glow{stroke-width:2!important}
+/* v35 : écran d'accueil iPhone : l'app prend toute la hauteur du téléphone */
+html.sa,html.sa body{height:var(--appH,100%)}
+html.sa #app{bottom:auto;height:var(--appH,100%)}
+.sheet{max-height:calc(100% - 24px - env(safe-area-inset-top,0px))!important}
+.shd .shl{mix-blend-mode:normal!important;background:linear-gradient(var(--a),rgba(255,255,255,.3),rgba(255,255,255,0) 40%)!important}
+.shd .bvr>i{transition:none!important}
+.shd{contain:strict}
+.bxev{display:flex;align-items:center;gap:10px;width:100%;padding:10px 14px;border-radius:18px;background:var(--evbg);color:#fff;text-align:left;margin-bottom:8px;box-shadow:0 8px 22px rgba(0,0,0,.25)}.bxev span{flex:1;display:flex;flex-direction:column;min-width:0}.bxev small{opacity:.8;font-size:12px}.bxev b{font-size:15px}
+.catvh{display:flex;gap:8px;align-items:center}.catvh .seg{flex:1}
+.catfb{flex:none;height:44px;gap:6px}.catfb.on{background:var(--on);color:var(--onfg)}
+.catfb u{text-decoration:none;display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:9px;background:#ff5f86;color:#fff;font:700 11px var(--disp)}
+.catfp{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:20px;animation:tin .25s ease-out}
+.catfp .chips.wrap{flex-wrap:wrap}
+.otop{position:relative;z-index:3;display:flex;gap:8px;justify-content:center;align-items:stretch;flex-wrap:wrap}
+.otop>.evp{flex:0 1 auto;min-width:0}
+.lbp{display:inline-flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;border-radius:999px;text-align:left;max-width:48%}
+.lbp span:not(.lbg):not(.lbp0){display:flex;flex-direction:column;min-width:0}
+.lbp b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lbp small{font:600 10.5px var(--mono);color:var(--fg2);white-space:nowrap}
+.lbg.sm{width:30px;height:30px;border-radius:10px}.lbg.sm b{font-size:9px}
+.lbp0{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#7c5cff,#ff5f86);color:#fff}.lbp0 svg{width:17px;height:17px}
+.lbp.new{animation:lbglow 2.4s ease-in-out infinite}@keyframes lbglow{50%{box-shadow:0 0 0 3px rgba(124,92,255,.25),0 8px 20px rgba(124,92,255,.25)}}
+.mring.mav::before{background:var(--mav);inset:4px}
+/* v35 : médailles des succès */
+.achic.md1{background:linear-gradient(145deg,#f3c9a1,#b8743f)!important;color:#3a1f08!important}
+.achic.md2{background:linear-gradient(145deg,#f4f6fa,#9aa3b2)!important;color:#1d2230!important}
+.achic.md3{background:linear-gradient(145deg,#ffe7a0,#d4a028 60%,#a87a12)!important;color:#3a2700!important;box-shadow:0 0 14px rgba(255,194,61,.45)}
+.achi:not(.got):not(.ok) .achic{filter:grayscale(.85) opacity(.7)}
+button.brow{width:100%;text-align:left}.brow .bchev{font-style:normal;color:var(--fg2);margin-left:4px}
+.otop{flex-wrap:nowrap}.otop>.evp{max-width:54%}.otop>.lbp{max-width:44%}

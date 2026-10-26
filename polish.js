@@ -3,6 +3,14 @@
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   function lite(){return reduce||S.set.lite}
   var DD=document.getElementById('dd');
+  /* écran d'accueil iPhone : on prend la vraie hauteur du téléphone (Safari en annonce parfois moins) */
+  var SA=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
+  function fitH(){var land=innerWidth>innerHeight,full=land?Math.min(screen.width,screen.height):Math.max(screen.width,screen.height);
+    var H=SA?Math.max(innerHeight,full):innerHeight;document.documentElement.style.setProperty('--appH',H+'px');
+    paintBar()}
+  function paintBar(){try{var c=getComputedStyle(document.body).backgroundColor;document.documentElement.style.backgroundColor=c;var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',c)}catch(e){}}
+  if(SA)document.documentElement.classList.add('sa');fitH();addEventListener('resize',fitH);addEventListener('orientationchange',function(){setTimeout(fitH,300)});
+  if(typeof applySkin==='function'){var oSk=applySkin;window.applySkin=function(){var r=oSk.apply(this,arguments);paintBar();return r}}
   var fine=matchMedia('(pointer:fine)').matches;
 
   /* ---------- inclinaison 3D + reflet qui suit le doigt / la souris / le téléphone ---------- */
