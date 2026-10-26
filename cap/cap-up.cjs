@@ -80,7 +80,7 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
   await p.evaluate(() => setTab('ouvrir')); await sleep(800);
   // 1. Mythique : révélation, l'extrait se lance, inclinaison + reflet holo
   await clip('myth', () => open(2, async () => { await sleep(1500); const c = await center('.rvw .rsq'); if (c) await wobble(c[0], c[1], c[2] * .35, 3200); await sleep(1500);
-    console.log('PVLOG myth badge', await p.evaluate(() => !!document.querySelector('.pvb') + ' live=' + !!document.querySelector('.rsq.live'))) }));
+    console.log('PVLOG myth live', await p.evaluate(() => !!document.querySelector('.rsq.live'))) }));
   await reset();
   // 2. Divin : halo tournant
   await clip('divin', () => open(3, async () => { await sleep(1500); const c = await center('.rvw .rsq'); if (c) await wobble(c[0], c[1], c[2] * .3, 2600); await sleep(1200) }));
@@ -97,6 +97,18 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
   // 5. onglets
   await p.evaluate(() => { colView = 'bulles'; setTab('collection') }); await waitImgs(); await p.evaluate(() => setTab('profil')); await waitImgs(); await p.evaluate(() => setTab('ouvrir')); await sleep(800);
   await clip('tabs', async () => { for (const t of ['collection', 'shop', 'profil', 'ouvrir']) { await p.evaluate(t => setTab(t), t); await sleep(1000) } });
+  // 6. événements
+  await p.evaluate(() => { S.evp = { 3: 11, 4: 11 }; S.evc = { 3: [0], 4: [0] }; setTab('ouvrir') }); await sleep(600);
+  await clip('events', async () => { await p.evaluate(() => evSheet()); await sleep(2600); await p.mouse.move(195, 600); for (let k = 0; k < 4; k++) { await p.mouse.wheel(0, 160); await sleep(160) } await sleep(900) });
+  await p.evaluate(() => closeMenu()); await sleep(500);
+  // 7. label (démo)
+  await clip('label', async () => { await p.evaluate(() => { const top = [{ id: 1, name: 'Cloud Gang', tag: 'CLOU', color: '#7c5cff', n: 8, w: 6400 }, { id: 2, name: 'Rive Gauche', tag: 'RIVE', color: '#ff5f86', n: 5, w: 4100 }, { id: 3, name: 'Nuit Blanche', tag: 'NUIT', color: '#ffc23d', n: 12, w: 3900 }];
+      CL.sb.rpc = async () => ({ data: { label: { id: 1, name: 'Cloud Gang', tag: 'CLOU', color: '#7c5cff', code: 'K7Q2ZP', pts: 18400, week: 6400, rank: 1, owner: true, claimed: [0], members: [{ uid: 'a', pseudo: 'Toi', role: 'owner', me: true, week: 2600, pts: 7400 }, { uid: 'b', pseudo: 'Nino', week: 1900, pts: 5100 }, { uid: 'c', pseudo: 'Sacha', week: 1200, pts: 3300 }, { uid: 'd', pseudo: 'Ilyes', week: 700, pts: 2600 }] }, top } }); LABEL.open() });
+    await sleep(2600); await p.mouse.move(195, 600); for (let k = 0; k < 4; k++) { await p.mouse.wheel(0, 170); await sleep(170) } await sleep(900) });
+  await p.evaluate(() => closeMenu()); await sleep(500);
+  // 8. collection : vue Sons, doubles
+  await p.evaluate(() => { colView = 'sons'; sonsF = 'all'; setTab('collection') }); await waitImgs(); await sleep(800); await p.evaluate(() => setTab('ouvrir')); await sleep(500);
+  await clip('sons', async () => { await p.evaluate(() => setTab('collection')); await sleep(1400); await p.evaluate(() => { sonsF = 'dup'; render() }); await sleep(1400); await p.evaluate(() => { sonsF = '4'; render() }); await sleep(1400) });
   // 6. menu : réglage Extraits
   await clip('menu', async () => { await p.evaluate(() => openMenu()); await sleep(1800) });
   await b.close();
