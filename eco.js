@@ -400,7 +400,7 @@
     A.list=r.data.list;var c0=S.coins;await ECO.sync(true);render();if(window.rewardPop)rewardPop({coins:S.coins-c0||r.data.coins},1)},true);
   /* recharge les succès quand on revient sur le Disquaire */
   document.addEventListener('click',function(e){var t=e.target.closest('[data-tab="shop"],[data-act="shs"][data-v="succes"],[data-act="shs"][data-v="hub"]');if(t)setTimeout(A.fetch,50)},true);
-  if(window.ECO){var oA=ECO.afterSync;ECO.afterSync=function(){if(oA)oA.apply(this,arguments);A.fetch()}}
+  if(window.ECO){var oA=ECO.afterSync;ECO.afterSync=function(){if(oA)oA.apply(this,arguments);var n=Date.now();if(n-(A.last||0)>90000||(tab==='shop'&&shopSub==='succes')){A.last=n;A.fetch()}}}
 })();
 
 /* ---------- styles préférés : 2 max, ×2,5 de chances dans les drops ---------- */
