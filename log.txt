@@ -1,0 +1,19 @@
+cards 68588 artists 920
+[["PNL","Au DD",2,true],["Ninho","Jefe",1,false],["Freeze Corleone","Tse Chi Lop",4,true],["Cherry Pie","BIR HAKEIM",5,true],["So La Lune","Numéro 11",4,true]] images 281
+PVLOG has PV object function tab=ouvrir
+PVLOG fev ["sp-0lV8WbbAVMZaaqd6r2JOq1","BLACKOUT",2,"https://i.scdn.co/image/ab67616d00001e02b2957b37235fe14f724b033e"]
+PVLOG dbg home 1 anims=0
+shot home
+PVLOG dbg events 1 anims=0
+shot events
+PVLOG dbg label 1 anims=0
+shot label
+PVLOG dbg missions 1 anims=5
+shot missions
+PVLOG dbg ach 1 anims=8
+shot ach
+PVLOG dbg sons 1 anims=0
+shot sons
+PVLOG dbg idee 1 anims=0
+shot idee
+fev 421 shots -> 276 frames 9.2s
