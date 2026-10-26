@@ -69,38 +69,16 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
   async function shot(name, fn, scrolls) { await fn(); await p.waitForTimeout(1800); await waitImgs(); await p.waitForTimeout(400); console.log('PVLOG dbg', name, await p.evaluate(() => { const v = document.querySelector('#main .view'); return (v ? getComputedStyle(v).opacity : 'none') + ' anims=' + document.getAnimations().filter(a => a.playState !== 'running').length })); await p.screenshot({ path: OUT + '/' + name + '.png' });
     for (let k = 0; k < (scrolls || 0); k++) { await p.mouse.move(195, 600); for (let j = 0; j < 3; j++) { await p.mouse.wheel(0, 170); await p.waitForTimeout(120) } await p.waitForTimeout(700); await p.screenshot({ path: OUT + '/' + name + '_' + (k + 2) + '.png' }) } console.log('shot', name) }
   async function reset() { await p.evaluate(() => { try { closeOv() } catch (e) { } try { closeMenu() } catch (e) { } try { document.getElementById('dd').innerHTML = '' } catch (e) { } reveal = null; ov.innerHTML = ''; stack = []; renderStack(); setTab('ouvrir') }); await sleep(800) }
-  const fev = await p.evaluate(() => { const c = CARDS.find(c => c.a === 'La Fève' && c.t === 'BLACKOUT') || CARDS.find(c => c.a === 'La Fève' && c.alk === 'al-sp-1hvfxqZg3KcDfAxSrB1XXv'); window.__fev = c; return c ? [c.id, c.t, c.r, c.img] : null });
+  const fev = await p.evaluate(() => { const c = CARDS.find(c => c.a === 'La Fève' && c.t === 'FINIS-LES'); window.__fev = c; return c ? [c.id, c.t, c.r, c.img] : null });
   console.log('PVLOG fev', JSON.stringify(fev));
   await p.evaluate(() => { CL.user = CL.user || { id: 'demo' }; S.top = ARTISTS.filter(A => A.n === 'La Fève').map(A => A.key); S.evp = { 14: 11 }; S.evc = { 14: [0] }; render() }); await sleep(800);
   await p.evaluate(() => { const c = window.__fev; const im = new Image(); im.src = c.img; }); await sleep(2500);
-  // 2. accueil : événement + label
-  await p.evaluate(() => setTab('collection')); await sleep(400);
-  await shot('home', async () => { await p.evaluate(() => setTab('ouvrir')) });
-  // 3. événements
-  await shot('events', async () => { await p.evaluate(() => evSheet()) }, 1);
-  await reset();
-  // 4. label (démo)
-  await shot('label', async () => { await p.evaluate(() => { const top = [{ id: 1, name: 'Cloud Gang', tag: 'CLOU', color: '#7c5cff', n: 8, w: 6400 }, { id: 2, name: 'Rive Gauche', tag: 'RIVE', color: '#ff5f86', n: 5, w: 4100 }, { id: 3, name: 'Nuit Blanche', tag: 'NUIT', color: '#ffc23d', n: 12, w: 3900 }];
-      CL.sb.rpc = async () => ({ data: { label: { id: 1, name: 'Cloud Gang', tag: 'CLOU', color: '#7c5cff', code: 'K7Q2ZP', pts: 18400, week: 6400, rank: 1, owner: true, claimed: [0], members: [{ uid: 'a', pseudo: 'Toi', role: 'owner', me: true, week: 2600, pts: 7400 }, { uid: 'b', pseudo: 'Nino', week: 1900, pts: 5100 }, { uid: 'c', pseudo: 'Sacha', week: 1200, pts: 3300 }, { uid: 'd', pseudo: 'Ilyes', week: 700, pts: 2600 }] }, top } }); LABEL.open() }) }, 1);
-  await reset();
-  // 5. missions
-  await p.evaluate(() => { const d = day(); d.open = 2; d.topA = 1; d.rare = 2; d.evc = 1; }); 
-  await shot('missions', async () => { await p.evaluate(() => { setTab('shop'); shopSub = 'saison'; render() }) });
-  // 6. succès (démo)
-  await shot('ach', async () => { await p.evaluate(() => { const L = [['drop','pk10','Premiers pas','Ouvre 10 drops',10,10,100,1],['drop','pk100','Habitué','Ouvre 100 drops',100,64,500,0],['rar','myth1','Mythique','Obtiens un son Mythique',1,1,300,0],['rar','div1','Touché par la grâce','Obtiens un son Divin',1,0,500,0],['ev','ev1','Tête d\'affiche','Termine le défi d\'un événement',1,1,400,0],['lbl','lb1','Signé','Rejoins ou crée un label',1,1,150,1],['lbl','lb10k','Label en vue','Ton label atteint 10 000 points',10000,6400,800,0],['alb','alb10','Collectionneur','Complète 10 albums',10,4,1200,0]];
-      ACH.list = L.map(x => ({ cat: x[0], k: x[1], t: x[2], d: x[3], n: x[4], v: x[5], r: x[6], got: !!x[7] })); setTab('shop'); shopSub = 'succes'; render() }) });
-  // 7. collection : vue Sons, doubles
-  await p.evaluate(() => { CARDS.filter(c => own(c.id) && c.img).slice(0, 400).forEach((c, i) => { if (i % 3 === 0) S.owned[c.id] = 2 + (i % 2) }); colView = 'sons'; sonsF = 'all'; setTab('collection') }); await waitImgs(); await sleep(600); await p.evaluate(() => setTab('ouvrir')); await sleep(400);
-  await shot('sons', async () => { await p.evaluate(() => { setTab('collection'); sonsF = 'dup'; render() }) });
-  // 8. boîte à idées
-  await reset();
-  await shot('idee', async () => { await p.evaluate(() => openMenu('idee')); await p.waitForTimeout(900); try { await p.click('#fbf textarea', { timeout: 1500 }) } catch (e) { } await p.keyboard.type('Un mode duel entre potes') });
   await reset();
   // 1. drop FINIS-LES
   await clip('fev', async () => {
     await p.evaluate(() => { const c = window.__fev; delete S.owned[c.id]; reveal = { res: [{ c, isNew: true, sp: null }], i: 0, lv: 0, ul: [], gain: 0, stage: 'seal', secret: false, kind: 'std', base: new Set() }; showOpening() });
-    await sleep(600);
-    for (let k = 0; k < 220; k++) { const st = await p.evaluate(() => { if (!reveal || reveal.stage === 'sum') return 'end'; if (reveal.stage === 'shown' && !A.busy) return 'end'; if (!A.busy) { opTap(); return 'tap' } return 'busy' }); if (st === 'end') break; await sleep(st === 'tap' ? 240 : 90) }
+    await sleep(150);
+    for (let k = 0; k < 220; k++) { const st = await p.evaluate(() => { if (!reveal || reveal.stage === 'sum') return 'end'; if (reveal.stage === 'shown' && !A.busy) return 'end'; if (!A.busy) { opTap(); return 'tap' } return 'busy' }); if (st === 'end') break; await sleep(st === 'tap' ? 60 : 40) }
     await sleep(1000); const c = await center('.rvw .rsq'); if (c) await wobble(c[0], c[1], c[2] * .35, 2000); await sleep(600) });
   await reset();
   await b.close();
