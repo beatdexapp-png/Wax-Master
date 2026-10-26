@@ -61,7 +61,7 @@ const FAMOUS = ['Cherry Pie','Ninho','Jul','Booba','PNL','Damso','SCH','Gazo','T
   const waitImgs = () => p.evaluate(() => new Promise(r => { const urls = new Set(); document.querySelectorAll('*').forEach(e => { const m = getComputedStyle(e).backgroundImage.match(/url\("([^"]+)"\)/g); if (m) m.forEach(u => urls.add(u.slice(5, -2))) }); document.querySelectorAll('img').forEach(i => urls.add(i.src)); Promise.all([...urls].map(u => new Promise(q => { const i = new Image(); i.onload = i.onerror = q; i.src = u }))).then(r); setTimeout(r, 15000) }));
 
 
-  console.log('PVLOG has PV', await p.evaluate(() => typeof PV + ' ' + typeof SFX.flip));
+  console.log('PVLOG has PV', await p.evaluate(() => typeof PV + ' ' + typeof SFX.crack + ' tab=' + tab));
   p.on('console', m => { if (/PVLOG/.test(m.text())) console.log(m.text()) });
   async function open(idx, after) {
     await p.evaluate(i => { const c = window.__cs[i]; delete S.owned[c.id];
