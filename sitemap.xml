@@ -2,6 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://waxdrop.fr/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
 <url><loc>https://waxdrop.fr/a-propos.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url><url><loc>https://waxdrop.fr/artistes/</loc><lastmod>2026-10-27</lastmod><priority>0.8</priority></url>
+<url><loc>https://waxdrop.fr/artistes/d-juno.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/uicideboy.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/03-greedo.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/113.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -13,6 +14,7 @@
 <url><loc>https://waxdrop.fr/artistes/42-dugg.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/4keus.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/50-cent.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/55asky.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/63kluf.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/63og.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/6lack.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -34,6 +36,7 @@
 <url><loc>https://waxdrop.fr/artistes/aj-tracey.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/akhenaton.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/akon.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/al-walid.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/al-tarba.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/alicia-keys.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/alkpote.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -57,11 +60,13 @@
 <url><loc>https://waxdrop.fr/artistes/ashh.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/asryn.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/assassin.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/ateyaba.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/avelino.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/avicii.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/aya-nakamura.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/ayra-starr.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/b-lovee.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/b-b-jacques.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/b4.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/baby-hayabusa.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/baby-keem.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -77,6 +82,7 @@
 <url><loc>https://waxdrop.fr/artistes/beendo-z.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/bekar.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/bello-dallas.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/ben-plg.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/benab.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/benash.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/benjamin-epps.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -112,7 +118,9 @@
 <url><loc>https://waxdrop.fr/artistes/bon-jovi.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/bone-thugs-n-harmony.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/booba.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/boogie.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/boosie-badazz.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/boro700.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/bosh.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/bossman-dlow.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/bow-wow.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -177,6 +185,7 @@
 <url><loc>https://waxdrop.fr/artistes/da-uzi.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/dababy.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/daddy-yankee.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/dadi.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/dadju.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/daft-punk.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/damso.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -219,6 +228,7 @@
 <url><loc>https://waxdrop.fr/artistes/dr-dre.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/drake.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/drakeo-the-ruler.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/draviss.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/dtf.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/dua-lipa.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/duke-ellington.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -275,6 +285,7 @@
 <url><loc>https://waxdrop.fr/artistes/g-herbo.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/g-unit.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/gaiden.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/gal.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/gambi.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/gambino-la-mg.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/gang-starr.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -341,6 +352,9 @@
 <url><loc>https://waxdrop.fr/artistes/infinit.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/injury-reserve.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/innoss-b.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/ino-casablanca.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/inoxtag.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/irko.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/isaiah-rashad.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/isha.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/isk.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -368,6 +382,7 @@
 <url><loc>https://waxdrop.fr/artistes/jenifer.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/jeune-mort.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/jeune-morty.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/jewel-usain.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/jhene-aiko.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/jid.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/jim-legxacy.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -388,6 +403,7 @@
 <url><loc>https://waxdrop.fr/artistes/jul.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/juliette-armanet.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/jung-kook.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/jungle-jack.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/justin-bieber.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/juvenile.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/jwles.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -428,6 +444,7 @@
 <url><loc>https://waxdrop.fr/artistes/kid-ink.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/killer-mike.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/king-von.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/klm.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/knucks.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/koba-lad.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/kodak-black.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -472,6 +489,7 @@
 <url><loc>https://waxdrop.fr/artistes/le-motel.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/le-motif.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/le-rat-luciano.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/ledouble.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/lefa.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/lesram.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/lethal-bizzle.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -539,7 +557,9 @@
 <url><loc>https://waxdrop.fr/artistes/maes.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/mafia-k-1-fry.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/magic-system.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/mairo.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/maitre-gims.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/makala.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/maluma.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/mannie-fresh.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/mariah-carey.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -567,6 +587,7 @@
 <url><loc>https://waxdrop.fr/artistes/mhd.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/michael-jackson.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/michel-sardou.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/michou.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/mig.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/migos.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/mika.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -622,12 +643,15 @@
 <url><loc>https://waxdrop.fr/artistes/nirvana.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/niska.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/nle-choppa.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/nobodylikesbirdie.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/noname.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/nono-la-grinta.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/norah-jones.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/normani.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/not3s.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/novelist.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/oasis.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/odetari.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/ofb.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/ofenbach.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/offset.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -705,6 +729,7 @@
 <url><loc>https://waxdrop.fr/artistes/rio-da-yung-og.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/rk.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/rmc-mike.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/rnboi.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/robert-glasper.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/roce.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/rod-wave.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -722,6 +747,7 @@
 <url><loc>https://waxdrop.fr/artistes/russ.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/russ-millions.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/s-pri-noir.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/s2.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/saba.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/sabrina-carpenter.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/sada-baby.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -758,6 +784,7 @@
 <url><loc>https://waxdrop.fr/artistes/shurik-n.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/sia.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/siboy.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/sim01.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/sinik.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/skepta.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/ski-mask-the-slump-god.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -846,6 +873,7 @@
 <url><loc>https://waxdrop.fr/artistes/tion-wayne.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/tiwa-savage.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/tom-d.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/tommy-moisi.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/tony-yayo.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/too-hort.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/toosii.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
@@ -879,6 +907,7 @@
 <url><loc>https://waxdrop.fr/artistes/wale.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/wallace-cleaver.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/warren-g.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
+<url><loc>https://waxdrop.fr/artistes/wasting-shit.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/webbie.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/wejdene.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/werenoi.html</loc><lastmod>2026-10-27</lastmod><priority>0.6</priority></url>
