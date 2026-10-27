@@ -1,2 +1,3 @@
-catalog.json https://ptoncebyqakclxqnmlzk.supabase.co/rest/v1/rpc/catalog_dump2?apikey=sb_publishable_6-9wecVefsCjpqMPnh9Afg_-x-PIjhv
-
+alb.json https://open.spotify.com/oembed?url=https://open.spotify.com/album/6WJKMOUNc5MI0l5CUp5fhl
+vac.json https://open.spotify.com/oembed?url=https://open.spotify.com/artist/5OLkn5GT6EcMuJzjwgvQnu
+rvf.json https://open.spotify.com/oembed?url=https://open.spotify.com/artist/6k9F0oaxCXxbdTFDTdZihN
