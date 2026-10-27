@@ -1,7 +1,7 @@
 {
   "name": "WaxDrop",
   "short_name": "WaxDrop",
-  "description": "Ouvre des maxis, collectionne les sons, complète les albums.",
+  "description": "WaxDrop, le jeu de cartes du rap : ouvre des drops, collectionne les sons, complète les albums.",
   "lang": "fr",
   "start_url": "/",
   "scope": "/",

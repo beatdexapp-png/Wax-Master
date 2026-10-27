@@ -1980,3 +1980,4 @@ button.brow{width:100%;text-align:left}.brow .bchev{font-style:normal;color:var(
 .op .stage{will-change:transform}
 body.ovon #main,body.ovon .tabs,body.ovon .hd{visibility:hidden}body.ovon #main *{animation-play-state:paused!important}
 .seo{max-width:640px;margin:40px auto;padding:0 20px;font-size:14px;opacity:.75}.seo h1{font-size:20px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
