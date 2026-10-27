@@ -64,6 +64,11 @@ const SC='https://i.scdn.co/image/',IMG_A={"PNL": "ab6761610000517451767bb5e3e3a
 ARTISTS.forEach(A=>{const u=IMG_A[A.n]?SC+IMG_A[A.n]:(window.CATIMG&&CATIMG.a[A.n]);if(u){A.img=u;A.avg=`url("${A.img}") center/cover no-repeat,${A.avg}`;A.ini=''}});
 ALBUMS.forEach(B=>{const u=IMG_B[slug(B.a)+'|'+slug(B.t)]?SC+IMG_B[slug(B.a)+'|'+slug(B.t)]:(window.CATIMG&&CATIMG.b[B.a+'|'+B.t]);if(u){B.img=u;B.art=`url("${B.img}") center/cover no-repeat,${B.art}`}});
 CARDS.forEach(c=>{const B=RW[c.alk];const u=(B&&B.img)||(window.CATIMG&&CATIMG.s&&CATIMG.s[c.a+'|'+c.t])||(window.CATIMG&&c.al&&CATIMG.b[c.a+'|'+c.al]);if(u)c.img=u});
+/* une image partout : album sans pochette -> pochette d'un de ses sons ; artiste sans photo -> pochette de son album le plus récent ; son sans image -> photo de l'artiste */
+ALBUMS.concat(ARTISTS.filter(A=>A.sgk).map(A=>RW[A.sgk])).forEach(B=>{if(!B||B.img)return;const c=B.ids.map(id=>C[id]).find(c=>c&&c.img);if(c){B.img=c.img;B.art=`url("${c.img}") center/cover no-repeat,${B.art}`}});
+ARTISTS.forEach(A=>{if(A.img)return;const B=(A.albums||[]).map(k=>RW[k]).filter(B=>B&&B.img).sort((a,b)=>(b.y||0)-(a.y||0))[0];const u=B?B.img:(A.ids.map(id=>C[id]).find(c=>c&&c.img)||{}).img;if(u){A.img=u;A.avg=`url("${u}") center/cover no-repeat,${A.avg}`;A.ini=''}});
+{const AN={};ARTISTS.forEach(A=>AN[A.n]=A);ALBUMS.forEach(B=>{if(B.img)return;const A=AN[B.a];if(A&&A.img){B.img=A.img;B.art=`url("${A.img}") center/cover no-repeat,${B.art}`}})}
+CARDS.forEach(c=>{if(c.img)return;const B=RW[c.alk];if(B&&B.img){c.img=B.img;return}const A=RW[c.ak];if(A&&A.img)c.img=A.img});
 const N=CARDS.length;
 const POOL=RAR.map((_,r)=>CARDS.filter(c=>c.r===r));
 const WEEK=Math.floor((Date.now()-Date.UTC(2026,0,5))/(7*864e5));

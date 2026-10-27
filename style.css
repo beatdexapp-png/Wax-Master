@@ -1967,3 +1967,15 @@ html.sa #app{bottom:auto;height:var(--appH,100%)}
 .achi:not(.got):not(.ok) .achic{filter:grayscale(.85) opacity(.7)}
 button.brow{width:100%;text-align:left}.brow .bchev{font-style:normal;color:var(--fg2);margin-left:4px}
 .otop{flex-wrap:nowrap}.otop>.evp{max-width:54%}.otop>.lbp{max-width:44%}
+/* v36 : fluidité. Couches plein écran plus petites et sur leur propre calque, plus d'animations qui repeignent à chaque image */
+.speed,.grays{width:150vmax!important;height:150vmax!important;margin:-75vmax 0 0 -75vmax!important;will-change:transform,opacity;contain:strict;backface-visibility:hidden}
+.grays i{will-change:transform}
+.glow{will-change:opacity}
+.rsq.r2::before,.rsq.r3::before,.rsq.r4::before,.rsq.r5::before{animation:none!important}
+.rsq.live .sqa{animation:none!important}
+.evt.ok{animation:evpulse2 1.2s ease-in-out infinite!important}
+@keyframes evpulse2{50%{transform:translate(-50%,-50%) scale(1.12)}}
+.lbp.new{animation:none!important}
+.shd{will-change:transform,opacity}
+.op .stage{will-change:transform}
+body.ovon #main,body.ovon .tabs,body.ovon .hd{visibility:hidden}body.ovon #main *{animation-play-state:paused!important}

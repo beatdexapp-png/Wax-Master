@@ -1,14 +1,13 @@
-/* WaxDrop : événements (artistes à la une, 1 son garanti par drop, défi à 3 paliers). */
+/* WaxDrop : événements (artistes à la une plus fréquents, défi à 3 paliers). */
 (function(){
-  var TIERS=[[5,'+150',coinI],[15,'+2 drops',''],[30,'Drop Or','+300']];
+  var TIERS=[[3,'+150',coinI],[8,'+2 drops',''],[15,'Drop Or','+300']];
   function art(n){return ARTISTS.find(function(A){return A.n===n})}
   function icons(x){return (x.ic||x.fx.artists||[]).slice(0,6)}
   function avs(x,cls){var L=icons(x).map(art).filter(Boolean);
     if(!L.length)return '<span class="evav '+(cls||'')+'"><i class="evsym">'+(x.fx.divin?ICON.gem:coinI)+'</i></span>';
     return '<span class="evav '+(cls||'')+'">'+L.map(function(A,i){return '<i style="--i:'+i+';background:'+esc(A.avg)+'" title="'+esc(A.n)+'">'+(A.img?'':esc(A.ini||A.n.slice(0,2)))+'</i>'}).join('')+'</span>'}
   function effects(x){var f=x.fx,L=[];
-    if(f.artists||f.genre)L.push(['1 son garanti par drop',f.artists?'Chaque drop contient au moins un son des artistes à la une.':'Chaque drop contient au moins un son '+(GEN[f.genre]||f.genre)+'.']);
-    if(f.mult&&(f.artists||f.genre))L.push(['×'+f.mult+' sur les autres cartes','Leurs sons tombent aussi '+f.mult+' fois plus souvent dans le reste du drop.']);
+    if(f.mult&&(f.artists||f.genre))L.push(['Chances ×'+f.mult,(f.artists?'Les sons des artistes à la une':'Les sons '+(GEN[f.genre]||f.genre))+' tombent '+f.mult+' fois plus souvent dans tes drops.']);
     if(f.divin)L.push(['Chance Divine ×'+f.divin,'Les Divins tombent '+f.divin+' fois plus souvent.']);
     if(f.cost)L.push(['Drops à '+f.cost+' wax coins','Au lieu de '+COST+'.']);
     return L}

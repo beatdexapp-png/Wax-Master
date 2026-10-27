@@ -24,7 +24,7 @@
     if(r.error)return{error:niceErr(r.error.message)};
     ECO.apply(r.data.w);return r.data;
   };
-  ECO.op=async function(op,a){var r=await ECO.call(op,a);if(r.error){toast(r.error);return null}return r};
+  ECO.op=async function(op,a){var r=await ECO.call(op,a);if(r.error){ECO.lastErr=r.error;toast(r.error);return null}return r};
   /* précharge les pochettes et photos des sons tirés pendant l'animation */
   var PRE=[];ECO.preload=function(ids){ids.forEach(function(id){var c=C[id];if(!c)return;var A=ARTISTS.find(function(a){return a.ids&&a.ids.indexOf(id)>=0});
     [c.img,A&&A.img].forEach(function(u){if(!u)return;var i=new Image();i.decoding='async';i.fetchPriority='high';i.src=u;if(i.decode)i.decode().catch(function(){});PRE.push(i)})});if(PRE.length>60)PRE=PRE.slice(-60)};
@@ -55,7 +55,7 @@
     showOpening();
   };
   window.recyAll=async function(){var r=await ECO.op('recycle_all');if(!r)return;closeMenu();toast('+'+r.dust+' poussière');render()};
-  window.recyOne=async function(id){var r=await ECO.op('recycle',{id:id});if(!r)return;toast('+'+r.dust+' poussière');see(id);render()};
+  window.recyOne=async function(id){if((S.owned[id]||0)<2||recyOne.busy)return;recyOne.busy=1;var r=await ECO.op('recycle',{id:id});recyOne.busy=0;if(!r)return;toast('+'+r.dust+' poussière');see(id);render()};
   window.craft=async function(id){
     var c=C[id];if(!c)return;if(own(id)||S.dust<DUST_COST[c.r]){toast('Pas assez de poussière');return}
     var r=await ECO.op('craft',{id:id});if(!r)return;
@@ -336,10 +336,12 @@
   addEventListener('resize',function(){if(F)drawChart()});
 
   async function trade(op,id,btn){
-    if(btn)btn.disabled=true;
-    var r=await ECO.op(op,{id:id});
+    var m=B.meta||{};if(!m.pro&&((op==='bsell'&&m.sells<=0)||(op==='bbuy'&&m.buys<=0))){toast(op==='bsell'?'Plus de ventes aujourd’hui (illimité avec WaxDrop Pro)':'Plus d’achats aujourd’hui (illimité avec WaxDrop Pro)');return}
+    if(trade.busy)return;trade.busy=1;if(btn)btn.disabled=true;
+    var r=await ECO.op(op,{id:id});trade.busy=0;
     if(btn)btn.disabled=false;
-    if(!r)return;
+    if(!r){if(/par jour maximum/.test(String(ECO.lastErr||'')))m[op==='bsell'?'sells':'buys']=0;return}
+    if(!m.pro){if(op==='bsell')m.sells=Math.max(0,(m.sells||0)-1);else m.buys=Math.max(0,(m.buys||0)-1)}
     toast((op==='bbuy'?'Acheté ':'Vendu ')+r.price+' wax coins'+(r.ul&&r.ul.length?' · récompense !':''));
     if(btn){btn.classList.remove('bxok');void btn.offsetWidth;btn.classList.add('bxok')}
     B.t=0;B.pf=null;

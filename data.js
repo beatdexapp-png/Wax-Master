@@ -113,7 +113,7 @@ const EVENTS=[
  {id:1,n:'Nuit Underground',s:'2026-10-10T18:00',e:'2026-10-14T23:59',d:'Underground ×4',fx:{artists:UND,mult:4},bg:'linear-gradient(135deg,#6b2bd9,#d6336c)'},
  {id:2,n:'Âge d’or',s:'2026-10-17T00:00',e:'2026-10-19T23:59',d:'Chance Divine ×2',fx:{divin:2},bg:'linear-gradient(135deg,#a87a22,#f3e3b5)'},
  {id:3,n:'Drill Session',s:'2026-10-24T00:00',e:'2026-10-26T16:00',d:'Gazo, Tiakola, SDM, Kerchak',fx:{artists:['Gazo','Tiakola','SDM','Kerchak'],mult:4},bg:'linear-gradient(135deg,#1c4fa3,#20c997)'},
- {id:14,n:'FINIS-LES',s:'2026-10-26T16:00',e:'2026-10-29T23:59',d:'Le nouvel album de La Fève',fx:{artists:['La Fève'],mult:6},ic:['La Fève'],bg:'linear-gradient(135deg,#0d0d0d,#c8102e 60%,#ff8a3d)',hero:1},
+ {id:14,n:'FINIS-LES',s:'2026-10-26T16:00',e:'2026-10-29T23:59',d:'Le nouvel album de La Fève',fx:{artists:['La Fève'],mult:8},ic:['La Fève'],bg:'linear-gradient(135deg,#0d0d0d,#c8102e 60%,#ff8a3d)',hero:1},
  {id:5,n:'Halloween',s:'2026-10-30T00:00',e:'2026-11-02T23:59',d:'Drops à 50 · Freeze, Kaaris, Ziak…',fx:{cost:50,artists:['Freeze Corleone','Kaaris','Ziak','Rounhaa','Kalash Criminel'],mult:4},bg:'linear-gradient(135deg,#1a0f05,#f59f00)'},
  {id:6,n:'Marseille',s:'2026-11-03T00:00',e:'2026-11-06T23:59',d:'Jul, SCH, Naps, Soso Maness…',fx:{artists:['Jul','SCH','Naps','Soso Maness',"L'Algérino",'Alpha Wann'],mult:4},bg:'linear-gradient(135deg,#0b5ea8,#41c7ff)'},
  {id:7,n:'UK Night',s:'2026-11-07T00:00',e:'2026-11-09T23:59',d:'Rap UK ×3',fx:{genre:'UK',mult:3},ic:['Central Cee','Dave','Stormzy','Skepta'],bg:'linear-gradient(135deg,#0b1d4a,#c92a2a)'},

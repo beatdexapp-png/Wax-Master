@@ -3,6 +3,8 @@
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   function lite(){return reduce||S.set.lite}
   var DD=document.getElementById('dd');
+  /* pendant une ouverture (écran plein), on met l'app en pause derrière : deux fois moins de travail pour le téléphone */
+  var OV=document.getElementById('ov');if(OV&&window.MutationObserver){var ovs=function(){var f=OV.firstElementChild;document.body.classList.toggle('ovon',!!(f&&f.classList.contains('ov')))};new MutationObserver(ovs).observe(OV,{childList:true});ovs()}
   /* écran d'accueil iPhone : on prend la vraie hauteur du téléphone (Safari en annonce parfois moins) */
   var SA=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
   function fitH(){var land=innerWidth>innerHeight,full=land?Math.min(screen.width,screen.height):Math.max(screen.width,screen.height);
