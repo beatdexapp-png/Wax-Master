@@ -1997,3 +1997,9 @@ body.ovon #main,body.ovon .tabs,body.ovon .hd{visibility:hidden}body.ovon #main 
 .hb .hbref{position:absolute;top:8px;right:8px;font:800 11px var(--disp);font-style:normal;padding:3px 7px;border-radius:999px;background:#ffc23d;color:#1a1200}
 .hb .hbn~.hbref{top:auto;bottom:8px}
 .pqa.pq-inv{background:linear-gradient(140deg,#ffd770,#ffb020);color:#1a1200;border-color:transparent}.pqa.pq-inv .pqi{background:rgba(255,255,255,.4);color:#1a1200}
+/* page Amis : tout défile, la carte parrainage remonte quand on glisse */
+.view.v-fr{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding-bottom:130px;scrollbar-width:none}
+.view.v-fr::-webkit-scrollbar{display:none}
+.v-fr>*{flex-shrink:0}
+.v-fr .pgr{flex:none;min-height:180px}
+.v-fr .pgv{position:static;overflow:visible;padding-bottom:0}

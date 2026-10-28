@@ -60,12 +60,12 @@
     if(SOC.sub==='amis'){
       var L=SOC.friends();
       if(!L.length){h.innerHTML='<div class="frempty"><div class="fre" aria-hidden="true"><i></i><i></i><i></i></div><b>Pas encore d’amis</b><p class="cap">Parraine tes potes : +2 drops pour toi et pour eux, puis échangez vos doubles.</p><button class="pbtn" data-act="frshare">Parrainer un pote</button></div>';return}
-      pager(h,L,frRow,{cellH:64,minW:320,gap:8});
+      pager(h,L,frRow,{cellH:64,minW:320,gap:8,flow:1});
     }else if(SOC.sub==='demandes'){
-      pager(h,SOC.fr.filter(function(f){return f.status==='pending'}).sort(function(a,b){return a.dir===b.dir?0:a.dir==='in'?-1:1}),frRow,{cellH:64,minW:320,gap:8,empty:'Aucune demande d’ami'});
+      pager(h,SOC.fr.filter(function(f){return f.status==='pending'}).sort(function(a,b){return a.dir===b.dir?0:a.dir==='in'?-1:1}),frRow,{cellH:64,minW:320,gap:8,flow:1,empty:'Aucune demande d’ami'});
     }else{
       var u=me(),L2=SOC.list.filter(function(t){return t.to_id===u||t.from_id===u});
-      pager(h,L2,row,{cellH:84,minW:340,gap:8,empty:'Aucun échange. Choisis un ami pour lui proposer un échange.'});
+      pager(h,L2,row,{cellH:84,minW:340,gap:8,flow:1,empty:'Aucun échange. Choisis un ami pour lui proposer un échange.'});
     }
   };
   /* ---------- amis : invitation, demandes ---------- */

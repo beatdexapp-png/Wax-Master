@@ -152,7 +152,7 @@ function pager(host,items,fn,o){
   if(o.cellH){cols=o.cols||Math.max(1,Math.floor((w+gap)/((o.minW||320)+gap)));ch=o.cellH}
   else{cols=o.cols||Math.max(o.minCols||3,Math.floor((w+gap)/(o.minT+gap)));ch=(w-gap*(cols-1))/cols+(o.extra||0)}
   host.innerHTML=`<div class="pgv"><div class="pgd" style="grid-template-columns:repeat(${cols},minmax(0,1fr));grid-auto-rows:${ch.toFixed(1)}px;gap:${gap}px"></div></div>`;
-  const sc=host.firstChild,g=sc.firstChild,step=cols*Math.max(4,Math.ceil((host.clientHeight||600)/(ch+gap))+2);let n=0;
+  const sc=host.firstChild,g=sc.firstChild,step=o.flow?items.length:cols*Math.max(4,Math.ceil((host.clientHeight||600)/(ch+gap))+2);let n=0;
   const add=()=>{if(n>=items.length)return;g.insertAdjacentHTML('beforeend',items.slice(n,n+step).map(fn).join(''));n+=step};
   add();add();
   sc.addEventListener('scroll',()=>{if(sc.scrollTop+sc.clientHeight>sc.scrollHeight-(ch+gap)*4)add()},{passive:true});
@@ -260,7 +260,7 @@ function vShop(){
      <div class="pscmp"><div class="pch"><span></span><b>Gratuit</b><b class="pp">Pro</b></div>${[['Historique Bourse','24 h','30 jours'],['Stats détaillées','–','Oui'],['Drop gratuit','10 min','5 min'],['Drop offert / jour','–','1'],['Drop Or / semaine','–','1'],['Thèmes exclusifs','–','2']].map(([a,b,c])=>`<div class="pcr"><span>${a}</span><em>${b}</em><em class="pp">${c}</em></div>`).join('')}</div>
      <p class="cap">Paiement sécurisé par Stripe. Sans engagement, résiliable à tout moment.</p></div>`}
   else{head=subHead('Drops & wax coins');body=`<div class="chips">${[['packs','Drops'],['jetons','Wax coins']].map(([k,n])=>`<button class="chip" data-act="jts" data-v="${k}" aria-pressed="${jetSub===k}">${n}</button>`).join('')}</div><div class="pgr" id="pgr"></div>${jetSub==='jetons'?'<p class="cap">Paiement sécurisé par Stripe · wax coins ajoutés en quelques secondes</p>':''}`}
-  return `<div class="view v-shop">${head}${body}</div>`;
+  return `<div class="view v-shop${shopSub==='echanges'?' v-fr':''}">${head}${body}</div>`;
 }
 function avHTML(cls){const ph=window.CL&&CL.avatar;const nm=(window.CL&&CL.pseudo)||'Moi';return `<span class="av me ${cls||''}" style="${ph?`--avg:url('${esc(ph)}') center/cover no-repeat,#333`:''}">${ph?'':esc(nm.slice(0,2).toUpperCase())}</span>`}
 function vProfil(){
