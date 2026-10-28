@@ -7,11 +7,13 @@
   var OV=document.getElementById('ov');if(OV&&window.MutationObserver){var ovs=function(){var f=OV.firstElementChild;document.body.classList.toggle('ovon',!!(f&&f.classList.contains('ov')))};new MutationObserver(ovs).observe(OV,{childList:true});ovs()}
   /* écran d'accueil iPhone : on prend la vraie hauteur du téléphone (Safari en annonce parfois moins) */
   var SA=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
+  /* Android : screen.height compte la barre d'état et la barre de navigation, le dock passait sous l'écran. Le correctif ne vaut que pour l'iPhone */
+  var IOS=/iP(hone|od|ad)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   function fitH(){var land=innerWidth>innerHeight,full=land?Math.min(screen.width,screen.height):Math.max(screen.width,screen.height);
-    var H=SA?Math.max(innerHeight,full):innerHeight;document.documentElement.style.setProperty('--appH',H+'px');
+    var H=SA&&IOS?Math.max(innerHeight,full):innerHeight;document.documentElement.style.setProperty('--appH',H+'px');
     paintBar()}
   function paintBar(){try{var c=getComputedStyle(document.body).backgroundColor;document.documentElement.style.backgroundColor=c;var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',c)}catch(e){}}
-  if(SA)document.documentElement.classList.add('sa');fitH();addEventListener('resize',fitH);addEventListener('orientationchange',function(){setTimeout(fitH,300)});
+  if(SA)document.documentElement.classList.add('sa');if(IOS)document.documentElement.classList.add('ios');fitH();addEventListener('resize',fitH);addEventListener('orientationchange',function(){setTimeout(fitH,300)});
   if(typeof applySkin==='function'){var oSk=applySkin;window.applySkin=function(){var r=oSk.apply(this,arguments);paintBar();return r}}
   var fine=matchMedia('(pointer:fine)').matches;
 

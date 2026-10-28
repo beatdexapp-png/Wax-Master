@@ -2003,3 +2003,5 @@ body.ovon #main,body.ovon .tabs,body.ovon .hd{visibility:hidden}body.ovon #main 
 .v-fr>*{flex-shrink:0}
 .v-fr .pgr{flex:none;min-height:180px}
 .v-fr .pgv{position:static;overflow:visible;padding-bottom:0}
+/* v52 : dock Android : au-dessus de la barre de navigation (le -26px ne vaut que pour la barre d'accueil iPhone) */
+html:not(.ios) .tabs{margin-bottom:max(8px,env(safe-area-inset-bottom,0px))!important}
