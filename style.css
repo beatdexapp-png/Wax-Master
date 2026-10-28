@@ -1981,3 +1981,19 @@ button.brow{width:100%;text-align:left}.brow .bchev{font-style:normal;color:var(
 body.ovon #main,body.ovon .tabs,body.ovon .hd{visibility:hidden}body.ovon #main *{animation-play-state:paused!important}
 .seo{max-width:640px;margin:40px auto;padding:0 20px;font-size:14px;opacity:.75}.seo h1{font-size:20px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* parrainage */
+.refc{position:relative;overflow:hidden;margin:0 0 12px;padding:16px;border-radius:24px;color:#fff;background:radial-gradient(120% 90% at 100% 0,#ffc23d55,transparent 60%),linear-gradient(140deg,#6d5cff,#ff5f86);box-shadow:0 14px 30px rgba(109,92,255,.3)}
+.refh{display:flex;align-items:center;gap:12px}.refh b{display:block;font:800 18px/1.15 var(--disp)}
+.refk{font:700 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.refi{width:44px;height:44px;flex:none;border-radius:15px;background:rgba(255,255,255,.22);display:grid;place-items:center}.refi svg{width:24px;height:24px}
+.refg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 12px}
+.refg>div{padding:10px 12px;border-radius:16px;background:rgba(0,0,0,.18)}.refg b{display:block;font:800 20px var(--disp)}.refg small{font:500 11.5px var(--mono);opacity:.9}
+.refp small{font:500 12px var(--mono);opacity:.92}.refp b{font-weight:800}
+.refbar{height:8px;border-radius:8px;background:rgba(0,0,0,.22);overflow:hidden;margin-bottom:6px}.refbar i{display:block;height:100%;border-radius:8px;background:#ffc23d}
+.refl{display:flex;align-items:center;gap:8px;width:100%;margin:12px 0 0;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.16);color:#fff;text-align:left}
+.refl span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 13px var(--mono)}.refl em{font:800 13px var(--disp);font-style:normal}
+.refgo{width:100%;margin-top:10px;background:#fff!important;color:#2a1650!important;display:flex;align-items:center;justify-content:center;gap:8px}.refgo svg{width:18px;height:18px}
+.refc .cap{color:rgba(255,255,255,.8);margin:8px 0 0;text-align:center}
+.hb .hbref{position:absolute;top:8px;right:8px;font:800 11px var(--disp);font-style:normal;padding:3px 7px;border-radius:999px;background:#ffc23d;color:#1a1200}
+.hb .hbn~.hbref{top:auto;bottom:8px}
+.pqa.pq-inv{background:linear-gradient(140deg,#ffd770,#ffb020);color:#1a1200;border-color:transparent}.pqa.pq-inv .pqi{background:rgba(255,255,255,.4);color:#1a1200}
