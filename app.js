@@ -401,8 +401,10 @@ function renderStack(keep){
     h=`<div class="ph">${back}<button class="alth" data-act="seeal" data-k="${B.key}" style="background:${esc(B.art)}" aria-label="Pochette"></button><div class="pn"><b>${esc(B.t)}</b><span>${esc(B.a)}${B.y?' · '+B.y:''} · ${n}/${B.ids.length}${B.p?' · sélection':''}</span></div><span class="ring" style="--p:${pct(B.ids)}"><span>${pct(B.ids)}%</span></span></div>
      <div class="pgr" id="spgr"></div>`;
   }
+  const cf=document.activeElement&&document.activeElement.id==='cq'?document.activeElement.selectionStart:-1;
   if(!keep||!dt.querySelector('.page'))dt.innerHTML=`<div class="scrim" data-act="closestack"></div><div class="page glass">${h}</div>`;
   else dt.querySelector('.page').innerHTML=h;
+  if(cf>=0&&$('cq')){$('cq').focus({preventScroll:true});try{$('cq').setSelectionRange(cf,cf)}catch(e){}}
   if(p.type==='cat')catPager();
   else if(p.type==='artist'){const n=p.items.length;pager($('spgr'),p.items,albBig,{minT:160,minCols:2,cols:n<=2?n:undefined,extra:n===1?54:46,empty:'Aucun album'})}
   else if(p.type==='album')pager($('spgr'),RW[p.k].ids.map(id=>C[id]),tileBtn,{minT:92});
@@ -911,7 +913,7 @@ document.addEventListener('pointerdown',e=>{
 document.addEventListener('pointermove',e=>{const g=BB.drag;if(g&&e.pointerId===g.id){const n=g.n;n.x=e.clientX-g.rect.left-g.ox;n.y=e.clientY-g.rect.top-g.oy;n.vx=(e.clientX-g.lx)*.6;n.vy=(e.clientY-g.ly)*.6;g.lx=e.clientX;g.ly=e.clientY;g.moved+=Math.abs(n.vx)+Math.abs(n.vy);bKick()}},{passive:true});
 function pEnd(e){const g=BB.drag;if(g&&e.pointerId===g.id){BB.drag=null;if(g.moved<8&&e.type==='pointerup'){if(g.n.A)pushPage({type:'artist',k:g.n.A.key});else{colView='liste';try{localStorage.setItem('td-colv','liste')}catch(_){}render();return}}bKick()}}
 document.addEventListener('pointerup',pEnd);document.addEventListener('pointercancel',pEnd);
-let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{stopBub();if($('bub'))$('bub').querySelectorAll('.bb').forEach(x=>x.remove());layout()},160)});
+let rz=0,rw=innerWidth;addEventListener('resize',()=>{const ae=document.activeElement;if(innerWidth===rw&&ae&&/^(INPUT|TEXTAREA)$/.test(ae.tagName))return;rw=innerWidth;clearTimeout(rz);rz=setTimeout(()=>{stopBub();if($('bub'))$('bub').querySelectorAll('.bb').forEach(x=>x.remove());layout()},160)});
 let tickN=0;setInterval(()=>{const ch=(++tickN%2===0)&&mkTick();if(ch&&tab==='shop'&&(shopSub==='encheres'||shopSub==='hub')&&!ov.innerHTML&&!sh.innerHTML)render();else mkPaint();
   document.querySelectorAll('[data-clock]').forEach(el=>{el.textContent=clock(+el.dataset.clock-now())});
   if(tab==='ouvrir'&&!ov.innerHTML&&!sh.innerHTML&&!dd.innerHTML&&!dt.innerHTML){const fc=$('freecap');if(fc&&freeReady()&&fc.querySelector('[data-clock]'))render()}},1000);
