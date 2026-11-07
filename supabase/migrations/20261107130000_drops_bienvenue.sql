@@ -32,18 +32,12 @@ create trigger wallets_signup_gift before insert on public.wallets
 for each row execute function public.wallets_signup_gift();
 
 -- Lu par la page de connexion pour afficher « 10 drops offerts » seulement quand c'est vrai.
-create or replace function public.signup_gift()
-returns int
-language sql
-stable
-security definer
-set search_path to ''
-as $$ select coalesce((select (v->>'n')::int from public.game_cfg where k = 'signup_gift'), 0) $$;
-revoke all on function public.signup_gift() from public;
-grant execute on function public.signup_gift() to anon, authenticated;
+-- Seule cette ligne de game_cfg devient lisible ; les autres réglages restent cachés.
+drop policy if exists "drops de bienvenue visibles" on public.game_cfg;
+create policy "drops de bienvenue visibles" on public.game_cfg for select to anon, authenticated using (k = 'signup_gift');
 
--- Retour arrière :
+-- Retour arrière (à coller dans le SQL Editor si besoin) :
 -- drop trigger if exists wallets_signup_gift on public.wallets;
 -- drop function if exists public.wallets_signup_gift();
--- drop function if exists public.signup_gift();
+-- drop policy if exists "drops de bienvenue visibles" on public.game_cfg;
 -- delete from public.game_cfg where k = 'signup_gift';
