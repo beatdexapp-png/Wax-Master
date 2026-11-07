@@ -2119,6 +2119,13 @@ html:not(.ios) .tabs{margin-bottom:max(8px,env(safe-area-inset-bottom,0px))!impo
   .view .vitg{grid-template-columns:repeat(6,minmax(0,1fr))!important}
   .v-open .maxi{width:min(60cqw,80cqh,460px)}
 }
+/* Bourse sur ordinateur : son fond de salle de marché reste dans le panneau, la barre latérale garde le thème */
+@media (min-width:1024px){
+  main:has(.v-bx){background:radial-gradient(90% 50% at 15% 0%,rgba(48,192,122,.16),transparent 60%),radial-gradient(70% 50% at 100% 30%,rgba(229,72,77,.12),transparent 60%),linear-gradient(180deg,#0c121a,#05080c);border-color:rgba(255,255,255,.08)}
+  .v-bx>.bxbg{display:none}
+  body:has(.v-bx) .hd{color:inherit}
+  body:has(.v-bx) .hd .wm i{filter:none}
+}
 @media (min-width:1440px){#app{grid-template-columns:280px minmax(0,1fr);padding:22px 28px 22px 22px;column-gap:24px}}
 
 /* ===== CONNEXION (refonte 07/11/2026) : scène sombre aux couleurs du vinyle, carte de verre ===== */
