@@ -18,6 +18,8 @@
     var f=await sb.rpc('friends_list');
     if(!f.error&&f.data){SOC.fr=f.data.rows||[];SOC.code=f.data.code;SOC.by=f.data.by||null;var nr=f.data.ref||0,old=null;try{old=localStorage.getItem('td-ref')}catch(e){}if(old!==null&&nr>+old){toast(nr-old>1?(nr-old)+' potes ont rejoint grâce à toi : +'+2*(nr-old)+' drops':'Un pote a rejoint grâce à toi : +2 drops et +150 wax coins');if(window.ECO&&ECO.sync)ECO.sync()}SOC.ref=nr;lsSet('td-ref',String(nr))}
     var sig=r.data.map(function(t){return t.id+t.status}).join(',')+'|'+SOC.fr.map(function(x){return x.id+x.status}).join(',');var ch=sig!==SOC.sig;SOC.sig=sig;SOC.list=r.data;
+    /* lot 3 : un ami te propose un échange pendant que tu joues */
+    var inc=r.data.filter(function(t){return t.status==='pending'&&t.to_id===me()});if(SOC.seenIn){var nw=inc.filter(function(t){return SOC.seenIn.indexOf(t.id)<0});if(nw.length&&typeof toast==='function')toast((nw[0].from_name||'Un ami')+' te propose un échange')}SOC.seenIn=inc.map(function(t){return t.id});
     if(ch){if(tab==='shop'&&(shopSub==='echanges'||shopSub==='hub')&&quiet())render();else{var d=$('shdot');if(d)d.hidden=!(SOC.pending()>0)}}
   }
   async function events(){
