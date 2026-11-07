@@ -74,6 +74,28 @@
     var f=function(v){return v.toLocaleString('fr-FR')};
     return '<div class="gstats"><div><b>'+f(Math.floor(CARDS.length/1000)*1000)+'</b><span>sons</span></div><div><b>'+f(ARTISTS.length)+'</b><span>artistes</span></div><div><b>100 %</b><span>gratuit</span></div></div>';
   }
+  /* Google et Discord : les boutons n'apparaissent que si le fournisseur est activé dans Supabase (lu dans /auth/v1/settings).
+     Drops de bienvenue : affichés seulement si le serveur les donne vraiment (fonction signup_gift). */
+  var OA={},GIFT=0;
+  var GI='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.2H12v4.2h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2.1-1.9 3.3-4.7 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.2-2.7l-3.5-2.7c-1 .7-2.2 1-3.7 1-2.9 0-5.3-1.9-6.2-4.5H2.2v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.8 14.1a6.6 6.6 0 0 1 0-4.2V7.1H2.2a11 11 0 0 0 0 9.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.1-3.1A11 11 0 0 0 2.2 7.1l3.6 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg>';
+  var DI='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.3 5.3A17 17 0 0 0 15 4l-.5 1.1a15.7 15.7 0 0 0-5 0L9 4a17 17 0 0 0-4.3 1.3C2 9.4 1.3 13.4 1.6 17.3A17.2 17.2 0 0 0 6.9 20l1.1-1.8c-.6-.2-1.2-.5-1.7-.9l.4-.3a12.2 12.2 0 0 0 10.6 0l.4.3c-.5.4-1.1.7-1.7.9l1.1 1.8a17.1 17.1 0 0 0 5.3-2.7c.4-4.5-.7-8.5-3.1-12zM8.5 14.9c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1zm7 0c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1z"/></svg>';
+  function oaHTML(){var b='';if(OA.google)b+='<button type="button" class="goa gg" data-oa="google">'+GI+'Continuer avec Google</button>';if(OA.discord)b+='<button type="button" class="goa gd" data-oa="discord">'+DI+'Continuer avec Discord</button>';
+    return b?'<div class="goas">'+b+'</div><div class="gor"><span>ou avec ton e-mail</span></div>':''}
+  function gateRefresh(){if(!gate.hidden&&gate.innerHTML&&(mode==='in'||mode==='up')){var y=gate.scrollTop;gate.innerHTML=gateHTML();gate.scrollTop=y}}
+  fetch(SB_URL+'/auth/v1/settings',{headers:{apikey:SB_KEY}}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.external){OA={google:!!j.external.google,discord:!!j.external.discord};if(OA.google||OA.discord)gateRefresh()}}).catch(function(){});
+  sb.rpc('signup_gift').then(function(r){var n=r&&!r.error?(r.data|0):0;if(n>0&&n<=50){GIFT=n;gateRefresh()}}).catch(function(){});
+  function gateInfo(){
+    var R=typeof RAR!=='undefined'?RAR:[];
+    var steps=[['Ouvre','Un drop gratuit toutes les 10 minutes. 5 vrais sons de rap à chaque fois, tirés au sort.'],['Collectionne','Complète les albums et la discographie de tes artistes. Chaque album fini rapporte des wax coins.'],['Échange','Ajoute tes potes, échange tes doubles, crée ou rejoins un label.'],['Joue la Bourse','Chaque son a un cours qui bouge. Achète au bon moment, revends quand il monte.']];
+    var faq=[['C’est vraiment gratuit ?','Oui. Tout le jeu est gratuit. WaxDrop Pro est un abonnement optionnel pour ceux qui veulent plus de données et de drops.'],['Il faut un code ou une invitation ?','Non. Crée ton compte avec ton e-mail et joue tout de suite, sur téléphone ou ordinateur.'],['Ça marche sur iPhone ?','Oui, dans Safari. Tu peux l’ajouter à ton écran d’accueil comme une appli.'],['Mes cartes valent de l’argent réel ?','Non. Les wax coins et les cartes restent dans le jeu : pas de NFT, pas de retrait.']];
+    return '<div class="ginfo">'+
+      '<section class="gsec"><span class="gk">Comment ça marche</span><h2>Quatre gestes, toute une collection.</h2><ol class="gsteps">'+steps.map(function(x,i){return '<li><b><i>'+(i+1)+'</i>'+x[0]+'</b><span>'+x[1]+'</span></li>'}).join('')+'</ol></section>'+
+      (R.length?'<section class="gsec"><span class="gk">Les raretés</span><h2>Plus un son est écouté, plus sa carte est rare.</h2><div class="grar">'+R.map(function(r){return '<div style="--rc:'+r.c+'"><i></i><b>'+e(r.n)+'</b><small>'+e(r.d)+(r.min<Infinity?' de streams':'')+'</small></div>'}).join('')+'</div></section>':'')+
+      '<section class="gsec gduo"><div class="gbox"><span class="gk">La Bourse</span><h3>Un marché vivant</h3><p>Chaque son a un cours. Achète au cours, revends quand il monte. Des limites par jour gardent le marché propre.</p></div>'+
+      '<div class="gbox gpro"><span class="gk">WaxDrop Pro</span><h3>Pour les vrais collectionneurs</h3><p>Drop gratuit toutes les 5 minutes, un drop offert par jour, un Drop Or chaque lundi, la Bourse en détail. 4,99 € par mois, sans engagement.</p></div></section>'+
+      '<section class="gsec"><span class="gk">Questions</span><h2>Les réponses courtes.</h2><div class="gfaq">'+faq.map(function(x){return '<details><summary>'+x[0]+'</summary><p>'+x[1]+'</p></details>'}).join('')+'</div></section>'+
+      '<footer class="gfoot"><button type="button" class="gb gup" data-g="up" data-top="1">Créer mon compte</button><a href="/a-propos.html">À propos</a> · <a href="/artistes/">Artistes</a></footer></div>';
+  }
   function gateHTML(){
     var m='<div class="gm" id="gmsg" role="status">'+e(CL.msg)+'</div>';
     var hero='<section class="ghero"><div class="gbrand"><i></i>WaxDrop</div><span class="gkick"><i></i>Jeu de cartes du rap · gratuit</span>'+
@@ -86,18 +108,25 @@
     else{
       var up=mode==='up';
       head='<div class="gseg'+(gsw?' gmove':'')+'" data-on="'+(up?'up':'in')+'" role="tablist" aria-label="Compte"><button type="button" role="tab" data-g="in" aria-selected="'+!up+'">J’ai un compte</button><button type="button" role="tab" data-g="up" aria-selected="'+up+'">Créer un compte</button></div>'+
-        '<div class="gtick"><b>10<small>min</small></b><span><strong>Un drop offert</strong>toutes les 10 minutes, 5 sons à chaque fois</span></div>';
+        (up&&GIFT>0?'<div class="gtick"><b>'+GIFT+'<small>drops</small></b><span><strong>'+GIFT+' drops offerts</strong>à la création du compte, puis un drop gratuit toutes les 10 minutes</span></div>'
+          :'<div class="gtick"><b>10<small>min</small></b><span><strong>Un drop offert</strong>toutes les 10 minutes, 5 sons à chaque fois</span></div>')+oaHTML();
       card='<form id="gform" data-m="'+(up?'up':'in')+'"><label for="gmail">E-mail</label><input id="gmail" type="email" autocomplete="email" inputmode="email" placeholder="toi@exemple.fr" required>'+
         '<label for="gpass">Mot de passe</label><input id="gpass" type="password" autocomplete="'+(up?'new-password':'current-password')+'" placeholder="8 caractères minimum" required>'+
         '<button class="gb" type="submit">'+(up?'Créer mon compte':'Se connecter')+'</button>'+
         (up?'<p class="gfine">Gratuit, sans carte bancaire. Ta collection est sauvegardée sur tous tes appareils.</p>':'<button class="gl" type="button" data-g="forgot">Mot de passe oublié ?</button>')+m+'</form>';
     }
     gsw=false;
-    return '<div class="gwrap">'+hero+'<section class="gcard">'+head+card+'</section></div>';
+    var info=mode==='in'||mode==='up';
+    return '<div class="gwrap">'+hero+'<section class="gcard">'+head+card+'</section>'+(info?'<a class="gmore" href="#ginfo" data-gmore="1">Comment ça marche<i aria-hidden="true"></i></a>':'')+'</div>'+(info?'<div id="ginfo">'+gateInfo()+'</div>':'');
   }
   function showGate(m){if(m)mode=m;if(!gate.isConnected)return;gate.innerHTML=gateHTML();gate.hidden=false}
   function hideGate(){gate.hidden=true;gate.innerHTML='';CL.msg=''}
   function say(t){CL.msg=t;var el=document.getElementById('gmsg')||document.getElementById('clmsg');if(el)el.textContent=t}
+  gate.addEventListener('click',async function(ev){
+    var mo=ev.target.closest('[data-gmore]');if(mo){ev.preventDefault();var gi=document.getElementById('ginfo');if(gi)gi.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});return}
+    var oa=ev.target.closest('[data-oa]');if(oa){oa.disabled=true;say('Redirection…');var ro=await sb.auth.signInWithOAuth({provider:oa.dataset.oa,options:{redirectTo:location.origin}});if(ro&&ro.error){oa.disabled=false;say('Connexion avec '+(oa.dataset.oa==='google'?'Google':'Discord')+' indisponible pour le moment')}return}
+    var tp=ev.target.closest('[data-top]');if(tp){gate.scrollTo({top:0,behavior:'smooth'});if(mode==='up')return}
+  });
   gate.addEventListener('click',function(ev){var b=ev.target.closest('[data-g]');if(!b)return;if(b.dataset.g===mode)return;gsw=b.getAttribute('role')==='tab';CL.msg='';showGate(b.dataset.g);var f=document.getElementById('gmail');if(f&&matchMedia('(pointer:fine)').matches)f.focus({preventScroll:true})});
   gate.addEventListener('submit',async function(ev){
     ev.preventDefault();var f=ev.target;var m=f.dataset.m;var btn=f.querySelector('.gb');if(btn)btn.disabled=true;

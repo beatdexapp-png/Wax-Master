@@ -24,7 +24,7 @@
     var pl=ARTISTS.filter(function(A){return ul[A.key]}),al=ALBUMS.filter(function(A){return ul[A.key]}).length;
     var V=(d.vits||[])[vi]||{n:'Vitrine',ids:[]};
     var F=(V.ids||[]).filter(function(id){return C[id]}).slice(0,6).map(function(id){return C[id]});
-    var cells=F.map(function(c){return '<button class="it" data-act="see" data-id="'+c.id+'" aria-label="'+esc(c.t)+', '+esc(c.a)+'">'+tileHTML(c,{nocount:1,lock:false})+'</button>'});
+    var cells=F.map(function(c){return '<button class="it" data-act="see" data-id="'+c.id+'" aria-label="'+esc(c.t)+', '+esc(c.a)+'">'+tileHTML(c,{nocount:1,lock:false,vt:1})+'</button>'});
     while(cells.length<6)cells.push('<span class="fslot jpvide" aria-hidden="true"></span>');
     return '<div class="shh"><div class="phd">'+av(d.avatar,d.pseudo)+'<div><b>'+esc(d.pseudo)+'</b><small>Niveau '+(d.level|0)+' · '+n(d.score)+' pts</small>'+(d.since?'<small class="jpsince">Joue depuis '+since(d.since)+'</small>':'')+'</div></div><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div>'+
       '<div class="kpis3"><div class="k1"><b>'+n(d.sons)+'</b><span>sons</span></div><div class="k2"><b>'+n(al)+'</b><span>albums</span></div><div class="k3"><b>'+n(pl.length)+'</b><span>platines</span></div><div class="k4"><b>'+n(d.divins)+'</b><span>divins</span></div></div>'+

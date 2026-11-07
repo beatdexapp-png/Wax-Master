@@ -2206,3 +2206,124 @@ html:not(.ios) .tabs{margin-bottom:max(8px,env(safe-area-inset-bottom,0px))!impo
   .gcard{padding:26px;gap:16px}
 }
 @media (prefers-reduced-motion:reduce){.gcd,.gcard,.gseg::before{animation:none!important;transition:none!important}}
+
+/* ===================================================================
+   RETOUCHES 07/11/2026 (2) : albums toujours en couleur, titres en cartes verticales, relief et lumière,
+   barre latérale plus riche sur ordinateur, connexion avec plus d'infos.
+   =================================================================== */
+/* albums : la vraie pochette en couleur, même si l'album n'est pas commencé ; la progression est dans la barre dessous */
+.alb:not(.ok) .alc,.alb.none .alc{filter:none;opacity:1}
+.alb:not(.ok) .alv{filter:none}
+.alit .alb .badge{display:none}
+.alit .alb:not(.ok) .alv{transform:translateX(-12%)}
+/* pochette absente (rare) : un vinyle sobre au lieu d'un motif inventé */
+.alc.nim{background:radial-gradient(circle at 50% 46%,var(--lab) 0 9%,#0b0c10 9.5% 11%,transparent 11.5%),repeating-radial-gradient(circle at 50% 46%,#15161b 0 1.2cqw,#1e1f26 1.2cqw 2.4cqw)!important}
+.alc.nim>span{display:none}.alc.nim>i{display:block}
+
+/* titres : carte verticale. Pochette en haut, titre dessous, liseré de la couleur de rareté.
+   Un album reste une pochette carrée avec son vinyle : on ne les confond plus */
+.wc.vt,.wc.vt.im{aspect-ratio:3/4;border-radius:9%/6.75%;background:linear-gradient(180deg,color-mix(in srgb,var(--rc) 22%,#1b1c22),#0e0f13 78%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--rc) 50%,transparent),inset 0 1px 0 rgba(255,255,255,.14)}
+.wc.vt::before{content:"";position:absolute;left:6cqw;right:6cqw;top:6cqw;aspect-ratio:1;border-radius:4.5cqw;background:var(--im,none) center/cover no-repeat,radial-gradient(circle,var(--rc) 0 11%,#0b0c10 11.5% 13.5%,transparent 14%),repeating-radial-gradient(circle,#15161b 0 1.3cqw,#202129 1.3cqw 2.6cqw);box-shadow:0 2.5cqw 6cqw rgba(0,0,0,.4),inset 0 0 0 1px rgba(255,255,255,.08)}
+.wc.vt .wf{display:none}
+.wc.vt .tx,.wc.vt.im .tx{padding:0 7cqw 6.5cqw;gap:.8cqw;color:#fff;background:none}
+.wc.vt .tx b{font-size:10cqw;line-height:1.08;-webkit-line-clamp:1}
+.wc.vt .tx span{font-size:8.6cqw}
+.wc.vt .rd{left:10cqw;top:10cqw}
+.wc.vt .tc,.wc.vt .sn{right:9cqw;top:9cqw}
+.wc.vt .up{left:21cqw;top:8cqw}
+.wc.vt.dv{background:linear-gradient(180deg,#f8f0dc,#e1cc9c);box-shadow:inset 0 0 0 1px rgba(160,120,40,.55),inset 0 1px 0 #fff}
+.wc.vt.dv .tx{color:#3a2a08}
+.vitg>*{aspect-ratio:3/4}
+
+/* relief : les cartes rares et le disque s'inclinent avec la souris, le doigt ou le téléphone, la lumière glisse dessus.
+   Seulement transform et opacity (fluide au téléphone). Coupé en mode léger, appareil faible, ou mouvements réduits */
+.it>.wc.rr{--rx:0deg;--ry:0deg;--mx:50%;--my:30%;transform:perspective(700px) rotateX(var(--rx)) rotateY(var(--ry));transition:transform .55s var(--spring)}
+.it>.wc.rr.tilting{transition:transform .08s linear}
+.wc.rr::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;background:radial-gradient(circle at var(--mx,50%) var(--my,30%),rgba(255,255,255,.3),transparent 46%);mix-blend-mode:soft-light;opacity:0;transition:opacity .4s}
+.wc.rr.tilting::after{opacity:1}
+.wc.vt.rr{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--rc) 75%,transparent),inset 0 1px 0 rgba(255,255,255,.2),0 0 0 0 transparent}
+/* reflet qui passe tout seul sur les cartes rares (une fois toutes les quelques secondes, par translation seulement) */
+.wc.vt.rr .tx::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:200cqw;pointer-events:none;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.22) 50%,transparent 60%);transform:translateX(-120%);animation:rrsh 7s var(--out) infinite;animation-delay:calc(var(--i,0)*.4s)}
+.wc.vt.rr{isolation:isolate}
+@keyframes rrsh{0%,70%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+.mbox .maxi{--rx:0deg;--ry:0deg;--mx:50%;--my:30%;transform:translateX(-7%) perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));transition:transform .6s var(--spring)}
+.mbox .maxi.tilting{transition:transform .1s linear}
+.mv::before{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;background:conic-gradient(from 0deg,transparent 0 8%,rgba(255,255,255,.16) 12%,transparent 18% 50%,rgba(255,255,255,.12) 62%,transparent 68%);transform:rotate(calc(var(--ry)*5 - var(--rx)*3));transition:transform .6s var(--spring)}
+.ms::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.28),transparent 50%);mix-blend-mode:soft-light}
+@media (prefers-reduced-motion:reduce){.it>.wc.rr,.mbox .maxi{transform:none!important}.mbox .maxi{transform:translateX(-7%)!important}.wc.vt.rr .tx::before{animation:none;display:none}}
+.weak .wc.vt.rr .tx::before{display:none}
+
+/* barre latérale ordinateur : le Disquaire éclaté en vraies entrées, carte « Drop gratuit » aérée */
+.sbx{display:none}
+@media (min-width:1024px){
+  .tabs>button[data-tab]{height:46px}
+  .tabs [data-tab="shop"]{display:none!important}
+  .sbx{order:6;display:flex;flex-direction:column;gap:2px;margin-top:6px}
+  .sbh{padding:14px 16px 6px;font:600 10.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--fg2);opacity:.75}
+  .tabs .sbx button{flex:none;flex-direction:row;justify-content:flex-start;align-items:center;gap:14px;height:40px;padding:0 16px;border-radius:14px;font-size:14px;font-weight:600;color:var(--fg2)}
+  .tabs .sbx button svg{width:20px;height:20px}
+  .tabs .sbx button:hover:not([aria-current="page"]){background:var(--soft);color:var(--fg)}
+  .tabs .sbx button[aria-current="page"]{color:var(--fg);background:var(--soft);box-shadow:inset 0 1px 0 var(--hl)}
+  .tabs .sbx .dot{position:absolute;top:50%;right:16px;margin-top:-4px}
+  .sbf{gap:4px;padding:16px 16px 14px;margin-top:auto;flex:none}
+  .tabs .sbf .pbtn{flex:none;height:44px!important;min-height:44px;padding:0 16px!important;margin-top:10px;font-size:14px;line-height:1;white-space:nowrap;justify-content:center}
+  .tabs .sbf .sbgold{flex:none;height:36px;min-height:36px;padding:0 14px;margin-top:6px;justify-content:center;white-space:nowrap}
+  .sbf b{font-size:28px}
+  .shd2:has(>.gbtn[data-act="shs"][data-v="hub"]){display:none}
+  .v-top{padding-top:22px}
+}
+@media (min-width:1024px) and (max-height:860px){.sbf .lbl{display:none}.sbf b{font-size:22px}.tabs .sbf .pbtn{margin-top:6px;height:40px!important;min-height:40px}.sbh{padding-top:10px}}
+
+/* connexion : Google / Discord (visibles seulement si activés), lien vers les infos, infos en faisant défiler */
+.goas{display:flex;flex-direction:column;gap:8px}
+#gate .goa{display:flex;align-items:center;justify-content:center;gap:10px;height:50px;border-radius:999px;border:0;font:700 15px var(--disp);cursor:pointer;transition:translate .45s var(--spring),transform .12s}
+#gate .goa svg{width:20px;height:20px;flex:none}
+#gate .goa.gg{background:#fff;color:#1f1f1f}
+#gate .goa.gd{background:#5865F2;color:#fff}
+#gate .goa:active{transform:scale(.97)}
+#gate .goa[disabled]{opacity:.6}
+@media (hover:hover){#gate .goa:not([disabled]):hover{translate:0 -2px}}
+.gor{display:flex;align-items:center;gap:12px;font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#7d8391}
+.gor::before,.gor::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.12)}
+.gmore{justify-self:center;display:inline-flex;flex-direction:column;align-items:center;gap:6px;color:#a9afbd;font:600 13px var(--body);text-decoration:none;padding:6px 12px}
+.gmore i{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25);background:no-repeat center/12px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cfd3dc' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");animation:gbob 2.4s var(--out) infinite}
+@keyframes gbob{0%,60%,100%{transform:none}30%{transform:translateY(4px)}}
+.ginfo{max-width:1100px;margin:0 auto;padding:12px 20px calc(40px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:56px}
+.gsec{display:flex;flex-direction:column;gap:14px}
+.gk{font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#ffc23d}
+.gsec h2{margin:0;font:800 clamp(1.7rem,6vw,2.6rem)/1.02 var(--disp);letter-spacing:-.035em;text-wrap:balance;max-width:22ch}
+.gsteps{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:1fr;gap:10px}
+.gsteps li{display:flex;flex-direction:column;gap:6px;padding:18px;border-radius:22px;background:rgba(255,255,255,.045);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),inset 0 1px 0 rgba(255,255,255,.1)}
+.gsteps b{display:flex;align-items:center;gap:10px;font:700 17px var(--disp)}
+.gsteps b i{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:700 12px var(--mono);font-style:normal;color:#0b0c10;background:#f1f2f6}
+.gsteps span{color:#a9afbd;font-size:14.5px;line-height:1.45}
+.grar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.grar div{display:flex;flex-direction:column;gap:3px;padding:14px;border-radius:18px;background:linear-gradient(160deg,color-mix(in srgb,var(--rc) 18%,transparent),rgba(255,255,255,.02));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--rc) 35%,transparent)}
+.grar i{width:10px;height:10px;border-radius:50%;background:var(--rc);box-shadow:0 0 12px var(--rc);margin-bottom:4px}
+.grar b{font:700 15px var(--disp);color:var(--rc)}
+.grar small{font-size:12.5px;color:#a9afbd}
+.gduo{display:grid;grid-template-columns:1fr;gap:10px}
+.gbox{display:flex;flex-direction:column;gap:8px;padding:22px;border-radius:24px;background:radial-gradient(90% 80% at 0% 0%,rgba(48,192,122,.16),transparent 60%),rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)}
+.gbox.gpro{background:radial-gradient(90% 80% at 0% 0%,rgba(255,194,61,.18),transparent 60%),rgba(255,255,255,.04)}
+.gbox h3{margin:0;font:800 22px/1.1 var(--disp);letter-spacing:-.02em}
+.gbox p{margin:0;color:#a9afbd;font-size:14.5px;line-height:1.5}
+.gfaq{display:flex;flex-direction:column;gap:8px}
+.gfaq details{border-radius:18px;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.gfaq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;font:700 15.5px var(--disp)}
+.gfaq summary::-webkit-details-marker{display:none}
+.gfaq summary::after{content:"+";font:500 22px/1 var(--body);color:#a9afbd;transition:transform .35s var(--spring)}
+.gfaq details[open] summary::after{transform:rotate(45deg)}
+.gfaq p{margin:0;padding:0 18px 16px;color:#a9afbd;font-size:14.5px;line-height:1.5}
+.gfoot{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 14px;color:#7d8391;font-size:13.5px}
+.gfoot .gb.gup{flex:1 0 100%;max-width:360px}
+.gfoot a{color:#a9afbd}
+@media (min-width:700px){.gsteps{grid-template-columns:repeat(2,1fr)}.grar{grid-template-columns:repeat(3,1fr)}.gduo{grid-template-columns:1fr 1fr}}
+@media (min-width:960px){
+  .gwrap{min-height:100vh;min-height:100dvh;position:relative}
+  .gmore{position:absolute;left:50%;bottom:18px;translate:-50% 0}
+  .ginfo{padding:40px 56px 64px;gap:80px}
+  .gsteps{grid-template-columns:repeat(4,1fr)}
+  .grar{grid-template-columns:repeat(6,1fr)}
+}
+@media (max-width:959px){.gmore{order:7;margin-top:4px}}
+@media (prefers-reduced-motion:reduce){.gmore i{animation:none}}

@@ -55,7 +55,7 @@ CARDS.sort((x,y)=>x.r-y.r||(x.s??0)-(y.s??0)||x.t.localeCompare(y.t));
 CARDS.forEach((c,i)=>{c.no=i+1;c.q=slug(c.t+' '+c.a);
   const R=rng('bg'+c.id),h=R()*360|0;c.bg=c.r===5?'linear-gradient(155deg,#f6eedb,#e3d1a8)':`linear-gradient(155deg,hsl(${h} 32% 27%),hsl(${(h+40)%360} 38% 11%))`;c.hue=h;
   const r=rng(c.t+'|'+c.a),[b,sp]=BASE[c.r];c.flow=clamp(Math.round(b+sp*(.3+.7*r())),1,99);c.hype=clamp(Math.round(b+sp*r()),1,99);c.aura=clamp(Math.round(b+sp*(.2+.8*r())),1,99)});
-[...ALBUMS,...ARTISTS.filter(a=>a.sgk).map(a=>RW[a.sgk])].forEach(A=>{A.r=A.ids.some(id=>C[id].r===5)?5:Math.max(1,tierOf(A.ids.reduce((s,id)=>s+(C[id].s||0),0)/4));A.art=cover('al|'+A.t+A.a,A.r===5?5:1);A.lab=`hsl(${hash(A.t+A.a)%360} 70% 62%)`;A.q=slug(A.t+' '+A.a)});
+[...ALBUMS,...ARTISTS.filter(a=>a.sgk).map(a=>RW[a.sgk])].forEach(A=>{A.r=A.ids.some(id=>C[id].r===5)?5:Math.max(1,tierOf(A.ids.reduce((s,id)=>s+(C[id].s||0),0)/4));A.art=(h=>`linear-gradient(160deg,hsl(${h} 14% 24%),hsl(${h} 16% 11%))`)(hash(A.t+A.a)%360);A.lab=`hsl(${hash(A.t+A.a)%360} 70% 62%)`;A.q=slug(A.t+' '+A.a)});
 ARTISTS.forEach(A=>{const ws=A.n.split(/\s+/).filter(w=>/[A-Za-zÀ-ÿ0-9]/.test(w));
   A.ini=A.ini0||(ws.length===1&&ws[0].length<=4&&ws[0]===ws[0].toUpperCase()?ws[0]:ws.slice(0,2).map(w=>w[0].toUpperCase()).join(''));
   const h=hash(A.n)%360;A.avg=`linear-gradient(140deg,hsl(${h} 46% 60%),hsl(${(h+40)%360} 44% 34%))`;A.q=slug(A.n)});
@@ -67,8 +67,8 @@ CARDS.forEach(c=>{const B=RW[c.alk];const u=(B&&B.img)||(window.CATIMG&&CATIMG.s
 /* une image partout : album sans pochette -> pochette d'un de ses sons ; artiste sans photo -> pochette de son album le plus récent ; son sans image -> photo de l'artiste */
 ALBUMS.concat(ARTISTS.filter(A=>A.sgk).map(A=>RW[A.sgk])).forEach(B=>{if(!B||B.img)return;const c=B.ids.map(id=>C[id]).find(c=>c&&c.img);if(c){B.img=c.img;B.art=`url("${c.img}") center/cover no-repeat,${B.art}`}});
 ARTISTS.forEach(A=>{if(A.img)return;const B=(A.albums||[]).map(k=>RW[k]).filter(B=>B&&B.img).sort((a,b)=>(b.y||0)-(a.y||0))[0];const u=B?B.img:(A.ids.map(id=>C[id]).find(c=>c&&c.img)||{}).img;if(u){A.img=u;A.avg=`url("${u}") center/cover no-repeat,${A.avg}`;A.ini=''}});
-{const AN={};ARTISTS.forEach(A=>AN[A.n]=A);ALBUMS.forEach(B=>{if(B.img)return;const A=AN[B.a];if(A&&A.img){B.img=A.img;B.art=`url("${A.img}") center/cover no-repeat,${B.art}`}})}
-CARDS.forEach(c=>{if(c.img)return;const B=RW[c.alk];if(B&&B.img){c.img=B.img;return}const A=RW[c.ak];if(A&&A.img)c.img=A.img});
+/* jamais la photo de l'artiste ni la pochette d'un autre single à la place d'une pochette : sans vraie pochette, un vinyle sobre */
+CARDS.forEach(c=>{if(c.img)return;const B=RW[c.alk];if(B&&B.img&&!B.single)c.img=B.img});
 const N=CARDS.length;
 const POOL=RAR.map((_,r)=>CARDS.filter(c=>c.r===r));
 const WEEK=Math.floor((Date.now()-Date.UTC(2026,0,5))/(7*864e5));
@@ -132,15 +132,15 @@ const ICON={list:I('<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.0
 function waveSVG(c){if(!c.wv){const R=rng('wv'+c.id);let d='';for(let k=0;k<24;k++){const v=.16+.84*Math.abs(Math.sin(k*.45+R()*2.2))*(.45+.55*R());const h=v*40;d+=`M${k*4.4+2} ${(24-h/2).toFixed(1)}v${h.toFixed(1)}`}c.wv=d}
   return `<svg class="wf" viewBox="0 0 106 48" preserveAspectRatio="none" aria-hidden="true"><path d="${c.wv}"/></svg>`}
 function tileHTML(c,o={}){const n=S.owned[c.id]||0;const lock=o.lock!==undefined?o.lock:!n;const R=RAR[c.r];const ser=S.ser[c.id];
-  return `<div class="wc${lock?' lk':''}${c.r===5?' dv':''}${c.img?' im':''}" style="--bg:${c.bg};${c.img?`--im:url(&quot;${c.img}&quot;);`:''}--wc:${WCOL[c.r]};--rc:${R.c}"><i class="rd"></i>${ser?`<em class="sn">#${String(ser).padStart(3,'0')}</em>`:n>1&&!o.nocount?`<em class="tc">×${n}</em>`:''}${TREND.has(c.id)?'<i class="up" title="En hausse">↑</i>':''}${waveSVG(c)}<div class="tx"><b>${esc(c.t)}</b><span>${esc(c.a)}</span></div></div>`}
+  return `<div class="wc${o.vt?' vt':''}${c.r>=3?' rr':''}${lock?' lk':''}${c.r===5?' dv':''}${c.img?' im':''}" style="--bg:${c.bg};${c.img?`--im:url(&quot;${c.img}&quot;);`:''}--wc:${WCOL[c.r]};--rc:${R.c}"><i class="rd"></i>${ser?`<em class="sn">#${String(ser).padStart(3,'0')}</em>`:n>1&&!o.nocount?`<em class="tc">×${n}</em>`:''}${TREND.has(c.id)?'<i class="up" title="En hausse">↑</i>':''}${waveSVG(c)}<div class="tx"><b>${esc(c.t)}</b><span>${esc(c.a)}</span></div></div>`}
 function albumHTML(A){const ok=A.single?A.ids.every(own):S.ul[A.key];const n=A.ids.filter(own).length;
-  return `<div class="alb${ok?' ok':''}${n?'':' none'}"><div class="alv" style="--lab:${A.lab}"></div><div class="alc${A.img?' im':''}" style="background:${esc(A.art)}"><span>${esc(A.t)}</span><i>${esc(A.a)}</i></div>${ok?'':`<em class="badge">${n}/${A.ids.length}</em>`}</div>`}
+  return `<div class="alb${ok?' ok':''}${n?'':' none'}"><div class="alv" style="--lab:${A.lab}"></div><div class="alc${A.img?' im':' nim'}" style="background:${esc(A.art)};--lab:${A.lab}"><span>${esc(A.t)}</span><i>${esc(A.a)}</i></div>${ok?'':`<em class="badge">${n}/${A.ids.length}</em>`}</div>`}
 function plaqueHTML(A){const ok=S.ul[A.key];
   return `<div class="plq${ok?' ok':''}"><div class="pfm"><div class="pdk"><i style="background:${esc(A.avg)}"></i></div><div class="ppl"><b>${esc(A.n)}</b><span>Disque de platine</span></div></div>${ok?'':`<em class="badge">${pct(A.ids)}%</em>`}</div>`}
 const rewardHTML=x=>x.type==='album'?albumHTML(x):plaqueHTML(x);
 function artistRow(A,i){const p=pct(A.ids),n=A.ids.filter(own).length;return `<button class="arow" style="--i:${i%14}" data-act="artist" data-k="${A.key}" aria-label="${esc(A.n)}"><span class="av" style="--avg:${esc(A.avg)}">${esc(A.ini)}</span><span class="art"><b>${esc(A.n)}</b><small>${GEN[A.g]||A.g} · ${n}/${A.ids.length} sons</small><span class="abar"><i style="width:${p}%"></i></span></span><em>${p}%</em></button>`}
 function artistCell(A){const p=pct(A.ids);return `<button class="acell" data-act="artist" data-k="${A.key}" aria-label="${esc(A.n)}"><span class="ar" style="--p:${p}"><span class="av" style="--avg:${esc(A.avg)}">${esc(A.ini)}</span></span><b>${esc(A.n)}</b><small>${p}%</small></button>`}
-const tileBtn=c=>`<button class="it" data-act="see" data-id="${c.id}" aria-label="${esc(c.t)}, ${esc(c.a)}">${tileHTML(c)}</button>`;
+const tileBtn=c=>`<button class="it" data-act="see" data-id="${c.id}" aria-label="${esc(c.t)}, ${esc(c.a)}">${tileHTML(c,{vt:1})}</button>`;
 const albBig=A=>`<button class="it alit" data-act="album" data-k="${A.key}" aria-label="${esc(A.t)}">${albumHTML(A)}<span class="alcap"><b>${esc(A.single?'Singles':A.t)}</b><small>${A.single?'':A.y?A.y+' · ':''}${A.ids.filter(own).length}/${A.ids.length}</small><span class="albar${albDone(A)?' ok':''}" aria-hidden="true"><i style="width:${pct(A.ids)}%"></i></span></span></button>`;
 /* rangement des albums de la Collection : filtre (tous, à finir, complets) et tri (progression, A → Z, année) */
 const albDone=A=>A.single?A.ids.every(own):!!S.ul[A.key];
@@ -160,7 +160,7 @@ function pager(host,items,fn,o){
   if(!items.length){host.innerHTML=`<p class="empty">${o.empty||'Rien ici'}</p>`;return}
   let cols,ch;
   if(o.cellH){cols=o.cols||Math.max(1,Math.floor((w+gap)/((o.minW||320)+gap)));ch=o.cellH}
-  else{cols=o.cols||Math.max(o.minCols||3,Math.floor((w+gap)/(o.minT+gap)));ch=(w-gap*(cols-1))/cols+(o.extra||0)}
+  else{cols=o.cols||Math.max(o.minCols||3,Math.floor((w+gap)/(o.minT+gap)));ch=(w-gap*(cols-1))/cols*(o.ratio||1)+(o.extra||0)}
   host.innerHTML=`<div class="pgv"><div class="pgd" style="grid-template-columns:repeat(${cols},minmax(0,1fr));grid-auto-rows:${ch.toFixed(1)}px;gap:${gap}px"></div></div>`;
   const sc=host.firstChild,g=sc.firstChild,step=o.flow?items.length:cols*Math.max(4,Math.ceil((host.clientHeight||600)/(ch+gap))+2);let n=0;
   const add=()=>{if(n>=items.length)return;g.insertAdjacentHTML('beforeend',items.slice(n,n+step).map(fn).join(''));n+=step};
@@ -239,8 +239,11 @@ function wsIndex(){mkInit();const L=S.mk.list.filter(l=>!l.mine);if(!L.length)re
 function bigChart(){const R=rng('ws'+Math.floor(now()/3600e3));let v=50,p=[];for(let i=0;i<=24;i++){v=clamp(v+(R()-.42)*14,8,92);p.push(`${(i/24*100).toFixed(1)},${(100-v).toFixed(1)}`)}
   return `<svg class="bch" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polygon points="0,100 ${p.join(' ')} 100,100"/><polyline points="${p.join(' ')}"/></svg>`}
 const subHead=(t,x)=>`<div class="vh shd2"><button class="gbtn sq" data-act="shs" data-v="hub" aria-label="Retour">${ICON.back}</button><h2>${t}</h2>${x||''}</div>`;
+const isPC=()=>matchMedia('(min-width:1024px)').matches;
 function vShop(){
   if(shopSub==='encheres'||shopSub==='cours')shopSub='hub';
+  /* ordinateur : le Disquaire est éclaté en entrées de la barre latérale, pas de sommaire */
+  if(shopSub==='hub'&&isPC())shopSub='jetons';
   if(shopSub==='saison')return vSaisonTab();
   if(shopSub==='hub'){const ix=window.ECO?ECO.ix:0,pend=window.SOC?SOC.pending():0,nf=window.SOC?SOC.friends().length:0,on=hasPass();
     const an=window.ACH?ACH.ready():0;
@@ -274,6 +277,8 @@ function vShop(){
 }
 function avHTML(cls){const ph=window.CL&&CL.avatar;const nm=(window.CL&&CL.pseudo)||'Moi';return `<span class="av me ${cls||''}" style="${ph?`--avg:url('${esc(ph)}') center/cover no-repeat,#333`:''}">${ph?'':esc(nm.slice(0,2).toUpperCase())}</span>`}
 function vProfil(){
+  /* ordinateur : le classement a sa propre entrée dans la barre latérale */
+  if(profSub==='top'&&isPC())return `<div class="view v-prof v-top vs"><div class="plist">${board().map(boardRow).join('')}</div></div>`;
   const t=tierNow();const nm=(window.CL&&CL.pseudo)||'Ton profil';const nf=window.SOC?SOC.friends().length:0,pend=window.SOC?SOC.pending():0;const x=(S.xp||0)%TIER_XP;
   return `<div class="view v-prof vs"><div class="phero"><button class="avb" data-act="pedit" aria-label="Modifier le profil">${avHTML('tbig')}<i class="ped">${ICON.pen}</i></button><div class="pn"><b>${esc(nm)}</b><span>Niveau ${t} · ${score().toLocaleString('fr-FR')} pts</span><span class="plv" style="--p:${t>=TIERS?100:x}%"><i></i></span></div><button class="gbtn sq ghost" data-act="menu" aria-label="Réglages">${ICON.gear}</button></div>
    ${window.ECO?ECO.topHTML():''}
@@ -354,7 +359,10 @@ function render(){
   stopBub();applySkin();setCoins();
   const od=$('odot');if(od)od.hidden=!canFree();const sd=$('shdot');if(sd)sd.hidden=!(missReady()||window.ACH&&ACH.ready()>0||window.SOC&&SOC.pending()>0);
   document.querySelectorAll('#tabs button[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));
-  const ht=$('hdt');if(ht)ht.textContent={ouvrir:'Ouvrir un drop',collection:'Collection',shop:'Disquaire',bourse:'Bourse',profil:'Profil'}[tab]||'';sbPaint();
+  const sbk=tab==='shop'?(shopSub==='hub'&&isPC()?'jetons':shopSub):tab==='profil'&&profSub==='top'?'top':'';
+  const ht=$('hdt');if(ht)ht.textContent=(isPC()&&{jetons:'Boutique',saison:'Missions',succes:'Succès',pass:'WaxDrop Pro',echanges:'Amis et échanges',top:'Classement'}[sbk])||{ouvrir:'Ouvrir un drop',collection:'Collection',shop:'Disquaire',bourse:'Bourse',profil:'Profil'}[tab]||'';sbPaint();
+  document.querySelectorAll('#sbx button[data-v]').forEach(b=>{b.setAttribute('aria-current',b.dataset.v===sbk?'page':'false');const d=b.querySelector('.dot');if(d)d.hidden=!({saison:missReady(),succes:window.ACH&&ACH.ready()>0,echanges:window.SOC&&SOC.pending()>0}[b.dataset.v])});
+  const pb=document.querySelector('#tabs button[data-tab="profil"]');if(pb&&sbk==='top')pb.setAttribute('aria-current','false');
   if(tab==='saison'){tab='shop';shopSub='saison'}
   const ov=main.firstElementChild,ok0=ov&&ov.className,st0=ov&&ov.classList.contains('vs')?ov.scrollTop:0,pg0=main.querySelector('.pgv'),ps0=pg0?pg0.scrollTop:0;
   main.innerHTML=tab==='ouvrir'?vOuvrir():tab==='collection'?vCollection():tab==='shop'?vShop():tab==='bourse'?(window.vBourse?vBourse():''):vProfil();
@@ -364,7 +372,7 @@ function render(){
 }
 function layout(){
   const h=$('pgr');
-  if(tab==='collection'){if($('bub'))initBub();if(h)pager(h,colList(),artistRow,{cellH:66,minW:320,gap:8,empty:'Ouvre un drop pour commencer'});const hs=$('pgs');if(hs)pager(hs,sonsList(),tileBtn,{minT:100,empty:sonsF==='dup'?'Aucun double':'Aucun son'});const ha=$('pga');if(ha)pager(ha,albList(),albBig,{minT:150,minCols:2,extra:58,empty:albF==='done'?'Aucun album complet pour l’instant':albF==='todo'?'Tous tes albums sont complets':'Ouvre un drop pour commencer'})}
+  if(tab==='collection'){if($('bub'))initBub();if(h)pager(h,colList(),artistRow,{cellH:66,minW:320,gap:8,empty:'Ouvre un drop pour commencer'});const hs=$('pgs');if(hs)pager(hs,sonsList(),tileBtn,{ratio:4/3,minT:100,empty:sonsF==='dup'?'Aucun double':'Aucun son'});const ha=$('pga');if(ha)pager(ha,albList(),albBig,{minT:150,minCols:2,extra:58,empty:albF==='done'?'Aucun album complet pour l’instant':albF==='todo'?'Tous tes albums sont complets':'Ouvre un drop pour commencer'})}
   if(tab==='shop'&&h){if(shopSub==='encheres')mkLayout();else if(shopSub==='echanges'){if(window.SOC)SOC.layout(h)}else if(shopSub==='jetons')pager(h,shopItems(),x=>x,{cellH:jetSub==='packs'?190:188,cols:2,gap:10})}
   
   if(tab==='shop'&&shopSub==='saison'&&seaSub!=='missions'){const tk=$('trk'),v=tk&&tk.closest('.view');const t=tierNow();if(v&&!v._same&&t>2&&t<TIERS){const c=tk.children[t-2];if(c)v.scrollTop=Math.max(0,c.offsetTop-v.clientHeight*.35)}}
@@ -394,7 +402,7 @@ function catPager(){const h=$('spgr');if(!h)return;const L=catResults();const c=
   const sg=$('catsug');if(sg){const q=catQ.trim(),has=q&&ARTISTS.some(A=>A.q===slug(q));sg.innerHTML=q.length>=2&&!has?`<div class="sugb glass"><span>« ${esc(q)} » n’est pas dans le jeu ?</span><button class="pbtn sm" data-act="askart">Proposer l’ajout</button></div>`:''}
   if(catScope==='artistes')pager(h,L,artistCell,{minT:88,extra:30,empty:'Aucun résultat'});
   else if(catScope==='albums')pager(h,L,albBig,{minT:160,minCols:2,extra:46,empty:'Aucun résultat'});
-  else pager(h,L,tileBtn,{minT:92,empty:'Aucun résultat'})}
+  else pager(h,L,tileBtn,{ratio:4/3,minT:92,empty:'Aucun résultat'})}
 function renderStack(keep){
   const p=stack[stack.length-1];if(!p){dt.innerHTML='';return}
   const back=`<button class="gbtn sq" data-act="pop" aria-label="Retour">${stack.length>1?ICON.back:ICON.x}</button>`;
@@ -421,7 +429,7 @@ function renderStack(keep){
   if(cf>=0&&$('cq')){$('cq').focus({preventScroll:true});try{$('cq').setSelectionRange(cf,cf)}catch(e){}}
   if(p.type==='cat')catPager();
   else if(p.type==='artist'){const n=p.items.length;pager($('spgr'),p.items,albBig,{minT:160,minCols:2,cols:n<=2?n:undefined,extra:n===1?54:46,empty:'Aucun album'})}
-  else if(p.type==='album')pager($('spgr'),RW[p.k].ids.map(id=>C[id]),tileBtn,{minT:92});
+  else if(p.type==='album')pager($('spgr'),RW[p.k].ids.map(id=>C[id]),tileBtn,{ratio:4/3,minT:92});
 }
 
 /* ================= TIRAGE ================= */
@@ -674,7 +682,7 @@ function mkRow(l){const c=C[l.cid];const R=RAR[c.r];const v=chg(l);
 function mkLayout(){const h=$('pgr');if(!h)return;mkInit();
   if(mkSub==='live')pager(h,S.mk.list.filter(l=>!l.mine).sort((a,b)=>a.ends-b.ends),mkRow,{cellH:76,minW:340,gap:8,empty:'Aucun son en vente pour l’instant. Mets tes doubles en vente !'});
   else if(mkSub==='mine')pager(h,S.mk.list.filter(l=>l.mine).sort((a,b)=>a.ends-b.ends),mkRow,{cellH:76,minW:340,gap:8,empty:'Aucune vente en cours'});
-  else pager(h,CARDS.filter(c=>(S.owned[c.id]||0)>1).sort((a,b)=>b.r-a.r),c=>`<button class="it" data-act="sell" data-id="${c.id}" aria-label="Vendre ${esc(c.t)}">${tileHTML(c)}</button>`,{minT:96,empty:'Pas de doubles à vendre'});
+  else pager(h,CARDS.filter(c=>(S.owned[c.id]||0)>1).sort((a,b)=>b.r-a.r),c=>`<button class="it" data-act="sell" data-id="${c.id}" aria-label="Vendre ${esc(c.t)}">${tileHTML(c,{vt:1})}</button>`,{ratio:4/3,minT:96,empty:'Pas de doubles à vendre'});
 }
 function mkPaint(){if(tab!=='shop'||shopSub!=='encheres')return;tickPaint();document.querySelectorAll('[data-lid]').forEach(el=>{const l=S.mk.list.find(x=>x.id===el.dataset.lid);if(!l){el.style.opacity=.35;return}
   const tm=el.querySelector('.ltm');if(tm)tm.textContent=clock(l.ends-now());const sk=el.querySelector('.spk');if(sk)sk.outerHTML=spark(l,'spk');const cg=el.querySelector('.chg');if(cg)cg.outerHTML=chgHTML(l);el.classList.toggle('gn',chg(l)>0);const cu=el.querySelector('.lcur');if(cu)cu.innerHTML=`${l.cur} ${coinI}`;
@@ -746,7 +754,7 @@ function vitSheet(){vitInit();closeMenu();menuPage='vit';const V=S.vits[S.vi];
    <div class="row"><button class="pbtn" data-act="vsave">Enregistrer</button>${S.vits.length>1?'<button class="gbtn" data-act="vdel">Supprimer</button>':''}</div></div>`}
 function vitPick(){vitInit();closeMenu();menuPage='vpick';const L=CARDS.filter(c=>own(c.id)&&!S.fav.includes(c.id)).sort((a,b)=>b.r-a.r).slice(0,120);
   sh.innerHTML=`<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Ajouter à la vitrine"><div class="grab"></div><div class="shh"><h2>Ajouter un son</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">${ICON.x}</button></div>
-   ${L.length?`<div class="pickg">${L.map(c=>`<button data-act="vadd" data-id="${c.id}" aria-label="${esc(c.t)}">${tileHTML(c,{nocount:1})}</button>`).join('')}</div>`:'<p class="muted">Ouvre des drops pour remplir ta vitrine</p>'}</div>`}
+   ${L.length?`<div class="pickg">${L.map(c=>`<button data-act="vadd" data-id="${c.id}" aria-label="${esc(c.t)}">${tileHTML(c,{nocount:1,vt:1})}</button>`).join('')}</div>`:'<p class="muted">Ouvre des drops pour remplir ta vitrine</p>'}</div>`}
 function popHTML(inner){return `<div class="scrim" data-act="ddclose"></div><div class="pop">${inner}</div>`}
 function see(id){const c=C[id];if(!c)return;const n=S.owned[id]||0;const fav=S.fav.includes(id);
   const acts=reveal?'':`<div class="row"><a class="gbtn" href="https://open.spotify.com/search/${encodeURIComponent(c.t+' '+c.a)}" target="_blank" rel="noopener">${ICON.play}Écouter</a><button class="gbtn" data-act="goartist" data-k="${c.ak}">${esc(c.a)}</button>${c.alk&&!RW[c.alk].single?`<button class="gbtn" data-act="goalbum" data-k="${c.alk}">Album</button>`:''}</div>
@@ -807,7 +815,7 @@ function renderMenu(){
 /* ================= INTERACTIONS ================= */
 document.addEventListener('click',e=>{
   const t=e.target.closest('[data-act],[data-tab]');if(!t)return;
-  if(t.dataset.tab){closeMenu();closeStack();closeDD();if(t.dataset.tab==='shop'&&tab==='shop')shopSub='hub';setTab(t.dataset.tab);return}
+  if(t.dataset.tab){closeMenu();closeStack();closeDD();if(t.dataset.tab==='shop'&&tab==='shop')shopSub='hub';if(t.dataset.tab==='profil'&&profSub==='top'&&isPC())profSub='vitrine';setTab(t.dataset.tab);return}
   const a=t.dataset.act;
   switch(a){
     case 'open':openPack(t.dataset.m);break;
@@ -866,6 +874,7 @@ document.addEventListener('click',e=>{
     case 'gofriends':closeMenu();shopSub='echanges';if(window.SOC)SOC.sub='amis';setTab('shop');break;
     case 'invite':if(window.SOC)SOC.share();break;
     case 'shs':shopSub=t.dataset.v;render();break;
+    case 'sbgo':{const v=t.dataset.v;closeMenu();closeStack();closeDD();if(v==='top'){profSub='top';setTab('profil')}else{if(v==='echanges'&&window.SOC)SOC.sub='amis';if(v==='jetons')jetSub='packs';shopSub=v;if(tab==='profil'&&profSub==='top')profSub='vitrine';setTab('shop')}break}
     case 'mks':mkSub=t.dataset.v;render();break;
     case 'jts':jetSub=t.dataset.v;render();break;
     case 'bid':bid(t.dataset.l);break;
@@ -929,7 +938,7 @@ document.addEventListener('pointerdown',e=>{
 document.addEventListener('pointermove',e=>{const g=BB.drag;if(g&&e.pointerId===g.id){const n=g.n;n.x=e.clientX-g.rect.left-g.ox;n.y=e.clientY-g.rect.top-g.oy;n.vx=(e.clientX-g.lx)*.6;n.vy=(e.clientY-g.ly)*.6;g.lx=e.clientX;g.ly=e.clientY;g.moved+=Math.abs(n.vx)+Math.abs(n.vy);bKick()}},{passive:true});
 function pEnd(e){const g=BB.drag;if(g&&e.pointerId===g.id){BB.drag=null;if(g.moved<8&&e.type==='pointerup'){if(g.n.A)pushPage({type:'artist',k:g.n.A.key});else{colView='liste';try{localStorage.setItem('td-colv','liste')}catch(_){}render();return}}bKick()}}
 document.addEventListener('pointerup',pEnd);document.addEventListener('pointercancel',pEnd);
-let rz=0,rw=innerWidth;addEventListener('resize',()=>{const ae=document.activeElement;if(innerWidth===rw&&ae&&/^(INPUT|TEXTAREA)$/.test(ae.tagName))return;rw=innerWidth;clearTimeout(rz);rz=setTimeout(()=>{stopBub();if($('bub'))$('bub').querySelectorAll('.bb').forEach(x=>x.remove());layout()},160)});
+let rz=0,rw=innerWidth,rzPC=matchMedia('(min-width:1024px)').matches;addEventListener('resize',()=>{const ae=document.activeElement;if(innerWidth===rw&&ae&&/^(INPUT|TEXTAREA)$/.test(ae.tagName))return;rw=innerWidth;clearTimeout(rz);rz=setTimeout(()=>{if(isPC()!==rzPC){rzPC=isPC();render();return}stopBub();if($('bub'))$('bub').querySelectorAll('.bb').forEach(x=>x.remove());layout()},160)});
 let tickN=0;setInterval(()=>{const ch=(++tickN%2===0)&&mkTick();if(ch&&tab==='shop'&&(shopSub==='encheres'||shopSub==='hub')&&!ov.innerHTML&&!sh.innerHTML)render();else mkPaint();
   document.querySelectorAll('[data-clock]').forEach(el=>{el.textContent=clock(+el.dataset.clock-now())});sbPaint();
   if(tab==='ouvrir'&&!ov.innerHTML&&!sh.innerHTML&&!dd.innerHTML&&!dt.innerHTML){const fc=$('freecap');if(fc&&freeReady()&&fc.querySelector('[data-clock]'))render()}},1000);
