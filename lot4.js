@@ -43,7 +43,7 @@
     var R=typeof RAR!=='undefined'?RAR:[],K=window.VIT&&VIT.rates?VIT.rates():[],g=pity();
     sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass l4-sh" role="dialog" aria-label="Chances"><div class="grab"></div><div class="shh"><h2>Les vraies chances</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div>'+
       '<p class="cap" style="text-align:left">Drop gratuit ou normal : 4 cartes tirées parmi toutes les raretés, la 5<sup>e</sup> au moins Rare. Ce sont les poids utilisés par le serveur.</p>'+
-      '<div class="l4-od">'+R.map(function(r,i){var k=K[i]||{card:0,one:0};return '<div style="--rc:'+r.c+'"><i></i><b>'+e(r.n)+'</b><span>'+(k.card*100<1?(k.card*100).toLocaleString('fr-FR',{maximumFractionDigits:2}):Math.round(k.card*100))+' %</span><small>1 carte sur '+f(k.one)+'</small></div>'}).join('')+'</div>'+
+      '<div class="l4-od">'+R.map(function(r,i){var k=K[i]||{card:0,one:0};return '<div style="--rc:'+r.c+'"><i></i><b>'+e(r.n)+'</b><span>'+(window.VIT&&VIT.pct?VIT.pct(k.card):Math.round(k.card*100)+' %')+'</span><small>1 carte sur '+f(k.one)+'</small></div>'}).join('')+'</div>'+
       '<div class="l4-gu"><b>Garantie</b><p>Si tu ouvres '+(S.l4.every||60)+' drops sans '+(R[4]?R[4].n:'Mythique')+' ni '+(R[5]?R[5].n:'Divin')+', le suivant en contient un. Il te reste <b>'+g.left+'</b> drop'+(g.left>1?'s':'')+' avant la garantie. Le compteur repart à zéro dès qu’un '+(R[4]?R[4].n:'Mythique')+' ou mieux sort.</p></div>'+
       '<a class="gbtn" href="/regles.html" target="_blank" rel="noopener">Toutes les règles</a></div>';
   }

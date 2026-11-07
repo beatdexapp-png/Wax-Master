@@ -14,6 +14,7 @@
   /* ---------- vraies chances (mêmes poids que le serveur, fonction draw_card2) ---------- */
   /* 4 cartes tirées parmi toutes les raretés, la 5e au moins Rare. */
   var W=[62,26,8,2.5,.6,.05];
+  VIT.pct=function(p){var x=p*100;return x.toLocaleString('fr-FR',{maximumFractionDigits:x<1?2:x<10?1:0})+' %'};
   VIT.rates=function(){var T=W.reduce(function(a,b){return a+b},0),T1=T-W[0];
     return W.map(function(w,i){var p=(4*w/T+(i>=1?w/T1:0))/5;return{card:p,one:Math.max(1,Math.round(1/p))}})};
 
@@ -61,7 +62,7 @@
       '<div class="grs" aria-live="polite">'+rarStage(3)+'</div><p class="gfine2">Chances réelles d’un drop gratuit ou normal : 4 cartes tirées parmi toutes les raretés, la 5<sup>e</sup> au moins Rare.</p>';
   };
   function rarStage(i){var c=pick(i),R=rar(i),K=VIT.rates()[i];if(!c)return '';
-    return '<div class="grs-c" style="--rc:'+R.c+'"><span class="grs-im" style="background-image:url(&quot;'+e(c.img)+'&quot;)"></span><em>'+e(R.n)+'</em><span class="grs-t"><b>'+e(c.t)+'</b><small>'+e(c.a)+'</small></span></div><p class="grs-p"><b>'+(K.card*100<1?(K.card*100).toLocaleString('fr-FR',{maximumFractionDigits:2}):Math.round(K.card*100))+' %</b> des cartes</p>'}
+    return '<div class="grs-c" style="--rc:'+R.c+'"><span class="grs-im" style="background-image:url(&quot;'+e(c.img)+'&quot;)"></span><em>'+e(R.n)+'</em><span class="grs-t"><b>'+e(c.t)+'</b><small>'+e(c.a)+'</small></span></div><p class="grs-p"><b>'+VIT.pct(K.card)+'</b> des cartes</p>'}
 
   /* ---------- drop de démo ---------- */
   VIT.demoHTML=function(){
