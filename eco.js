@@ -11,7 +11,7 @@
     if(!w)return;
     S.coins=w.coins;S.gold=w.gold;S.bonus=w.bonus;S.dust=w.dust;
     var o={};for(var k in (w.owned||{}))if(C[k])o[k]=w.owned[k];S.owned=o;
-    S.freeAt=+new Date(w.free_at)||0;S.l3=w.l3&&typeof w.l3==='object'?w.l3:null;S.xp=w.sxp||0;S.passUntil=w.pass_until?+new Date(w.pass_until):0;S.top=Array.isArray(w.top)?w.top:[];S.styles=Array.isArray(w.styles)?w.styles:[];S.topAt=w.top_at?+new Date(w.top_at):0;
+    S.freeAt=+new Date(w.free_at)||0;S.l3=w.l3&&typeof w.l3==='object'?w.l3:null;S.l4=w.l4&&typeof w.l4==='object'?w.l4:null;S.xp=w.sxp||0;S.passUntil=w.pass_until?+new Date(w.pass_until):0;S.top=Array.isArray(w.top)?w.top:[];S.styles=Array.isArray(w.styles)?w.styles:[];S.topAt=w.top_at?+new Date(w.top_at):0;
     var cl=w.claims||{};S.ul=Object.assign({},cl.ul||{});S.sfree=(cl.sf||[]).slice();S.sprem=(cl.sp||[]).slice();S.codes=Object.assign({},cl.codes||{});S.evp=cl.evp||{};S.evc=cl.evc||{};
     var d=w.day||{};S.day=d.d===today()?Object.assign(fresh0(),d,{cl:Object.assign({},d.cl||{})}):fresh0();
     save();setCoins();
@@ -39,7 +39,7 @@
     else if(m==='free'){if(!(S.bonus>0||freeReady())){toast('Pas de drop gratuit');return}}
     else if(S.coins<need){needCoins(need-S.coins);return}
     ECO.busy=true;var r;
-    try{r=await sb.rpc('eco',{p_op:'open',p_a:{kind:m==='pay'?'std':m,alk:m==='drop'?curDrop().A.key:null,v:window.CATV}})}
+    try{r=await sb.rpc('eco',{p_op:'open',p_a:{kind:m==='pay'?'std':m,alk:m==='drop'?curDrop().A.key:null,v:window.CATV,pool:(m==='free'||m==='pay')&&window.L4&&L4.pool?L4.pool():null}})}
     catch(e){r={error:{message:'Connexion impossible'}}}
     finally{ECO.busy=false}
     if(r.error){toast(niceErr(r.error.message));return}

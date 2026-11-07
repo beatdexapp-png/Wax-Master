@@ -59,6 +59,7 @@
   var mode='in';
   if(!window.supabase||!window.supabase.createClient){showGate('offline');return}
   sb=CL.sb=window.supabase.createClient(SB_URL,SB_KEY);
+  if(window.VIT)VIT.load(sb);
   /* Page de connexion (refonte 07/11/2026) : à gauche la promesse et de vraies pochettes du jeu, à droite la carte de verre.
      Sur téléphone, la carte passe sous la promesse. Les champs, identifiants et messages sont les mêmes qu'avant. */
   var gsw=false;
@@ -71,7 +72,7 @@
     var gs=[oth[k%Math.max(1,oth.length)],'Rap',oth[(k+3)%Math.max(1,oth.length)]];if(gs[0]===gs[2])gs[2]=oth[(k+1)%Math.max(1,oth.length)];
     var L=gs.map(function(g,i){var b=by[g]||by.Rap||[];return b.length?b[(k*7+i*13)%b.length]:null}).filter(Boolean);
     if(L.length<3)return '';
-    return '<div class="gfan" aria-hidden="true">'+L.map(function(c,i){var R=RAR[c.r]||RAR[0];return '<div class="gcd g'+i+'" style="--im:url(&quot;'+e(c.img)+'&quot;);--rc:'+R.c+'"><i></i><span class="gr">'+e(R.n)+'</span><b>'+e(c.t)+'</b><small>'+e(c.a)+'</small></div>'}).join('')+'</div>';
+    return '<div class="gfan" aria-hidden="true"><div class="gfi">'+L.map(function(c,i){var R=RAR[c.r]||RAR[0];return '<div class="gcd g'+i+'" data-id="'+e(c.id)+'" style="--im:url(&quot;'+e(c.img)+'&quot;);--rc:'+R.c+'"><i></i><span class="gr">'+e(R.n)+'</span><b>'+e(c.t)+'</b><small>'+e(c.a)+'</small></div>'}).join('')+'</div><i class="gsh"></i></div>';
   }
   function gateStats(){
     if(typeof CARDS==='undefined'||!CARDS.length)return '';
@@ -88,16 +89,16 @@
   function gateRefresh(){if(gate.hidden||!gate.innerHTML||(mode!=='in'&&mode!=='up'))return;
     /* on garde ce que le joueur a déjà tapé et l'endroit où il était */
     var y=gate.scrollTop,a=document.activeElement&&document.activeElement.id,v={};['gmail','gpass'].forEach(function(k){var el=document.getElementById(k);if(el)v[k]=el.value});
-    gate.innerHTML=gateHTML();gate.scrollTop=y;Object.keys(v).forEach(function(k){var el=document.getElementById(k);if(el)el.value=v[k]});if(a){var f=document.getElementById(a);if(f)f.focus({preventScroll:true})}}
+    gate.innerHTML=gateHTML();if(window.VIT)VIT.mounted();gate.scrollTop=y;Object.keys(v).forEach(function(k){var el=document.getElementById(k);if(el)el.value=v[k]});if(a){var f=document.getElementById(a);if(f)f.focus({preventScroll:true})}}
   fetch(SB_URL+'/auth/v1/settings',{headers:{apikey:SB_KEY}}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.external){OA={google:!!j.external.google,discord:!!j.external.discord};if(OA.google||OA.discord)gateRefresh()}}).catch(function(){});
   sb.from('game_cfg').select('v').eq('k','signup_gift').limit(1).then(function(r){var n=r&&!r.error&&r.data&&r.data[0]&&r.data[0].v?(r.data[0].v.n|0):0;if(n>0&&n<=50){GIFT=n;gateRefresh()}},function(){});
   function gateInfo(){
     var R=typeof RAR!=='undefined'?RAR:[];
     var steps=[['Ouvre','Un drop gratuit toutes les 10 minutes. 5 vrais sons à chaque fois, tirés au sort : rap, pop, rock, électro, afro, K-pop…'],['Collectionne','Complète les albums et la discographie de tes artistes. Chaque album fini rapporte des wax coins.'],['Échange','Ajoute tes potes, échange tes doubles, crée ou rejoins un label.'],['Joue la Bourse','Chaque son a un cours qui bouge. Achète au bon moment, revends quand il monte.']];
     var faq=[['C’est vraiment gratuit ?','Oui. Tout le jeu est gratuit. WaxDrop Pro est un abonnement optionnel pour ceux qui veulent plus de données et de drops.'],['Il faut un code ou une invitation ?','Non. Crée ton compte avec ton e-mail et joue tout de suite, sur téléphone ou ordinateur.'],['Ça marche sur iPhone ?','Oui, dans Safari. Tu peux l’ajouter à ton écran d’accueil comme une appli.'],['Mes cartes valent de l’argent réel ?','Non. Les wax coins et les cartes restent dans le jeu : pas de NFT, pas de retrait.']];
-    return '<div class="ginfo">'+
+    return '<div class="ginfo">'+(window.VIT?VIT.demoHTML():'')+
       '<section class="gsec"><span class="gk">Comment ça marche</span><h2>Quatre gestes, toute une collection.</h2><ol class="gsteps">'+steps.map(function(x,i){return '<li><b><i>'+(i+1)+'</i>'+x[0]+'</b><span>'+x[1]+'</span></li>'}).join('')+'</ol></section>'+
-      (R.length?'<section class="gsec"><span class="gk">Les raretés</span><h2>Plus un son est écouté, plus sa carte est rare.</h2><div class="grar">'+R.map(function(r){return '<div style="--rc:'+r.c+'"><i></i><b>'+e(r.n)+'</b><small>'+e(r.d)+(r.min<Infinity?' de streams':'')+'</small></div>'}).join('')+'</div></section>':'')+
+      (R.length?'<section class="gsec"><span class="gk">Les raretés</span><h2>Plus un son est écouté, plus sa carte est rare.</h2>'+(window.VIT?VIT.rarHTML():'<div class="grar">'+R.map(function(r){return '<div style="--rc:'+r.c+'"><i></i><b>'+e(r.n)+'</b><small>'+e(r.d)+(r.min<Infinity?' de streams':'')+'</small></div>'}).join('')+'</div>')+'</section>':'')+
       '<section class="gsec gduo"><div class="gbox"><span class="gk">La Bourse</span><h3>Un marché vivant</h3><p>Chaque son a un cours. Achète au cours, revends quand il monte. Des limites par jour gardent le marché propre.</p></div>'+
       '<div class="gbox gpro"><span class="gk">WaxDrop Pro</span><h3>Pour les vrais collectionneurs</h3><p>Drop gratuit toutes les 5 minutes, un drop offert par jour, un Drop Or chaque lundi, la Bourse en détail. 4,99 € par mois, sans engagement.</p></div></section>'+
       '<section class="gsec"><span class="gk">Questions</span><h2>Les réponses courtes.</h2><div class="gfaq">'+faq.map(function(x){return '<details><summary>'+x[0]+'</summary><p>'+x[1]+'</p></details>'}).join('')+'</div></section>'+
@@ -106,7 +107,7 @@
   function gateHTML(){
     var m='<div class="gm" id="gmsg" role="status">'+e(CL.msg)+'</div>';
     var hero='<section class="ghero"><div class="gbrand"><i></i>WaxDrop</div><span class="gkick"><i></i>Jeu de cartes musical · gratuit</span>'+
-      '<h1>Ta musique,<br>en <em>cartes</em>.</h1><p>Rap, pop, rock, électro, afro, K-pop, jazz, chanson. Un drop gratuit toutes les 10 minutes, les albums de tes artistes à compléter, tes potes pour échanger.</p>'+gateFan()+gateStats()+'</section>';
+      '<h1>Ta musique,<br>en <em>cartes</em>.</h1><p>Rap, pop, rock, électro, afro, K-pop, jazz, chanson. Un drop gratuit toutes les 10 minutes, les albums de tes artistes à compléter, tes potes pour échanger.</p>'+gateFan()+gateStats()+(window.VIT?VIT.live()+'<button type="button" class="gtry" data-gtry="1"><i aria-hidden="true"></i>Essayer un drop sans compte</button>':'')+'</section>';
     var card='',head='';
     if(mode==='offline')card='<h2>Connexion impossible</h2><p class="gp">Le serveur ne répond pas. Vérifie ta connexion internet puis recharge la page.</p>';
     else if(mode==='pseudo')card='<h2>Choisis ton pseudo</h2><p class="gp">Il apparaît au classement, dans les échanges et sur ton profil.</p><form id="gform" data-m="pseudo"><label for="gpseudo">Pseudo</label><input id="gpseudo" maxlength="20" autocomplete="nickname" placeholder="3 à 20 caractères" required><button class="gb" type="submit">Valider</button>'+m+'</form>';
@@ -124,9 +125,9 @@
     }
     gsw=false;
     var info=mode==='in'||mode==='up';
-    return '<div class="gwrap">'+hero+'<section class="gcard">'+head+card+'</section>'+(info?'<a class="gmore" href="#ginfo" data-gmore="1">Comment ça marche<i aria-hidden="true"></i></a>':'')+'</div>'+(info?'<div id="ginfo">'+gateInfo()+'</div>':'');
+    return '<div class="gwrap">'+hero+'<section class="gcard">'+head+card+'</section>'+(info?'<a class="gmore" href="#ginfo" data-gmore="1">Comment ça marche<i aria-hidden="true"></i></a>':'')+'</div>'+(info&&window.VIT?VIT.marquee():'')+(info?'<div id="ginfo">'+gateInfo()+'</div>':'');
   }
-  function showGate(m){if(m)mode=m;if(!gate.isConnected)return;gate.innerHTML=gateHTML();gate.hidden=false}
+  function showGate(m){if(m)mode=m;if(!gate.isConnected)return;gate.innerHTML=gateHTML();gate.hidden=false;if(window.VIT)VIT.mounted()}
   function hideGate(){gate.hidden=true;gate.innerHTML='';CL.msg=''}
   function say(t){CL.msg=t;var el=document.getElementById('gmsg')||document.getElementById('clmsg');if(el)el.textContent=t}
   gate.addEventListener('click',async function(ev){

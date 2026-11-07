@@ -60,6 +60,7 @@
     var sub=done?'Soirée réussie. Tes missions du jour continuent demain.':m?'Récompense prête : '+esc2(m.t):n<MID?'Encore '+(MID-n)+' drop'+(MID-n>1?'s':'')+' : récompense à mi-chemin':'Encore '+(GOAL-n)+' drop'+(GOAL-n>1?'s':'')+' pour finir la soirée';
     return '<div class="qst glass'+(done?' ok':'')+'" style="--p:'+pc.toFixed(1)+'%"><div class="qst-t"><b>Première soirée</b><small>'+sub+'</small></div>'+right+'<div class="qst-bar" aria-hidden="true"><i></i><em style="left:'+(MID/GOAL*100)+'%"></em></div><button class="qst-x" data-qst="off" aria-label="Masquer la quête">×</button></div>';
   }
+  window.QST={on:questOn,html:questHTML,n:function(){return Math.min(packs(),GOAL)},goal:GOAL};
   function inject(){
     if(typeof tab==='undefined'||tab!=='ouvrir'||!questOn())return;
     var v=document.querySelector('#main .v-open');if(!v||v.querySelector('.qst'))return;
