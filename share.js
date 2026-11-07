@@ -1,4 +1,4 @@
-/* WaxDrop : partager son dernier drop en image (story 1080 x 1920) */
+/* WaxDrop : partager une carte en image (story 1080 x 1920 : pochette, rareté, numéro, waxdrop.fr) */
 (function(){
   function load(src){return new Promise(function(ok){if(!src)return ok(null);var i=new Image();i.crossOrigin='anonymous';i.decoding='async';
     var t=setTimeout(function(){ok(null)},4000);i.onload=function(){clearTimeout(t);ok(i)};i.onerror=function(){clearTimeout(t);ok(null)};i.src=src})}
@@ -24,6 +24,9 @@
     var pill=R.n.toUpperCase();x.font='800 40px "Geist Mono", ui-monospace, monospace';var pw=x.measureText(pill).width+80;rr(x,0,W/2-pw/2,1180,pw,78,39);x.fillStyle=R.c;x.fill();x.fillStyle='#120d02';x.fillText(pill,W/2,1233);
     x.fillStyle='#fff';x.font='800 92px "Bricolage Grotesque", system-ui, sans-serif';var L=wrap(x,c.t,940);L.forEach(function(l,i){x.fillText(l,W/2,1380+i*100)});
     x.fillStyle='rgba(255,255,255,.75)';x.font='600 54px Geist, system-ui, sans-serif';x.fillText(c.a,W/2,1380+L.length*100+20);
+    /* numéro d'exemplaire (si le serveur en a donné un) et numéro de la carte dans le jeu */
+    var ser=(typeof S!=='undefined'&&S.ser&&S.ser[c.id])?'N° '+String(S.ser[c.id]).padStart(3,'0'):'',no=c.no?'Carte '+c.no.toLocaleString('fr-FR')+' / '+CARDS.length.toLocaleString('fr-FR'):'';
+    var meta=[ser,no].filter(Boolean).join('   ·   ');if(meta){x.fillStyle='rgba(255,255,255,.5)';x.font='600 34px "Geist Mono", ui-monospace, monospace';x.fillText(meta,W/2,1380+L.length*100+100)}
     x.fillStyle='rgba(255,255,255,.55)';x.font='600 40px "Geist Mono", ui-monospace, monospace';x.fillText('waxdrop.fr',W/2,1810);
     return new Promise(function(ok,ko){try{cv.toBlob(function(b){b?ok(b):ko(new Error('blob'))},'image/png')}catch(e){ko(e)}});
   }

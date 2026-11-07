@@ -64,9 +64,13 @@
   var gsw=false;
   function gateFan(){
     if(typeof CARDS==='undefined'||!CARDS.length||typeof RAR==='undefined')return '';
-    var pick=[],seen={};CARDS.forEach(function(c){if(pick.length<40&&c.img&&c.r>=3&&GEN[c.g]&&!seen[c.a]){seen[c.a]=1;pick.push(c)}});
-    if(pick.length<3)return '';
-    var d=new Date(),k=d.getFullYear()*400+d.getMonth()*31+d.getDate(),L=[pick[k%pick.length],pick[(k+7)%pick.length],pick[(k+13)%pick.length]];
+    /* lot 2 : trois styles différents chaque jour (rap, puis pop, rock, électro, afro…), plus seulement du rap */
+    var by={},seen={};CARDS.forEach(function(c){if(c.img&&c.r>=3&&!seen[c.a]){seen[c.a]=1;var g=c.st==='Rap'?'Rap':c.st;(by[g]=by[g]||[]).push(c)}});
+    var d=new Date(),k=d.getFullYear()*400+d.getMonth()*31+d.getDate();
+    var oth=Object.keys(by).filter(function(g){return g!=='Rap'&&by[g].length}).sort();
+    var gs=[oth[k%Math.max(1,oth.length)],'Rap',oth[(k+3)%Math.max(1,oth.length)]];if(gs[0]===gs[2])gs[2]=oth[(k+1)%Math.max(1,oth.length)];
+    var L=gs.map(function(g,i){var b=by[g]||by.Rap||[];return b.length?b[(k*7+i*13)%b.length]:null}).filter(Boolean);
+    if(L.length<3)return '';
     return '<div class="gfan" aria-hidden="true">'+L.map(function(c,i){var R=RAR[c.r]||RAR[0];return '<div class="gcd g'+i+'" style="--im:url(&quot;'+e(c.img)+'&quot;);--rc:'+R.c+'"><i></i><span class="gr">'+e(R.n)+'</span><b>'+e(c.t)+'</b><small>'+e(c.a)+'</small></div>'}).join('')+'</div>';
   }
   function gateStats(){
@@ -89,7 +93,7 @@
   sb.from('game_cfg').select('v').eq('k','signup_gift').limit(1).then(function(r){var n=r&&!r.error&&r.data&&r.data[0]&&r.data[0].v?(r.data[0].v.n|0):0;if(n>0&&n<=50){GIFT=n;gateRefresh()}},function(){});
   function gateInfo(){
     var R=typeof RAR!=='undefined'?RAR:[];
-    var steps=[['Ouvre','Un drop gratuit toutes les 10 minutes. 5 vrais sons de rap à chaque fois, tirés au sort.'],['Collectionne','Complète les albums et la discographie de tes artistes. Chaque album fini rapporte des wax coins.'],['Échange','Ajoute tes potes, échange tes doubles, crée ou rejoins un label.'],['Joue la Bourse','Chaque son a un cours qui bouge. Achète au bon moment, revends quand il monte.']];
+    var steps=[['Ouvre','Un drop gratuit toutes les 10 minutes. 5 vrais sons à chaque fois, tirés au sort : rap, pop, rock, électro, afro, K-pop…'],['Collectionne','Complète les albums et la discographie de tes artistes. Chaque album fini rapporte des wax coins.'],['Échange','Ajoute tes potes, échange tes doubles, crée ou rejoins un label.'],['Joue la Bourse','Chaque son a un cours qui bouge. Achète au bon moment, revends quand il monte.']];
     var faq=[['C’est vraiment gratuit ?','Oui. Tout le jeu est gratuit. WaxDrop Pro est un abonnement optionnel pour ceux qui veulent plus de données et de drops.'],['Il faut un code ou une invitation ?','Non. Crée ton compte avec ton e-mail et joue tout de suite, sur téléphone ou ordinateur.'],['Ça marche sur iPhone ?','Oui, dans Safari. Tu peux l’ajouter à ton écran d’accueil comme une appli.'],['Mes cartes valent de l’argent réel ?','Non. Les wax coins et les cartes restent dans le jeu : pas de NFT, pas de retrait.']];
     return '<div class="ginfo">'+
       '<section class="gsec"><span class="gk">Comment ça marche</span><h2>Quatre gestes, toute une collection.</h2><ol class="gsteps">'+steps.map(function(x,i){return '<li><b><i>'+(i+1)+'</i>'+x[0]+'</b><span>'+x[1]+'</span></li>'}).join('')+'</ol></section>'+
@@ -97,12 +101,12 @@
       '<section class="gsec gduo"><div class="gbox"><span class="gk">La Bourse</span><h3>Un marché vivant</h3><p>Chaque son a un cours. Achète au cours, revends quand il monte. Des limites par jour gardent le marché propre.</p></div>'+
       '<div class="gbox gpro"><span class="gk">WaxDrop Pro</span><h3>Pour les vrais collectionneurs</h3><p>Drop gratuit toutes les 5 minutes, un drop offert par jour, un Drop Or chaque lundi, la Bourse en détail. 4,99 € par mois, sans engagement.</p></div></section>'+
       '<section class="gsec"><span class="gk">Questions</span><h2>Les réponses courtes.</h2><div class="gfaq">'+faq.map(function(x){return '<details><summary>'+x[0]+'</summary><p>'+x[1]+'</p></details>'}).join('')+'</div></section>'+
-      '<footer class="gfoot"><button type="button" class="gb gup" data-g="up" data-top="1">Créer mon compte</button><a href="/a-propos.html">À propos</a> · <a href="/artistes/">Artistes</a></footer></div>';
+      '<footer class="gfoot"><button type="button" class="gb gup" data-g="up" data-top="1">Créer mon compte</button><a href="/a-propos.html">À propos</a> · <a href="/artistes/">Artistes</a> · <a href="/regles.html">Règles</a> · <a href="/retrait.html">Ayants droit</a></footer></div>';
   }
   function gateHTML(){
     var m='<div class="gm" id="gmsg" role="status">'+e(CL.msg)+'</div>';
-    var hero='<section class="ghero"><div class="gbrand"><i></i>WaxDrop</div><span class="gkick"><i></i>Jeu de cartes du rap · gratuit</span>'+
-      '<h1>Le rap,<br>en <em>cartes</em>.</h1><p>Un drop gratuit toutes les 10 minutes. Complète les albums de tes artistes, échange avec tes potes, revends à la Bourse.</p>'+gateFan()+gateStats()+'</section>';
+    var hero='<section class="ghero"><div class="gbrand"><i></i>WaxDrop</div><span class="gkick"><i></i>Jeu de cartes musical · gratuit</span>'+
+      '<h1>Ta musique,<br>en <em>cartes</em>.</h1><p>Rap, pop, rock, électro, afro, K-pop, jazz, chanson. Un drop gratuit toutes les 10 minutes, les albums de tes artistes à compléter, tes potes pour échanger.</p>'+gateFan()+gateStats()+'</section>';
     var card='',head='';
     if(mode==='offline')card='<h2>Connexion impossible</h2><p class="gp">Le serveur ne répond pas. Vérifie ta connexion internet puis recharge la page.</p>';
     else if(mode==='pseudo')card='<h2>Choisis ton pseudo</h2><p class="gp">Il apparaît au classement, dans les échanges et sur ton profil.</p><form id="gform" data-m="pseudo"><label for="gpseudo">Pseudo</label><input id="gpseudo" maxlength="20" autocomplete="nickname" placeholder="3 à 20 caractères" required><button class="gb" type="submit">Valider</button>'+m+'</form>';

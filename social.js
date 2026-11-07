@@ -69,7 +69,7 @@
     }
   };
   /* ---------- amis : invitation, demandes ---------- */
-  var INV='Rejoins-moi sur WaxDrop, le jeu de cartes du rap : avec mon lien on gagne 2 drops gratuits chacun. Gratuit, pas besoin de code.';
+  var INV='Rejoins-moi sur WaxDrop, le jeu de cartes de ta musique : avec mon lien on gagne 2 drops gratuits chacun. Gratuit, pas besoin de code.';
   var PAL=[[3,'1 Drop Or'],[10,'2 Drops Or'],[25,'3 Drops Or']];
   function refCard(){var n=SOC.ref||0,nx=PAL.find(function(p){return n<p[0]})||PAL[PAL.length-1],max=nx[0],url=SOC.code?location.host+'/?ami='+SOC.code:'';
     return '<div class="refc"><div class="refh"><span class="refi">'+ICON.gift+'</span><div><span class="refk">Parrainage</span><b>Invite un pote, gagnez 2 drops chacun</b></div></div>'+

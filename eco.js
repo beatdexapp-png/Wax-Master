@@ -103,7 +103,7 @@
     return '<button class="topc" data-act="topedit"><span class="topk">Ton top du moment</span>'+(L.length?'<span class="topa">'+L.map(function(A){return '<span class="av" style="--avg:'+esc(A.avg)+'">'+esc(A.ini)+'</span>'}).join('')+'</span><span class="topb">×3 chances</span>':'<span class="topn">Choisis tes 5 artistes et drop-les 3× plus souvent</span>')+'</button>';
   };
   function topList(){var q=TP.q.trim().toLowerCase();return ARTISTS.filter(function(A){return !q||A.n.toLowerCase().indexOf(q)>=0}).sort(function(a,b){var sa=TP.sel.indexOf(a.key)>=0,sb=TP.sel.indexOf(b.key)>=0;return sa!==sb?(sa?-1:1):a.n.localeCompare(b.n)}).slice(0,80)}
-  function topRows(){return topList().map(function(A){var on=TP.sel.indexOf(A.key)>=0;return '<button class="tpr'+(on?' on':'')+'" data-act="toppick" data-k="'+A.key+'"><span class="av" style="--avg:'+esc(A.avg)+'">'+esc(A.ini)+'</span><b>'+esc(A.n)+'</b><small>'+(GEN[A.g]||A.g)+'</small><i>'+(on?ICON.check:'')+'</i></button>'}).join('')}
+  function topRows(){return topList().map(function(A){var on=TP.sel.indexOf(A.key)>=0;return '<button class="tpr'+(on?' on':'')+'" data-act="toppick" data-k="'+A.key+'"><span class="av" style="--avg:'+esc(A.avg)+'">'+esc(A.ini)+'</span><b>'+esc(A.n)+'</b><small>'+(A.st==='Rap'&&GEN[A.g]?GEN[A.g]:(typeof styN==='function'?styN(A.st):A.st))+'</small><i>'+(on?ICON.check:'')+'</i></button>'}).join('')}
   function topSheet(){
     closeMenu();menuPage='top';var left=topLeft();
     if(left){var L=(S.top||[]).map(function(k){return RW[k]}).filter(Boolean);

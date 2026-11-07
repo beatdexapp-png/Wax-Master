@@ -25,7 +25,7 @@
       if(dt){h+='<span class="lbl">'+(d.me?'Tes':'Ses')+' tirages par rareté</span>'+RN.map(function(nm,i){var v=dr[i]||0,p=Math.round(v/dt*1000)/10;return '<div class="stbar"><span>'+nm+'</span><i><u style="width:'+Math.max(v?2:0,p)+'%;background:'+RC[i]+'"></u></i><em>'+n(v)+'</em></div>'}).join('')}
       if(d.top&&d.top.length)h+='<span class="lbl">Artistes préférés</span>'+d.top.map(function(t){var p=Math.round(t.n/(t.tot||1)*100);return '<div class="stbar"><span>'+esc(t.a)+'</span><i><u style="width:'+Math.max(3,p)+'%"></u></i><em>'+t.n+'/'+t.tot+'</em></div>'}).join('');
       h+='<span class="lbl">Styles</span>'+bars(d.styles,['#ffc23d','#ff5f86','#5aa9ff','#3ddc84','#c27dff','#2fd3ff']);
-      var sc={};Object.keys(d.scenes||{}).forEach(function(k){sc[k==='Monde'?'Monde':'Rap '+k]=d.scenes[k]});h+='<span class="lbl">Scènes</span>'+bars(sc,['#5aa9ff','#ff5f86','#c27dff','#ffc23d']);
+      var sc={};Object.keys(d.scenes||{}).forEach(function(k){sc[k==='Monde'?'Pop, rock et autres':'Rap '+k]=d.scenes[k]});h+='<span class="lbl">Scènes</span>'+bars(sc,['#5aa9ff','#ff5f86','#c27dff','#ffc23d']);
       var kd={};Object.keys(d.kinds||{}).forEach(function(k){kd[KN[k]||k]=d.kinds[k]});if(Object.keys(kd).length)h+='<span class="lbl">Drops ouverts par type</span>'+bars(kd);
       h+='<div class="stg">'+tile(n(d.friends),'amis')+tile(n(d.trades),'échanges')+tile(n(d.bourse),'ordres Bourse')+'</div>';
       if(d.last)h+='<p class="cap">Dernier drop '+ago(d.last)+'</p>';

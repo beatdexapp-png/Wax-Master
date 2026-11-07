@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://waxdrop.fr/</loc><lastmod>2026-11-07</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
-<url><loc>https://waxdrop.fr/a-propos.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url><url><loc>https://waxdrop.fr/artistes/</loc><lastmod>2026-11-07</lastmod><priority>0.8</priority></url>
+<url><loc>https://waxdrop.fr/a-propos.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+<url><loc>https://waxdrop.fr/regles.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+<url><loc>https://waxdrop.fr/retrait.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url><url><loc>https://waxdrop.fr/artistes/</loc><lastmod>2026-11-07</lastmod><priority>0.8</priority></url>
 <url><loc>https://waxdrop.fr/artistes/d-juno.html</loc><lastmod>2026-11-07</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/uicideboy.html</loc><lastmod>2026-11-07</lastmod><priority>0.6</priority></url>
 <url><loc>https://waxdrop.fr/artistes/03-greedo.html</loc><lastmod>2026-11-07</lastmod><priority>0.6</priority></url>
