@@ -101,7 +101,7 @@
       '<section class="gsec gduo"><div class="gbox"><span class="gk">La Bourse</span><h3>Un marché vivant</h3><p>Chaque son a un cours. Achète au cours, revends quand il monte. Des limites par jour gardent le marché propre.</p></div>'+
       '<div class="gbox gpro"><span class="gk">WaxDrop Pro</span><h3>Pour les vrais collectionneurs</h3><p>Drop gratuit toutes les 5 minutes, un drop offert par jour, un Drop Or chaque lundi, la Bourse en détail. 4,99 € par mois, sans engagement.</p></div></section>'+
       '<section class="gsec"><span class="gk">Questions</span><h2>Les réponses courtes.</h2><div class="gfaq">'+faq.map(function(x){return '<details><summary>'+x[0]+'</summary><p>'+x[1]+'</p></details>'}).join('')+'</div></section>'+
-      '<footer class="gfoot"><button type="button" class="gb gup" data-g="up" data-top="1">Créer mon compte</button><a href="/a-propos.html">À propos</a> · <a href="/artistes/">Artistes</a> · <a href="/regles.html">Règles</a> · <a href="/retrait.html">Ayants droit</a></footer></div>';
+      '<footer class="gfoot"><button type="button" class="gb gup" data-g="up" data-top="1">Créer mon compte</button><a href="/a-propos.html">À propos</a> · <a href="/artistes/">Artistes</a> · <a href="/regles.html">Règles</a> · <a href="/retrait.html">Ayants droit</a> · <a href="/confidentialite.html">Confidentialité</a></footer></div>';
   }
   function gateHTML(){
     var m='<div class="gm" id="gmsg" role="status">'+e(CL.msg)+'</div>';
