@@ -46,7 +46,7 @@
     var youGive=mine?t.give_card:t.want_card,youGet=mine?t.want_card:t.give_card,acts;
     if(t.status==='pending')acts=mine?'<button class="lbtn" data-act="trcancel" data-id="'+t.id+'">Annuler</button>':'<button class="lbtn on" data-act="tracc" data-id="'+t.id+'">Accepter</button><button class="lbtn ghost" data-act="trdec" data-id="'+t.id+'">Refuser</button>';
     else acts='<span class="st">'+(t.status==='accepted'?'Accepté':t.status==='declined'?'Refusé':'Annulé')+'</span>';
-    return '<div class="trr">'+thumb(youGive)+'<span class="arr">'+ICON.swap+'</span>'+thumb(youGet)+'<div class="ttl"><b>'+esc(other||'Joueur')+'</b><small>Tu donnes '+esc(C[youGive].t)+'</small><small>Tu reçois '+esc(C[youGet].t)+'</small></div><div class="acts">'+acts+'</div></div>';
+    return '<div class="trr">'+thumb(youGive)+'<span class="arr">'+ICON.swap+'</span>'+thumb(youGet)+'<div class="ttl">'+(other?'<button class="jpname" data-act="plprof" data-p="'+esc(other)+'">'+esc(other)+'</button>':'<b>Joueur</b>')+'<small>Tu donnes '+esc(C[youGive].t)+'</small><small>Tu reçois '+esc(C[youGet].t)+'</small></div><div class="acts">'+acts+'</div></div>';
   }
   function frRow(f){
     var b;
@@ -54,7 +54,7 @@
     else if(f.dir==='in')b='<span class="acts"><button class="lbtn on" data-act="fracc" data-id="'+f.id+'">Accepter</button><button class="lbtn ghost" data-act="frdec" data-id="'+f.id+'">Refuser</button></span>';
     else b='<span class="acts"><span class="st">En attente</span><button class="lbtn ghost" data-act="frdel" data-id="'+f.id+'">Annuler</button></span>';
     var who=avH(f.avatar,f.pseudo)+'<b>'+esc(f.pseudo||'Joueur')+'</b><em>'+(f.score||0).toLocaleString('fr-FR')+' pts</em>';
-    return '<div class="prow fr">'+(f.status==='accepted'?'<button class="frwho" data-act="frstats" data-p="'+esc(f.pseudo)+'" aria-label="Stats de '+esc(f.pseudo||'Joueur')+'">'+who+'</button>':who)+b+'</div>';
+    return '<div class="prow fr">'+(f.status==='accepted'?'<button class="frwho" data-act="plprof" data-p="'+esc(f.pseudo)+'" aria-label="Profil de '+esc(f.pseudo||'Joueur')+'">'+who+'</button>':who)+b+'</div>';
   }
   SOC.layout=function(h){
     if(SOC.sub==='amis'){
@@ -106,7 +106,7 @@
     var L=r.data||[];
     box.innerHTML=L.length?L.map(function(p){
       var b=p.rel==='accepted'?'<span class="st">Ami</span>':p.rel==='pending:out'?'<span class="st">Demande envoyée</span>':p.rel==='pending:in'?'<button class="lbtn on" data-act="frreq" data-p="'+esc(p.pseudo)+'">Accepter</button>':'<button class="lbtn" data-act="frreq" data-p="'+esc(p.pseudo)+'">'+ICON.plus+'Ajouter</button>';
-      return '<div class="prow fr">'+avH(p.avatar,p.pseudo)+'<b>'+esc(p.pseudo)+'</b><em>'+(p.score||0).toLocaleString('fr-FR')+' pts</em>'+b+'</div>'}).join(''):'<p class="cap">Aucun joueur trouvé</p>';
+      return '<div class="prow fr"><button class="frwho" type="button" data-act="plprof" data-p="'+esc(p.pseudo)+'" aria-label="Profil de '+esc(p.pseudo)+'">'+avH(p.avatar,p.pseudo)+'<b>'+esc(p.pseudo)+'</b><em>'+(p.score||0).toLocaleString('fr-FR')+' pts</em></button>'+b+'</div>'}).join(''):'<p class="cap">Aucun joueur trouvé</p>';
   }
   document.addEventListener('input',function(ev){if(ev.target&&ev.target.id==='frq'){var q=ev.target.value;clearTimeout(sT);sT=setTimeout(function(){search(q)},250)}});
   async function request(ps){
@@ -142,7 +142,7 @@
     var mine=CARDS.filter(function(c){return (S.owned[c.id]||0)>1}).sort(function(a,b){return b.r-a.r});
     closeMenu();menuPage='trade';
     sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Échange avec '+esc(P.pseudo)+'"><div class="grab"></div>'+
-      '<div class="shh"><div class="phd">'+avH(P.avatar,P.pseudo,'tbig')+'<div><b>'+esc(P.pseudo)+'</b><small>'+(P.score||0).toLocaleString('fr-FR')+' pts</small></div></div><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div>'+
+      '<div class="shh"><div class="phd">'+avH(P.avatar,P.pseudo,'tbig')+'<div><button class="jpname big" data-act="plprof" data-p="'+esc(P.pseudo)+'">'+esc(P.pseudo)+'</button><small>'+(P.score||0).toLocaleString('fr-FR')+' pts</small></div></div><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div>'+
       '<span class="lbl">Tu reçois · ses doubles</span>'+(theirs.length?'<div class="trow">'+theirs.map(function(c){return '<button class="tpick" data-act="tpw" data-id="'+c.id+'" aria-pressed="false">'+tileHTML(c,{nocount:1,lock:false})+(own(c.id)?'':'<em class="nw">Manque</em>')+'</button>'}).join('')+'</div>':'<p class="muted">Ce joueur n’a pas encore de doubles</p>')+
       '<span class="lbl">Tu donnes · tes doubles</span>'+(mine.length?'<div class="trow">'+mine.map(function(c){return '<button class="tpick" data-act="tpg" data-id="'+c.id+'" aria-pressed="false">'+tileHTML(c)+'</button>'}).join('')+'</div>':'<p class="muted">Tu n’as pas encore de doubles</p>')+
       '<button class="pbtn" id="tpgo" data-act="tpropose" disabled>Proposer l’échange</button><button class="gl2" data-act="frrm" data-p="'+esc(P.pseudo)+'">Retirer des amis</button></div>';
