@@ -50,6 +50,8 @@
     window.SRV={cards:ids,gain:r.data.gain||0,secret:!!r.data.secret};
     try{reveal=pull(PK[m]||m==='drop'?m:'std')}finally{window.SRV=null}
     ECO.apply(r.data.w);
+    /* récompenses : seulement celles que le serveur vient d'accorder (sinon un disque déjà obtenu revenait à chaque drop) */
+    reveal.ul=(r.data.ul||[]).map(function(k){return RW[k]}).filter(Boolean);
     closeStack();closeDD();closeMenu();
     if(express){showSummary();return}
     showOpening();
