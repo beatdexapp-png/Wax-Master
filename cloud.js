@@ -54,43 +54,51 @@
   var gate=document.createElement('div');gate.id='gate';gate.hidden=true;gate.setAttribute('role','dialog');gate.setAttribute('aria-label','Compte WaxDrop');
   document.body.appendChild(gate);
   var st=document.createElement('style');st.textContent=
-    '#gate{position:fixed;inset:0;z-index:150;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px));background:radial-gradient(120% 80% at 50% 0%,#23263a,#0b0c10 70%);color:#f1f2f6;overflow-y:auto}'+
-    '#gate .gv{width:min(34vw,140px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#ffc23d 0 15%,#111 15.5% 17%,transparent 17.5%),repeating-radial-gradient(circle,#111216 0 3px,#1d1e25 3px 6px);box-shadow:0 0 0 8px #17181d,0 0 60px rgba(255,194,61,.15);animation:rot 2.4s linear infinite}'+
-    '#gate h1{font:800 clamp(2rem,9vw,2.8rem)/1 var(--disp);letter-spacing:-.03em;margin:0}'+
-    '#gate p{margin:0;max-width:32ch;text-align:center;color:#a9afbd;font-size:14.5px;line-height:1.45}'+
-    '#gate form{width:min(100%,360px);display:flex;flex-direction:column;gap:10px}'+
-    '#gate label{font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#979dab}'+
-    '#gate input{height:52px;border-radius:16px;border:0;padding:0 16px;background:rgba(255,255,255,.08);color:#fff;font:500 16px inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}'+
-    '#gate input:focus{outline:2px solid #ffc23d;outline-offset:1px}'+
-    '#gate .gb{height:54px;border-radius:999px;border:0;background:#f1f2f6;color:#0e0f12;font:700 16px var(--disp);cursor:pointer}'+
-    '#gate .gb2{height:50px;border-radius:999px;border:0;background:rgba(255,255,255,.1);color:#fff;font:600 15px var(--disp);cursor:pointer}'+
-    '#gate .gl{background:none;border:0;color:#a9afbd;font-size:14px;text-decoration:underline;cursor:pointer;padding:6px}'+
-    '#gate .gm{min-height:1.3em;color:#ffcf6b;font-size:14px;text-align:center}'+
-    '#gate .gb[disabled],#gate .gb2[disabled]{opacity:.5}'+
     '.clf{display:flex;flex-direction:column;gap:10px}.clf input{height:48px;border-radius:14px;padding:0 14px;border:0;background:var(--soft);color:var(--fg);font:500 16px inherit;width:100%;min-width:0}.clf .row{display:flex;gap:8px}.clf .row .pbtn,.clf .row .gbtn{flex:1}';
   document.head.appendChild(st);
   var mode='in';
   if(!window.supabase||!window.supabase.createClient){showGate('offline');return}
   sb=CL.sb=window.supabase.createClient(SB_URL,SB_KEY);
+  /* Page de connexion (refonte 07/11/2026) : à gauche la promesse et de vraies pochettes du jeu, à droite la carte de verre.
+     Sur téléphone, la carte passe sous la promesse. Les champs, identifiants et messages sont les mêmes qu'avant. */
+  var gsw=false;
+  function gateFan(){
+    if(typeof CARDS==='undefined'||!CARDS.length||typeof RAR==='undefined')return '';
+    var pick=[],seen={};CARDS.forEach(function(c){if(pick.length<40&&c.img&&c.r>=3&&GEN[c.g]&&!seen[c.a]){seen[c.a]=1;pick.push(c)}});
+    if(pick.length<3)return '';
+    var d=new Date(),k=d.getFullYear()*400+d.getMonth()*31+d.getDate(),L=[pick[k%pick.length],pick[(k+7)%pick.length],pick[(k+13)%pick.length]];
+    return '<div class="gfan" aria-hidden="true">'+L.map(function(c,i){var R=RAR[c.r]||RAR[0];return '<div class="gcd g'+i+'" style="--im:url(&quot;'+e(c.img)+'&quot;);--rc:'+R.c+'"><i></i><span class="gr">'+e(R.n)+'</span><b>'+e(c.t)+'</b><small>'+e(c.a)+'</small></div>'}).join('')+'</div>';
+  }
+  function gateStats(){
+    if(typeof CARDS==='undefined'||!CARDS.length)return '';
+    var f=function(v){return v.toLocaleString('fr-FR')};
+    return '<div class="gstats"><div><b>'+f(Math.floor(CARDS.length/1000)*1000)+'</b><span>sons</span></div><div><b>'+f(ARTISTS.length)+'</b><span>artistes</span></div><div><b>100 %</b><span>gratuit</span></div></div>';
+  }
   function gateHTML(){
-    var top='<div class="gv" aria-hidden="true"></div><h1>WaxDrop</h1>';
-    var m='<div class="gm" id="gmsg">'+e(CL.msg)+'</div>';
-    if(mode==='offline')return top+'<p>Connexion au serveur impossible. Vérifie ta connexion internet puis recharge la page.</p>';
-    if(mode==='pseudo')return top+'<p>Choisis ton pseudo. Il apparaît au classement et à la Bourse.</p><form id="gform" data-m="pseudo"><label for="gpseudo">Pseudo</label><input id="gpseudo" maxlength="20" autocomplete="nickname" placeholder="3 à 20 caractères" required><button class="gb" type="submit">Valider</button>'+m+'</form>';
-    if(mode==='newpass')return top+'<p>Choisis ton nouveau mot de passe.</p><form id="gform" data-m="newpass"><label for="gpass">Nouveau mot de passe</label><input id="gpass" type="password" autocomplete="new-password" placeholder="8 caractères minimum" required><button class="gb" type="submit">Enregistrer</button>'+m+'</form>';
-    if(mode==='forgot')return top+'<p>Entre ton e-mail, tu recevras un lien pour choisir un nouveau mot de passe.</p><form id="gform" data-m="forgot"><label for="gmail">E-mail</label><input id="gmail" type="email" autocomplete="email" inputmode="email" required><button class="gb" type="submit">Envoyer le lien</button><button class="gl" type="button" data-g="in">Retour</button>'+m+'</form>';
-    var up=mode==='up';
-    return top+'<p>'+(up?'Crée ton compte pour garder ta collection sur tous tes appareils.':'Connecte-toi pour retrouver ta collection.')+'</p>'+
-      '<form id="gform" data-m="'+(up?'up':'in')+'"><label for="gmail">E-mail</label><input id="gmail" type="email" autocomplete="email" inputmode="email" placeholder="toi@exemple.fr" required>'+
-      '<label for="gpass">Mot de passe</label><input id="gpass" type="password" autocomplete="'+(up?'new-password':'current-password')+'" placeholder="8 caractères minimum" required>'+
-      '<button class="gb" type="submit">'+(up?'Créer mon compte':'Se connecter')+'</button>'+
-      '<button class="gb2" type="button" data-g="'+(up?'in':'up')+'">'+(up?'J’ai déjà un compte':'Créer un compte')+'</button>'+
-      (up?'':'<button class="gl" type="button" data-g="forgot">Mot de passe oublié ?</button>')+m+'</form>';
+    var m='<div class="gm" id="gmsg" role="status">'+e(CL.msg)+'</div>';
+    var hero='<section class="ghero"><div class="gbrand"><i></i>WaxDrop</div><span class="gkick"><i></i>Jeu de cartes du rap · gratuit</span>'+
+      '<h1>Le rap,<br>en <em>cartes</em>.</h1><p>Un drop gratuit toutes les 10 minutes. Complète les albums de tes artistes, échange avec tes potes, revends à la Bourse.</p>'+gateFan()+gateStats()+'</section>';
+    var card='',head='';
+    if(mode==='offline')card='<h2>Connexion impossible</h2><p class="gp">Le serveur ne répond pas. Vérifie ta connexion internet puis recharge la page.</p>';
+    else if(mode==='pseudo')card='<h2>Choisis ton pseudo</h2><p class="gp">Il apparaît au classement, dans les échanges et sur ton profil.</p><form id="gform" data-m="pseudo"><label for="gpseudo">Pseudo</label><input id="gpseudo" maxlength="20" autocomplete="nickname" placeholder="3 à 20 caractères" required><button class="gb" type="submit">Valider</button>'+m+'</form>';
+    else if(mode==='newpass')card='<h2>Nouveau mot de passe</h2><p class="gp">Choisis ton nouveau mot de passe.</p><form id="gform" data-m="newpass"><label for="gpass">Nouveau mot de passe</label><input id="gpass" type="password" autocomplete="new-password" placeholder="8 caractères minimum" required><button class="gb" type="submit">Enregistrer</button>'+m+'</form>';
+    else if(mode==='forgot')card='<h2>Mot de passe oublié</h2><p class="gp">Entre ton e-mail : tu recevras un lien pour choisir un nouveau mot de passe.</p><form id="gform" data-m="forgot"><label for="gmail">E-mail</label><input id="gmail" type="email" autocomplete="email" inputmode="email" placeholder="toi@exemple.fr" required><button class="gb" type="submit">Envoyer le lien</button><button class="gl" type="button" data-g="in">Retour à la connexion</button>'+m+'</form>';
+    else{
+      var up=mode==='up';
+      head='<div class="gseg'+(gsw?' gmove':'')+'" data-on="'+(up?'up':'in')+'" role="tablist" aria-label="Compte"><button type="button" role="tab" data-g="in" aria-selected="'+!up+'">J’ai un compte</button><button type="button" role="tab" data-g="up" aria-selected="'+up+'">Créer un compte</button></div>'+
+        '<div class="gtick"><b>10<small>min</small></b><span><strong>Un drop offert</strong>toutes les 10 minutes, 5 sons à chaque fois</span></div>';
+      card='<form id="gform" data-m="'+(up?'up':'in')+'"><label for="gmail">E-mail</label><input id="gmail" type="email" autocomplete="email" inputmode="email" placeholder="toi@exemple.fr" required>'+
+        '<label for="gpass">Mot de passe</label><input id="gpass" type="password" autocomplete="'+(up?'new-password':'current-password')+'" placeholder="8 caractères minimum" required>'+
+        '<button class="gb" type="submit">'+(up?'Créer mon compte':'Se connecter')+'</button>'+
+        (up?'<p class="gfine">Gratuit, sans carte bancaire. Ta collection est sauvegardée sur tous tes appareils.</p>':'<button class="gl" type="button" data-g="forgot">Mot de passe oublié ?</button>')+m+'</form>';
+    }
+    gsw=false;
+    return '<div class="gwrap">'+hero+'<section class="gcard">'+head+card+'</section></div>';
   }
   function showGate(m){if(m)mode=m;if(!gate.isConnected)return;gate.innerHTML=gateHTML();gate.hidden=false}
   function hideGate(){gate.hidden=true;gate.innerHTML='';CL.msg=''}
   function say(t){CL.msg=t;var el=document.getElementById('gmsg')||document.getElementById('clmsg');if(el)el.textContent=t}
-  gate.addEventListener('click',function(ev){var b=ev.target.closest('[data-g]');if(!b)return;CL.msg='';showGate(b.dataset.g)});
+  gate.addEventListener('click',function(ev){var b=ev.target.closest('[data-g]');if(!b)return;if(b.dataset.g===mode)return;gsw=b.getAttribute('role')==='tab';CL.msg='';showGate(b.dataset.g);var f=document.getElementById('gmail');if(f&&matchMedia('(pointer:fine)').matches)f.focus({preventScroll:true})});
   gate.addEventListener('submit',async function(ev){
     ev.preventDefault();var f=ev.target;var m=f.dataset.m;var btn=f.querySelector('.gb');if(btn)btn.disabled=true;
     try{

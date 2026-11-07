@@ -141,7 +141,17 @@ const rewardHTML=x=>x.type==='album'?albumHTML(x):plaqueHTML(x);
 function artistRow(A,i){const p=pct(A.ids),n=A.ids.filter(own).length;return `<button class="arow" style="--i:${i%14}" data-act="artist" data-k="${A.key}" aria-label="${esc(A.n)}"><span class="av" style="--avg:${esc(A.avg)}">${esc(A.ini)}</span><span class="art"><b>${esc(A.n)}</b><small>${GEN[A.g]||A.g} · ${n}/${A.ids.length} sons</small><span class="abar"><i style="width:${p}%"></i></span></span><em>${p}%</em></button>`}
 function artistCell(A){const p=pct(A.ids);return `<button class="acell" data-act="artist" data-k="${A.key}" aria-label="${esc(A.n)}"><span class="ar" style="--p:${p}"><span class="av" style="--avg:${esc(A.avg)}">${esc(A.ini)}</span></span><b>${esc(A.n)}</b><small>${p}%</small></button>`}
 const tileBtn=c=>`<button class="it" data-act="see" data-id="${c.id}" aria-label="${esc(c.t)}, ${esc(c.a)}">${tileHTML(c)}</button>`;
-const albBig=A=>`<button class="it alit" data-act="album" data-k="${A.key}" aria-label="${esc(A.t)}">${albumHTML(A)}<span class="alcap"><b>${esc(A.single?'Singles':A.t)}</b><small>${A.y?A.y+' · ':''}${A.ids.filter(own).length}/${A.ids.length}</small></span></button>`;
+const albBig=A=>`<button class="it alit" data-act="album" data-k="${A.key}" aria-label="${esc(A.t)}">${albumHTML(A)}<span class="alcap"><b>${esc(A.single?'Singles':A.t)}</b><small>${A.single?'':A.y?A.y+' · ':''}${A.ids.filter(own).length}/${A.ids.length}</small><span class="albar${albDone(A)?' ok':''}" aria-hidden="true"><i style="width:${pct(A.ids)}%"></i></span></span></button>`;
+/* rangement des albums de la Collection : filtre (tous, à finir, complets) et tri (progression, A → Z, année) */
+const albDone=A=>A.single?A.ids.every(own):!!S.ul[A.key];
+let albF='todo',albS='prog';
+function albAll(){return ALBUMS.filter(A=>A.ids.some(own)&&(colG==='Tous'||A.st===colG))}
+function albList(){const L=albAll().filter(A=>albF==='all'||(albF==='done')===albDone(A));
+  if(albS==='az')return L.sort((a,b)=>a.a.localeCompare(b.a)||(a.y||0)-(b.y||0));
+  if(albS==='an')return L.sort((a,b)=>(b.y||0)-(a.y||0)||a.a.localeCompare(b.a));
+  return L.sort((a,b)=>albDone(a)-albDone(b)||pct(b.ids)-pct(a.ids)||(a.ids.length-a.ids.filter(own).length)-(b.ids.length-b.ids.filter(own).length)||a.a.localeCompare(b.a))}
+function albChips(){const all=albAll(),done=all.filter(albDone).length;
+  return `<div class="chips scr albf">${[['todo','À finir',all.length-done],['done','Complets',done],['all','Tous',all.length]].map(([k,n,v])=>`<button class="chip" data-act="albf" data-v="${k}" aria-pressed="${albF===k}">${n}<small>${v}</small></button>`).join('')}<span class="chsep" aria-hidden="true"></span>${[['prog','Progression'],['az','A → Z'],['an','Année']].map(([k,n])=>`<button class="chip srt" data-act="albs" data-v="${k}" aria-pressed="${albS===k}">${n}</button>`).join('')}</div>`}
 const albBtn=A=>`<button class="it" data-act="album" data-k="${A.key}" aria-label="${esc(A.t)}">${albumHTML(A)}</button>`;
 
 /* ================= PAGER ================= */
@@ -215,12 +225,12 @@ function sonsChips(){const all=CARDS.filter(c=>own(c.id));const cnt=r=>all.filte
   return `<div class="chips scr sonsf">${[['all','Tous',all.length],['dup','Doubles',dup],...[5,4,3,2,1,0].map(r=>[String(r),RAR[r].n,cnt(r)])].filter(x=>x[0]==='all'||x[2]).map(([k,n,v])=>`<button class="chip" data-act="sonsf" data-v="${k}" aria-pressed="${sonsF===k}"${/^\d$/.test(k)?` style="--rc:${RAR[+k].c}"`:''}>${/^\d$/.test(k)?'<i class="rdot"></i>':''}${n}<small>${v}</small></button>`).join('')}</div>`}
 function vCollection(){
   const L=colList(),tot=ownedArtists().length;
-  const so=colView==='sons';
-  return `<div class="view v-col"><div class="vh"><div class="seg glass sm cmode">${[['bulles','Bulles'],['liste','Artistes'],['sons','Sons']].map(([k,n])=>`<button data-act="colv" data-v="${k}" aria-pressed="${colView===k}">${n}</button>`).join('')}</div></div>
-    <div class="vh">${so?sonsChips():`<div class="seg glass sm">${STYLES.map(([g,n])=>`<button data-act="colg" data-v="${g}" aria-pressed="${colG===g}">${n}</button>`).join('')}</div>`}
+  const so=colView==='sons',al=colView==='albums';
+  return `<div class="view v-col"><div class="vh"><div class="seg glass sm cmode">${[['bulles','Bulles'],['liste','Artistes'],['albums','Albums'],['sons','Sons']].map(([k,n])=>`<button data-act="colv" data-v="${k}" aria-pressed="${colView===k}">${n}</button>`).join('')}</div></div>
+    <div class="vh">${so?sonsChips():al?albChips():`<div class="seg glass sm">${STYLES.map(([g,n])=>`<button data-act="colg" data-v="${g}" aria-pressed="${colG===g}">${n}</button>`).join('')}</div>`}
     <button class="gbtn sq" data-act="cat" aria-label="Tout le catalogue">${ICON.search}</button></div>
-    <div class="cntr"><p class="cnt2"><b>${tot}</b> artiste${tot>1?'s':''} · <b>${CARDS.filter(c=>own(c.id)).length}</b>/${N} sons</p><button class="dpill" data-act="dusthelp" aria-label="Poussière : ${S.dust}">${dustI}<b>${S.dust.toLocaleString('fr-FR')}</b></button><button class="gbtn sq sm2" data-act="recy" aria-label="Recycler les doubles">${ICON.recycle}</button><button class="crb" data-act="atelier" aria-label="Créer un son"><span>${ICON.plus}</span>Créer</button></div>
-    ${so?`<div class="pgr" id="pgs"></div>`:colView==='bulles'?`<div class="bubw glass" id="bub">${L.length?'':'<p class="empty">Ouvre un drop pour commencer</p>'}</div>`:`<div class="pgr" id="pgr"></div>`}</div>`;
+    <div class="cntr"><p class="cnt2">${al?(()=>{const A=albAll(),d=A.filter(albDone).length;return `<b>${A.length}</b> album${A.length>1?'s':''} commencé${A.length>1?'s':''} · <b>${d}</b> complet${d>1?'s':''}`})():`<b>${tot}</b> artiste${tot>1?'s':''} · <b>${CARDS.filter(c=>own(c.id)).length}</b>/${N} sons`}</p><button class="dpill" data-act="dusthelp" aria-label="Poussière : ${S.dust}">${dustI}<b>${S.dust.toLocaleString('fr-FR')}</b></button><button class="gbtn sq sm2" data-act="recy" aria-label="Recycler les doubles">${ICON.recycle}</button><button class="crb" data-act="atelier" aria-label="Créer un son"><span>${ICON.plus}</span>Créer</button></div>
+    ${so?`<div class="pgr" id="pgs"></div>`:al?`<div class="pgr" id="pga"></div>`:colView==='bulles'?`<div class="bubw glass" id="bub">${L.length?'':'<p class="empty">Ouvre un drop pour commencer</p>'}</div>`:`<div class="pgr" id="pgr"></div>`}</div>`;
 }
 function tickHTML(){mkInit();const L=S.mk.list.filter(l=>!l.mine).slice().sort((a,b)=>Math.abs(chg(b))-Math.abs(chg(a))).slice(0,8);if(!L.length)return '';
   const one=L.map(l=>`<span class="ti${chg(l)>0?' gn':''}"><b>${esc(C[l.cid].t)}</b>${chgHTML(l)}</span>`).join('');return `<div class="tick" aria-hidden="true"><div class="tk">${one}${one}</div></div>`}
@@ -337,10 +347,14 @@ function stopBub(){if(BB.raf)cancelAnimationFrame(BB.raf);BB.raf=0;BB.nodes=[];B
 const main=$('main'),ov=$('ov'),dt=$('dt'),sh=$('sh'),dd=$('dd');
 function applySkin(){const sk=SKINS.find(s=>s[0]===S.set.skin);if(sk&&sk[2]&&!hasPass())S.set.skin='auto';if(S.set.skin==='auto')delete document.body.dataset.skin;else document.body.dataset.skin=S.set.skin;document.body.classList.toggle('lite',!!S.set.lite)}
 let coinShown=null,coinRaf=0;function setCoins(){const el=$('coins');if(!el)return;const to=S.coins;if(coinShown===null||S.set.lite||Math.abs(to-coinShown)>100000){coinShown=to;el.innerHTML=`${coinI}${to.toLocaleString('fr-FR')}`;return}if(to===coinShown)return;const from=coinShown,t0=performance.now();coinShown=to;if(to>from){const r=el.getBoundingClientRect(),f=document.createElement('div');f.className='cfly';f.innerHTML=`+${(to-from).toLocaleString('fr-FR')} ${coinI}`;f.style.top=(r.bottom+4)+'px';f.style.right=(innerWidth-r.right)+'px';document.body.appendChild(f);setTimeout(()=>f.remove(),1500)}el.classList.toggle('up',to>from);el.classList.toggle('dn',to<from);cancelAnimationFrame(coinRaf);const step=t=>{const k=Math.min(1,(t-t0)/450),v=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));el.innerHTML=`${coinI}${v.toLocaleString('fr-FR')}`;if(k<1)coinRaf=requestAnimationFrame(step);else el.classList.remove('up','dn')};coinRaf=requestAnimationFrame(step)}
+/* barre latérale (ordinateur) : état du drop gratuit, repeint seulement quand il change */
+let sbK='';function sbPaint(){const el=$('sbf');if(!el)return;const fr=freeReady()||S.bonus>0,k=fr+'|'+S.bonus+'|'+S.freeAt+'|'+S.gold;if(k===sbK)return;sbK=k;
+  el.innerHTML=`<span class="lbl">Drop gratuit</span>${fr?`<b>${S.bonus>0?`${S.bonus} offert${S.bonus>1?'s':''}`:'Prêt'}</b>`:`<b data-clock="${S.freeAt}">${clock(S.freeAt-now())}</b>`}<button class="pbtn" data-act="open" data-m="free"${fr?'':' disabled'}>${fr?'Ouvrir maintenant':'Bientôt prêt'}</button>${S.gold>0?`<button class="sbgold" data-act="opengold">Drop Or ×${S.gold}</button>`:''}`}
 function render(){
   stopBub();applySkin();setCoins();
   const od=$('odot');if(od)od.hidden=!canFree();const sd=$('shdot');if(sd)sd.hidden=!(missReady()||window.ACH&&ACH.ready()>0||window.SOC&&SOC.pending()>0);
   document.querySelectorAll('#tabs button[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));
+  const ht=$('hdt');if(ht)ht.textContent={ouvrir:'Ouvrir un drop',collection:'Collection',shop:'Disquaire',bourse:'Bourse',profil:'Profil'}[tab]||'';sbPaint();
   if(tab==='saison'){tab='shop';shopSub='saison'}
   const ov=main.firstElementChild,ok0=ov&&ov.className,st0=ov&&ov.classList.contains('vs')?ov.scrollTop:0,pg0=main.querySelector('.pgv'),ps0=pg0?pg0.scrollTop:0;
   main.innerHTML=tab==='ouvrir'?vOuvrir():tab==='collection'?vCollection():tab==='shop'?vShop():tab==='bourse'?(window.vBourse?vBourse():''):vProfil();
@@ -350,7 +364,7 @@ function render(){
 }
 function layout(){
   const h=$('pgr');
-  if(tab==='collection'){if($('bub'))initBub();if(h)pager(h,colList(),artistRow,{cellH:66,minW:320,gap:8,empty:'Ouvre un drop pour commencer'});const hs=$('pgs');if(hs)pager(hs,sonsList(),tileBtn,{minT:100,empty:sonsF==='dup'?'Aucun double':'Aucun son'})}
+  if(tab==='collection'){if($('bub'))initBub();if(h)pager(h,colList(),artistRow,{cellH:66,minW:320,gap:8,empty:'Ouvre un drop pour commencer'});const hs=$('pgs');if(hs)pager(hs,sonsList(),tileBtn,{minT:100,empty:sonsF==='dup'?'Aucun double':'Aucun son'});const ha=$('pga');if(ha)pager(ha,albList(),albBig,{minT:150,minCols:2,extra:58,empty:albF==='done'?'Aucun album complet pour l’instant':albF==='todo'?'Tous tes albums sont complets':'Ouvre un drop pour commencer'})}
   if(tab==='shop'&&h){if(shopSub==='encheres')mkLayout();else if(shopSub==='echanges'){if(window.SOC)SOC.layout(h)}else if(shopSub==='jetons')pager(h,shopItems(),x=>x,{cellH:jetSub==='packs'?190:188,cols:2,gap:10})}
   
   if(tab==='shop'&&shopSub==='saison'&&seaSub!=='missions'){const tk=$('trk'),v=tk&&tk.closest('.view');const t=tierNow();if(v&&!v._same&&t>2&&t<TIERS){const c=tk.children[t-2];if(c)v.scrollTop=Math.max(0,c.offsetTop-v.clientHeight*.35)}}
@@ -814,6 +828,8 @@ document.addEventListener('click',e=>{
     case 'colv':colView=t.dataset.v;try{localStorage.setItem('td-colv',colView)}catch(_){}render();break;
     case 'sonsf':sonsF=t.dataset.v;render();break;
     case 'colg':colG=t.dataset.v;render();break;
+    case 'albf':albF=t.dataset.v;render();break;
+    case 'albs':albS=t.dataset.v;render();break;
     case 'cat':closeMenu();closeDD();stack=[{type:'cat'}];renderStack();break;
     case 'cats':catScope=t.dataset.v;renderStack(true);break;
     case 'catf':catF=!catF;renderStack(true);break;
@@ -915,7 +931,7 @@ function pEnd(e){const g=BB.drag;if(g&&e.pointerId===g.id){BB.drag=null;if(g.mov
 document.addEventListener('pointerup',pEnd);document.addEventListener('pointercancel',pEnd);
 let rz=0,rw=innerWidth;addEventListener('resize',()=>{const ae=document.activeElement;if(innerWidth===rw&&ae&&/^(INPUT|TEXTAREA)$/.test(ae.tagName))return;rw=innerWidth;clearTimeout(rz);rz=setTimeout(()=>{stopBub();if($('bub'))$('bub').querySelectorAll('.bb').forEach(x=>x.remove());layout()},160)});
 let tickN=0;setInterval(()=>{const ch=(++tickN%2===0)&&mkTick();if(ch&&tab==='shop'&&(shopSub==='encheres'||shopSub==='hub')&&!ov.innerHTML&&!sh.innerHTML)render();else mkPaint();
-  document.querySelectorAll('[data-clock]').forEach(el=>{el.textContent=clock(+el.dataset.clock-now())});
+  document.querySelectorAll('[data-clock]').forEach(el=>{el.textContent=clock(+el.dataset.clock-now())});sbPaint();
   if(tab==='ouvrir'&&!ov.innerHTML&&!sh.innerHTML&&!dd.innerHTML&&!dt.innerHTML){const fc=$('freecap');if(fc&&freeReady()&&fc.querySelector('[data-clock]'))render()}},1000);
 setInterval(()=>{document.querySelectorAll('[data-until]').forEach(el=>{el.textContent=dur(new Date(el.dataset.until)-now())})},15000);
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applySkin)}catch(_){}

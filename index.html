@@ -49,15 +49,17 @@
 <body>
 
 <div id="app">
-  <header class="hd"><div class="wm"><i></i>WaxDrop</div><div class="hdr"><button class="jet glass" id="coins" data-act="gojet" aria-label="Wax coins, ouvrir la boutique"></button><button class="hdm glass" data-act="menu" aria-label="Menu et réglages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg></button></div></header>
+  <header class="hd"><div class="wm"><i></i>WaxDrop</div><h1 class="hdt" id="hdt" aria-live="polite"></h1><div class="hdr"><button class="jet glass" id="coins" data-act="gojet" aria-label="Wax coins, ouvrir la boutique"></button><button class="hdm glass" data-act="menu" aria-label="Menu et réglages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg></button></div></header>
   <nav class="sr" aria-label="Plan du site"><a href="/a-propos.html">WaxDrop, le jeu de cartes du rap</a> <a href="/artistes/">Artistes</a></nav>
   <main id="main"><section class="seo"><h1>WaxDrop, le jeu de cartes du rap</h1><p>WaxDrop (waxdrop.fr) est un jeu gratuit de cartes à collectionner : ouvre des drops, découvre des sons de tes rappeurs préférés et collectionne-les du Commun au Divin. Plus de 900 artistes : PNL, Ninho, Jul, Booba, Damso, SCH, Gazo, Tiakola, La Fève, So La Lune, Drake, Travis Scott…</p><p>Complète des albums, gagne des disques de platine, monte ton label avec tes potes, participe aux événements et revends tes sons à la Bourse. Sans téléchargement : ouvre waxdrop.fr dans Safari ou Chrome et ajoute-le à ton écran d’accueil.</p><p><a href="/artistes/">Voir tous les artistes</a> · <a href="/a-propos.html">C’est quoi WaxDrop ?</a></p></section></main>
-  <nav class="tabs glass" id="tabs">
+  <nav class="tabs glass" id="tabs" aria-label="Navigation">
+    <div class="sbb" aria-hidden="true"><i></i>WaxDrop</div>
     <button data-tab="collection"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="9" r="4.5"/><circle cx="17" cy="15" r="3.5"/><circle cx="9.5" cy="18.5" r="2"/></svg>Collection</button>
     <button data-tab="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>Disquaire<i class="dot" id="shdot" hidden></i></button>
     <button data-tab="ouvrir" class="tcen" aria-label="Ouvrir un drop"><span class="tcv" aria-hidden="true"></span><span class="tcl">Ouvrir</span><i class="dot" id="odot" hidden></i></button>
     <button data-tab="bourse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M5 15l4-5 3.5 3L19 6"/><path d="M15 6h4v4"/></svg>Bourse<i class="dot" id="pdot" hidden></i></button>
     <button data-tab="profil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.2-4.2 4.3-6 8-6s6.8 1.8 8 6"/></svg>Profil</button>
+    <div class="sbf" id="sbf"></div>
   </nav>
 </div>
 <div id="dt"></div><div id="sh"></div><div id="ov"></div><div id="dd"></div>
