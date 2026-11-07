@@ -402,7 +402,7 @@ function catPager(){const h=$('spgr');if(!h)return;const L=catResults();const c=
   const sg=$('catsug');if(sg){const q=catQ.trim(),has=q&&ARTISTS.some(A=>A.q===slug(q));sg.innerHTML=q.length>=2&&!has?`<div class="sugb glass"><span>« ${esc(q)} » n’est pas dans le jeu ?</span><button class="pbtn sm" data-act="askart">Proposer l’ajout</button></div>`:''}
   if(catScope==='artistes')pager(h,L,artistCell,{minT:88,extra:30,empty:'Aucun résultat'});
   else if(catScope==='albums')pager(h,L,albBig,{minT:160,minCols:2,extra:46,empty:'Aucun résultat'});
-  else pager(h,L,tileBtn,{ratio:4/3,minT:92,empty:'Aucun résultat'})}
+  else pager(h,L,tileBtn,{ratio:4/3,minT:isPC()?132:92,empty:'Aucun résultat'})}
 function renderStack(keep){
   const p=stack[stack.length-1];if(!p){dt.innerHTML='';return}
   const back=`<button class="gbtn sq" data-act="pop" aria-label="Retour">${stack.length>1?ICON.back:ICON.x}</button>`;
@@ -429,7 +429,7 @@ function renderStack(keep){
   if(cf>=0&&$('cq')){$('cq').focus({preventScroll:true});try{$('cq').setSelectionRange(cf,cf)}catch(e){}}
   if(p.type==='cat')catPager();
   else if(p.type==='artist'){const n=p.items.length;pager($('spgr'),p.items,albBig,{minT:160,minCols:2,cols:n<=2?n:undefined,extra:n===1?54:46,empty:'Aucun album'})}
-  else if(p.type==='album')pager($('spgr'),RW[p.k].ids.map(id=>C[id]),tileBtn,{ratio:4/3,minT:92});
+  else if(p.type==='album')pager($('spgr'),RW[p.k].ids.map(id=>C[id]),tileBtn,{ratio:4/3,minT:isPC()?132:92});
 }
 
 /* ================= TIRAGE ================= */

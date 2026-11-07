@@ -81,7 +81,10 @@
   var DI='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19.3 5.3A17 17 0 0 0 15 4l-.5 1.1a15.7 15.7 0 0 0-5 0L9 4a17 17 0 0 0-4.3 1.3C2 9.4 1.3 13.4 1.6 17.3A17.2 17.2 0 0 0 6.9 20l1.1-1.8c-.6-.2-1.2-.5-1.7-.9l.4-.3a12.2 12.2 0 0 0 10.6 0l.4.3c-.5.4-1.1.7-1.7.9l1.1 1.8a17.1 17.1 0 0 0 5.3-2.7c.4-4.5-.7-8.5-3.1-12zM8.5 14.9c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1zm7 0c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1z"/></svg>';
   function oaHTML(){var b='';if(OA.google)b+='<button type="button" class="goa gg" data-oa="google">'+GI+'Continuer avec Google</button>';if(OA.discord)b+='<button type="button" class="goa gd" data-oa="discord">'+DI+'Continuer avec Discord</button>';
     return b?'<div class="goas">'+b+'</div><div class="gor"><span>ou avec ton e-mail</span></div>':''}
-  function gateRefresh(){if(!gate.hidden&&gate.innerHTML&&(mode==='in'||mode==='up')){var y=gate.scrollTop;gate.innerHTML=gateHTML();gate.scrollTop=y}}
+  function gateRefresh(){if(gate.hidden||!gate.innerHTML||(mode!=='in'&&mode!=='up'))return;
+    /* on garde ce que le joueur a déjà tapé et l'endroit où il était */
+    var y=gate.scrollTop,a=document.activeElement&&document.activeElement.id,v={};['gmail','gpass'].forEach(function(k){var el=document.getElementById(k);if(el)v[k]=el.value});
+    gate.innerHTML=gateHTML();gate.scrollTop=y;Object.keys(v).forEach(function(k){var el=document.getElementById(k);if(el)el.value=v[k]});if(a){var f=document.getElementById(a);if(f)f.focus({preventScroll:true})}}
   fetch(SB_URL+'/auth/v1/settings',{headers:{apikey:SB_KEY}}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.external){OA={google:!!j.external.google,discord:!!j.external.discord};if(OA.google||OA.discord)gateRefresh()}}).catch(function(){});
   sb.rpc('signup_gift').then(function(r){var n=r&&!r.error?(r.data|0):0;if(n>0&&n<=50){GIFT=n;gateRefresh()}}).catch(function(){});
   function gateInfo(){

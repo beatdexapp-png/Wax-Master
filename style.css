@@ -2243,7 +2243,7 @@ html:not(.ios) .tabs{margin-bottom:max(8px,env(safe-area-inset-bottom,0px))!impo
 .wc.rr.tilting::after{opacity:1}
 .wc.vt.rr{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--rc) 75%,transparent),inset 0 1px 0 rgba(255,255,255,.2),0 0 0 0 transparent}
 /* reflet qui passe tout seul sur les cartes rares (une fois toutes les quelques secondes, par translation seulement) */
-.wc.vt.rr .tx::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:200cqw;pointer-events:none;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.22) 50%,transparent 60%);transform:translateX(-120%);animation:rrsh 7s var(--out) infinite;animation-delay:calc(var(--i,0)*.4s)}
+@media (hover:hover) and (pointer:fine){.wc.vt.rr .tx::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:200cqw;pointer-events:none;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.22) 50%,transparent 60%);transform:translateX(-120%);animation:rrsh 7s var(--out) infinite;animation-delay:calc(var(--i,0)*.4s)}}
 .wc.vt.rr{isolation:isolate}
 @keyframes rrsh{0%,70%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
 .mbox .maxi{--rx:0deg;--ry:0deg;--mx:50%;--my:30%;transform:translateX(-7%) perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));transition:transform .6s var(--spring)}
