@@ -75,7 +75,7 @@
   /* paiements Stripe (liens de paiement, crédités par le serveur après confirmation de Stripe) */
   var PAY={pass:'https://buy.stripe.com/3cIcN433ge1g02Ibqh5AQ05',c500:'https://buy.stripe.com/6oU9ASfQ2bT86r6bqh5AQ06',c1200:'https://buy.stripe.com/9B67sKdHU9L0cPu8e55AQ07',c3000:'https://buy.stripe.com/eVqbJ047k2iy16Mamd5AQ08',c7000:'https://buy.stripe.com/5kQ5kCdHUg9og1G7a15AQ09',
     /* lot 6 : à remplir avec les vrais liens de paiement Stripe (voir CONTEXTE.md). Vide = offre cachée. */
-    proan:'',coffret:''};
+    proan:'https://buy.stripe.com/cNiaEW33g7CS9Di3XP5AQ0a',coffret:'https://buy.stripe.com/6oUbJ0gU6g9o6r60LD5AQ0b'};
   ECO.canPay=function(k){return !!PAY[k]};
   window.buyFlow=function(k){
     if(!CL.user){toast('Connexion requise');return}
