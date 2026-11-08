@@ -1,0 +1,8 @@
+[Unit]
+Description=WaxDrop : récompense Discord (codes postés, 5 drops) et rôle Pro automatique
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/node /home/jarvis/waxdrop/repo/outils/discord/recompense.mjs tour
+TimeoutStartSec=50
+Nice=10

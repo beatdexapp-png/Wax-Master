@@ -140,19 +140,23 @@
   }
   function renderPlayer(){
     var P=SOC.player;
-    var theirs=(P.doubles||[]).filter(function(id){return C[id]}).map(function(id){return C[id]}).sort(function(a,b){return b.r-a.r});
+    /* lot 5 (S.l5) : échange sans doublon obligatoire. Ses doubles + ses sons qui te manquent ; tes doubles d'abord, puis tes sons uniques (60 au plus) */
+    var L5=!!S.l5,seen={};
+    var theirs=(P.doubles||[]).concat(L5?(P.miss||[]):[]).filter(function(id){if(!C[id]||seen[id])return false;seen[id]=1;return true}).map(function(id){return C[id]}).sort(function(a,b){return b.r-a.r});
     var mine=CARDS.filter(function(c){return (S.owned[c.id]||0)>1}).sort(function(a,b){return b.r-a.r});
+    if(L5)mine=mine.concat(CARDS.filter(function(c){return (S.owned[c.id]||0)===1}).sort(function(a,b){return b.r-a.r}).slice(0,60));
     closeMenu();menuPage='trade';
     sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass" role="dialog" aria-label="Échange avec '+esc(P.pseudo)+'"><div class="grab"></div>'+
       '<div class="shh"><div class="phd">'+avH(P.avatar,P.pseudo,'tbig')+'<div><button class="jpname big" data-act="plprof" data-p="'+esc(P.pseudo)+'">'+esc(P.pseudo)+'</button><small>'+(P.score||0).toLocaleString('fr-FR')+' pts</small></div></div><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div>'+
-      '<span class="lbl">Tu reçois · ses doubles</span>'+(theirs.length?'<div class="trow">'+theirs.map(function(c){return '<button class="tpick" data-act="tpw" data-id="'+c.id+'" aria-pressed="false">'+tileHTML(c,{nocount:1,lock:false})+(own(c.id)?'':'<em class="nw">Manque</em>')+'</button>'}).join('')+'</div>':'<p class="muted">Ce joueur n’a pas encore de doubles</p>')+
-      '<span class="lbl">Tu donnes · tes doubles</span>'+(mine.length?'<div class="trow">'+mine.map(function(c){return '<button class="tpick" data-act="tpg" data-id="'+c.id+'" aria-pressed="false">'+tileHTML(c)+'</button>'}).join('')+'</div>':'<p class="muted">Tu n’as pas encore de doubles</p>')+
+      '<span class="lbl">Tu reçois · '+(L5?'ses doubles et ses sons qui te manquent':'ses doubles')+'</span>'+(theirs.length?'<div class="trow">'+theirs.map(function(c){return '<button class="tpick" data-act="tpw" data-id="'+c.id+'" aria-pressed="false">'+tileHTML(c,{nocount:1,lock:false})+(own(c.id)?'':'<em class="nw">Manque</em>')+'</button>'}).join('')+'</div>':'<p class="muted">'+(L5?'Rien à te proposer chez ce joueur pour l’instant':'Ce joueur n’a pas encore de doubles')+'</p>')+
+      '<span class="lbl">Tu donnes · '+(L5?'tes doubles, puis tes sons uniques':'tes doubles')+'</span>'+(mine.length?'<div class="trow">'+mine.map(function(c){return '<button class="tpick" data-act="tpg" data-id="'+c.id+'" aria-pressed="false">'+tileHTML(c)+((S.owned[c.id]||0)===1?'<em class="nw l5last">Ton seul</em>':'')+'</button>'}).join('')+'</div>':'<p class="muted">Tu n’as pas encore de doubles</p>')+
       '<button class="pbtn" id="tpgo" data-act="tpropose" disabled>Proposer l’échange</button><button class="gl2" data-act="frrm" data-p="'+esc(P.pseudo)+'">Retirer des amis</button></div>';
   }
   function pick(t,k){t.parentElement.querySelectorAll('.tpick').forEach(function(x){x.setAttribute('aria-pressed',x===t)});SOC.pick[k]=t.dataset.id;var b=$('tpgo');if(b)b.disabled=!(SOC.pick.give&&SOC.pick.want)}
   async function propose(){
     var P=SOC.player,g=SOC.pick.give,w=SOC.pick.want;if(!P||!g||!w)return;
-    if((S.owned[g]||0)<2){toast('Il te faut ce son en double');return}
+    if((S.owned[g]||0)<(S.l5?1:2)){toast(S.l5?'Tu n’as plus ce son':'Il te faut ce son en double');return}
+    if(S.l5&&(S.owned[g]||0)===1&&SOC.armLast!==g){SOC.armLast=g;toast('C’est ton seul exemplaire : touche encore pour confirmer');return}SOC.armLast=null;
     var b=$('tpgo');if(b){b.disabled=true;b.textContent='Envoi…'}
     var r=await sb.rpc('propose_trade',{p_to:P.pseudo,p_give:g,p_want:w});
     if(r.error){toast(niceErr(r.error.message));if(b){b.disabled=false;b.textContent='Proposer l’échange'}return}

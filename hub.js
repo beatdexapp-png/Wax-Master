@@ -76,6 +76,7 @@
     var T=topCol(),b=bestOwned(),h='';
     if(T)h+='<button class="hj-s" data-act="book" data-k="'+e(T.A.key)+'"><span class="hb-i">'+IC.book+'</span><span><b>Classeur de '+e(T.A.n)+'</b><small>'+T.n+'/'+T.A.ids.length+' sons</small></span></button>';
     if(b&&window.shareCard)h+='<button class="hj-s" data-act="story" data-id="'+e(b.id)+'"><span class="hb-i">'+IC.story+'</span><span><b>Partager ta meilleure carte</b><small>'+e(b.t)+' · '+e((RAR[b.r]||{}).n||'')+'</small></span></button>';
+    if(window.L5&&L5.sc)h+=L5.sc();
     h+='<button class="hj-s" data-hub="set"><span class="hb-i">'+IC.gear+'</span><span><b>Réglages</b><small>Mode économie, sans spoiler, notifications</small></span></button>';
     h+='<button class="hj-s" data-act="tuto"><span class="hb-i">'+IC.tuto+'</span><span><b>Revoir le tutoriel</b><small>4 étapes</small></span></button>';
     return '<section class="hj-c hj-sc"><div class="hj-h"><div><b>Raccourcis</b></div></div><div class="hj-sg">'+h+'</div></section>'}

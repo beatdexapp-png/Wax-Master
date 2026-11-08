@@ -1,0 +1,9 @@
+[Unit]
+Description=WaxDrop : passage du bot de récompense Discord chaque minute
+
+[Timer]
+OnCalendar=*-*-* *:*:30
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target
