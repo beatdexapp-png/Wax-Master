@@ -34,7 +34,10 @@
      Le reste de l'app ne démarre qu'une fois le catalogue chargé, pour que tous les artistes soient là dès l'ouverture. */
   var REST=['/app.js','/vendor/supabase.js','/vitrine.js','/cloud.js','/eco.js','/social.js','/vendor/motion.js','/fx.js','/share.js','/stats.js','/preview.js','/polish.js','/events.js','/labels.js','/joueur.js','/accueil.js','/classeur.js','/revenir.js','/hub.js','/lot4.js','/lot5.js','/sobre.js','/lot6.js'];
   var started=false;
-  function boot(){if(started)return;started=true;REST.forEach(function(src){var el=document.createElement('script');el.src=src;el.async=false;document.body.appendChild(el)});
+  /* écran de chargement (index.html) : chaque script chargé fait avancer le disque */
+  var L=window.WDL,nJS=0;function js(){nJS++;if(L)L.set('js',nJS/REST.length)}
+  function boot(){if(started)return;started=true;if(L){L.set('cat',1);L.say('Préparation du jeu')}
+    REST.forEach(function(src){var el=document.createElement('script');el.src=src;el.async=false;el.onload=el.onerror=js;document.body.appendChild(el)});
     setTimeout(refresh,4000)}
   function db(){return new Promise(function(ok,ko){if(!window.indexedDB)return ko(new Error('idb'));var r=indexedDB.open('waxdrop',1);
     r.onupgradeneeded=function(){r.result.createObjectStore('kv')};r.onsuccess=function(){ok(r.result)};r.onerror=function(){ko(r.error)}})}
@@ -42,8 +45,16 @@
   function idbSet(k,v){return db().then(function(d){return new Promise(function(ok,ko){var t=d.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=function(){ok()};t.onerror=function(){ko(t.error)}})})}
   /* catalogue servi en fichier statique (CDN), la base n'est appelée qu'en secours */
   /* on redemande toujours au serveur, mais sous condition (ETag) : s'il n'a pas changé, réponse vide « 304 » au lieu de 2,9 Mo */
-  function stat(){return fetch('/catalog.json',{cache:'no-cache'}).then(function(r){return r.ok?r.text():null}).then(function(t){return t&&t.length>1000&&t[0]==='{'?t:null}).catch(function(){return null})}
-  function get(){return stat().then(function(t){return t||rpc()})}
+  /* lecture en flux au premier lancement : la vraie part téléchargée fait tourner le disque.
+     Taille totale : Content-Length si le fichier arrive non compressé, sinon la taille notée au dernier chargement (ou celle du fichier au 08/11/2026). */
+  function body(r,live){if(!live||!L||!r.body||!r.body.getReader||typeof TextDecoder==='undefined')return r.text();
+    var tot=0;try{tot=r.headers.get('content-encoding')?0:+r.headers.get('content-length')||0}catch(e){}
+    if(!tot){try{tot=+localStorage.getItem('wd-catlen')||0}catch(e){}}if(!tot)tot=6900000;
+    var rd=r.body.getReader(),dec=new TextDecoder(),parts=[],n=0;
+    return (function pump(){return rd.read().then(function(x){if(x.done){parts.push(dec.decode());var t=parts.join('');try{localStorage.setItem('wd-catlen',String(n))}catch(e){}return t}
+      n+=x.value.length;parts.push(dec.decode(x.value,{stream:true}));L.set('cat',Math.min(.97,n/tot));return pump()})})()}
+  function stat(live){return fetch('/catalog.json',{cache:'no-cache'}).then(function(r){return r.ok?body(r,live):null}).then(function(t){return t&&t.length>1000&&t[0]==='{'?t:null}).catch(function(){return null})}
+  function get(){return stat(1).then(function(t){return t||rpc()})}
   function rpc(){return fetch(URL+'/rest/v1/rpc/catalog_dump2',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'},body:'{}'}).then(function(r){return r.ok?r.text():null}).catch(function(){return null})}
   /* réécrit IndexedDB seulement si le catalogue a changé */
   function refresh(){stat().then(function(t){if(!t)return;idbGet(CK).then(function(o){if(o!==t)return idbSet(CK,t)}).catch(function(){idbSet(CK,t).catch(function(){})})})}

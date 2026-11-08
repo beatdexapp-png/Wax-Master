@@ -2862,7 +2862,7 @@ html.weak .dpk,body.lite .dpk{transform:none!important}
 
 /* ---------- bannières et écrans vides ---------- */
 .sbn{position:relative;flex:none;margin:0 0 14px;border-radius:22px;overflow:hidden;aspect-ratio:16/7;background:var(--soft)}
-.sbn img{width:100%;height:100%;object-fit:cover;display:block}
+.sbn img{width:100%;height:100%;object-fit:cover;display:block}.sbn picture{display:contents}
 .sbn::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);border-radius:inherit;pointer-events:none}
 @media (min-width:1024px){.sbn{aspect-ratio:auto;height:clamp(140px,24vh,220px)}}
 .empty::before{content:"";display:block;width:min(100%,420px);margin:0 auto 14px;aspect-ratio:16/10;border-radius:20px;background:var(--soft) url(/img/il/il-vide-480.webp) center/cover}
@@ -2913,3 +2913,25 @@ html.weak .dpk,body.lite .dpk{transform:none!important}
 .mhero .pro.big{display:inline-block;width:auto;height:auto;flex:none;aspect-ratio:auto;margin:0;transform:none}
 .l6page .psbar{position:static}
 .l6cmp,.l6pl,.l6cof,.l6lead,.l6all{flex:none}
+
+/* ÉCRAN DE CHARGEMENT (08/11/2026) : vinyle dont la vitesse suit la vraie progression (chargement.js dans index.html). Aucun chiffre affiché. */
+#wdl{position:fixed;inset:0;z-index:190;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:24px;background-color:var(--bg);background-image:radial-gradient(60% 45% at 10% 14%,var(--b1),transparent 70%),radial-gradient(55% 42% at 95% 42%,var(--b2),transparent 70%),radial-gradient(70% 48% at 35% 100%,var(--b3),transparent 70%);color:var(--fg);transition:opacity .45s cubic-bezier(.4,0,1,1)}
+#wdl.out{opacity:0;pointer-events:none}
+#wdl .wdl-w{position:relative;width:min(56vw,236px);aspect-ratio:1;transition:transform .45s cubic-bezier(.4,0,1,1)}
+#wdl.out .wdl-w{transform:scale(1.08)}
+#wdl .wdl-v{position:absolute;inset:9%;border-radius:50%;background:radial-gradient(circle,#0b0b0d 0 2.4%,#fff 2.6% 3.6%,#ff5f86 3.8% 15.5%,#16161a 16% 17%,transparent 17.4%),repeating-radial-gradient(circle,#121216 0 .9%,#1d1d23 1.1% 1.9%);box-shadow:0 0 0 1px rgba(255,255,255,.06) inset,0 24px 50px -18px rgba(0,0,0,.55),0 6px 14px -6px rgba(0,0,0,.4);will-change:transform}
+#wdl .wdl-v i{position:absolute;left:50%;top:36%;width:5%;height:5%;margin-left:-2.5%;border-radius:50%;background:rgba(255,255,255,.85)}
+/* reflet fixe : la lumière ne tourne pas avec le disque */
+#wdl .wdl-s{position:absolute;inset:9%;border-radius:50%;pointer-events:none;background:conic-gradient(from 205deg,rgba(255,255,255,0),rgba(255,255,255,.2) 7%,rgba(255,255,255,0) 15%,rgba(255,255,255,0) 50%,rgba(255,255,255,.14) 57%,rgba(255,255,255,0) 66%),radial-gradient(circle at 32% 26%,rgba(255,255,255,.18),transparent 46%)}
+#wdl svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+#wdl svg circle{fill:none;stroke-width:2.2;stroke-linecap:round}
+#wdl .wdl-t{stroke:var(--soft)}
+#wdl .wdl-p{stroke:#ff5f86;transition:stroke-dashoffset .25s cubic-bezier(.22,1,.36,1)}
+#wdl b{font:800 1.9rem/1 var(--disp);letter-spacing:-.03em}
+#wdl small{display:block;min-height:1.3em;margin-top:-14px;font-size:13px;color:var(--fg2)}
+#wdl button{min-height:44px;padding:0 22px;border-radius:999px;border:0;background:var(--soft);color:var(--fg);font:600 14px var(--body);opacity:0;transform:translateY(6px);transition:opacity .4s cubic-bezier(.22,1,.36,1),transform .4s cubic-bezier(.22,1,.36,1);visibility:hidden}
+#wdl button.on{opacity:1;transform:none;visibility:visible}
+@media (prefers-reduced-motion:reduce){#wdl,#wdl .wdl-w,#wdl button{transition:opacity .2s linear}#wdl.out .wdl-w{transform:none}}
+/* visiteur sans compte : l'écran suivant est la porte d'entrée sombre, on prend le même fond */
+html.wdl-dk #wdl{background:radial-gradient(70% 60% at 18% 8%,rgba(255,194,61,.16),transparent 60%),radial-gradient(60% 55% at 95% 90%,rgba(90,110,190,.28),transparent 65%),radial-gradient(50% 50% at 60% 40%,rgba(150,80,120,.16),transparent 70%),#0b0c10;color:#f1f2f6}
+html.wdl-dk #wdl .wdl-t{stroke:rgba(255,255,255,.1)}html.wdl-dk #wdl small{color:#979dab}html.wdl-dk #wdl button{background:rgba(255,255,255,.1);color:#f1f2f6}

@@ -1,7 +1,7 @@
 /* WaxDrop : refonte sobre (08/11/2026).
    Pochettes de drops (une image par style, époque et drop spécial, le vinyle qui dépasse, reflet qui suit le doigt ou la souris
    grâce à l'inclinaison de polish.js, coupée en mode léger, si l'appareil demande moins d'animations ou s'il est faible),
-   images d'en-tête et d'écrans vides. Images générées (Cloudflare Workers AI, FLUX.2 klein), en WebP 2 tailles, chargées à la demande.
+   images d'en-tête et d'écrans vides. Photos générées (Cloudflare Workers AI, FLUX.2 klein) ; Drops, Wax coins, Missions, Amis et pochettes Or, Diamant, Ultra, Tout dessinées en code (tests/images-v71/art.html, 08/11). WebP 2 tailles, chargées à la demande.
    Aucune règle du jeu ni appel serveur ici : seulement de l'affichage. */
 (function(){
   if(typeof S==='undefined')return;
@@ -24,7 +24,9 @@
   SB.dpk=function(k,o){o=o||{};var f=SB.key(k);var u=o.u?'<img src="'+e(o.u)+'" alt="" loading="lazy" decoding="async">':img(f,o.hero);
     return '<span class="dpk'+(o.hero?' dpk-hero':'')+(o.cls?' '+o.cls:'')+'" style="--dc:'+(o.c||col(f))+'" aria-hidden="true"><span class="dpk-v"><i></i></span><span class="dpk-s">'+u+'<span class="dpk-g"></span></span></span>'};
   /* bannière photo en haut d'une page */
-  SB.ban=function(n,t){return '<figure class="sbn"><img src="'+SB.il(n)+'" srcset="/img/il/'+n+'-480.webp 480w, /img/il/'+n+'-960.webp 960w" sizes="(min-width:1024px) 720px, 100vw" width="960" height="600" alt="" loading="lazy" decoding="async">'+(t?'<figcaption>'+t+'</figcaption>':'')+'</figure>'};
+  /* les scènes dessinées ont une version large (1600×400) pour la bannière basse et large du PC */
+  var WIDE={'il-boutique':1,'il-coins':1,'il-missions':1,'il-amis':1};
+  SB.ban=function(n,t){return '<figure class="sbn"><picture>'+(WIDE[n]?'<source media="(min-width:1024px)" srcset="/img/il/'+n+'-w.webp">':'')+'<img src="'+SB.il(n)+'" srcset="/img/il/'+n+'-480.webp 480w, /img/il/'+n+'-960.webp 960w" sizes="(min-width:1024px) 720px, 100vw" width="960" height="600" alt="" loading="lazy" decoding="async"></picture>'+(t?'<figcaption>'+t+'</figcaption>':'')+'</figure>'};
   function ph(n){return '<img class="hart hph" src="/img/il/'+n+'-480.webp" width="480" height="300" alt="" loading="lazy" decoding="async">'}
   /* sommaire du Disquaire et carte Pro : photos à la place des dessins */
   if(typeof ART!=='undefined'){ART.packs=ph('il-boutique');ART.ach=ph('il-succes');ART.pass=ph('il-pro');ART.saison=ph('il-missions');ART.amis=ph('il-amis');ART.bourse=ph('il-bourse')}
@@ -33,7 +35,7 @@
   var BAN={jour:'il-jour',saison:'il-missions',succes:'il-succes',echanges:'il-amis',jetons:'il-boutique'};
   function after(){
     var v=document.querySelector('#main .view');if(!v)return;
-    if(tab==='shop'){var n=BAN[shopSub];if(shopSub==='jetons'&&typeof jetSub!=='undefined'&&jetSub==='packs')n=null;
+    if(tab==='shop'){var n=BAN[shopSub];if(shopSub==='jetons'&&typeof jetSub!=='undefined')n=jetSub==='packs'?'il-boutique':'il-coins';
       if(n&&!v.querySelector('.sbn')){var h=v.querySelector('.vh');var d=document.createElement('div');d.innerHTML=SB.ban(n);if(h)h.insertAdjacentElement('afterend',d.firstChild);else v.prepend(d.firstChild)}}
     if(tab==='profil'&&typeof profSub!=='undefined'&&profSub==='top'&&!v.querySelector('.sbn')){var p=v.querySelector('.wkh,.vh');var d2=document.createElement('div');d2.innerHTML=SB.ban('il-classement');if(p)p.insertAdjacentElement('beforebegin',d2.firstChild)}
     /* Drop Or : petite pochette dorée sur le bouton */
