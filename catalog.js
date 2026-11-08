@@ -32,7 +32,7 @@
   }
   /* Le catalogue (plusieurs Mo) est rangé dans IndexedDB, sans la limite d'environ 5 Mo du stockage local de Safari.
      Le reste de l'app ne démarre qu'une fois le catalogue chargé, pour que tous les artistes soient là dès l'ouverture. */
-  var REST=['/app.js','/vendor/supabase.js','/vitrine.js','/cloud.js','/eco.js','/social.js','/vendor/motion.js','/fx.js','/share.js','/stats.js','/preview.js','/polish.js','/events.js','/labels.js','/joueur.js','/accueil.js','/classeur.js','/revenir.js','/hub.js','/lot4.js','/lot5.js','/sobre.js','/lot6.js','/retouches.js'];
+  var REST=['/app.js','/vendor/supabase.js','/vitrine.js','/cloud.js','/eco.js','/social.js','/vendor/motion.js','/fx.js','/share.js','/stats.js','/preview.js','/polish.js','/events.js','/labels.js','/joueur.js','/accueil.js','/classeur.js','/revenir.js','/hub.js','/lot4.js','/lot5.js','/sobre.js','/lot6.js','/retouches.js','/retouches2.js'];
   var started=false;
   /* écran de chargement (index.html) : chaque script chargé fait avancer le disque */
   var L=window.WDL,nJS=0;function js(){nJS++;if(L)L.set('js',nJS/REST.length)}

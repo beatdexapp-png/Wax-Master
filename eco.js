@@ -68,7 +68,7 @@
   window.sClaim=async function(i,t){if(t==='p'&&!hasPass()){passSheet();return}var r=await ECO.op('season',{i:+i,t:t==='p'?'p':'f'});if(!r)return;toast('Récompense ajoutée');render()};
   window.buyCoins=async function(k){
     if(k==='nacre'||k==='diamant'){if(S.coins<PK[k].p){needCoins(PK[k].p-S.coins);return}openPack(k);return}
-    var P={gold:GOLD_COST,lot5:450,dust:300}[k];if(!P)return;if(S.coins<P){needCoins(P-S.coins);return}
+    var P={gold:GOLD_COST,lot5:675,dust:300}[k];if(!P)return;if(S.coins<P){needCoins(P-S.coins);return}
     var r=await ECO.op('item',{k:k});if(!r)return;
     toast(k==='gold'?'Drop Or ajouté':k==='lot5'?'5 drops ajoutés':'+200 poussière');render();
   };
