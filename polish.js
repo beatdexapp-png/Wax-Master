@@ -24,7 +24,7 @@
   /* cartes rares des grilles et disque de l'écran Ouvrir : même inclinaison, coupée en mode léger, si l'appareil demande moins d'animations ou s'il est faible */
   var weak=(navigator.deviceMemory&&navigator.deviceMemory<=2)||(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=2);
   if(weak)document.documentElement.classList.add('weak');
-  var TILT='.rsq,.big,.it>.wc.rr,.mbox .maxi';
+  var TILT='.rsq,.big,.it>.wc.rr,.mbox .maxi,.dpk:not(.dpk-xs)';
   var cur=null,raf=0,tx=0,ty=0,gx=.5,gy=.5;
   function apply(){raf=0;if(!cur)return;cur.style.setProperty('--rx',(ty*-9).toFixed(2)+'deg');cur.style.setProperty('--ry',(tx*11).toFixed(2)+'deg');cur.style.setProperty('--mx',(gx*100).toFixed(1)+'%');cur.style.setProperty('--my',(gy*100).toFixed(1)+'%')}
   function move(el,x,y){var r=el.getBoundingClientRect();if(!r.width)return;gx=Math.max(0,Math.min(1,(x-r.left)/r.width));gy=Math.max(0,Math.min(1,(y-r.top)/r.height));tx=gx*2-1;ty=gy*2-1;cur=el;el.classList.add('tilting');if(!raf)raf=requestAnimationFrame(apply)}

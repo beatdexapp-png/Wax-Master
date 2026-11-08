@@ -23,18 +23,19 @@
   }
   function cur(){var L=list();return L.filter(function(x){return x.k===L4.sel})[0]||L[0]}
   /* appelé par eco.js au moment d'ouvrir un drop gratuit ou normal */
+  L4.cur=cur;
   L4.pool=function(){if(!on())return null;var c=cur();return c&&c.k?c.k:null};
 
   /* ---------- écran Ouvrir : choix du booster + garantie ---------- */
   function pity(){var o=S.l4;return{left:Math.max(1,(o.every||60)-(o.pity|0)),p:Math.min(1,(o.pity|0)/(o.every||60))}}
   function openBar(){
     var c=cur(),g=pity(),R=typeof RAR!=='undefined'?RAR:[];
-    return '<div class="l4b"><button class="l4-sel glass" data-l4="panel" aria-haspopup="dialog"><span class="l4-im"'+(c.img?' style="background-image:url(&quot;'+e(c.img)+'&quot;)"':'')+'></span><span class="l4-tx"><small>Booster</small><b>'+e(c.n)+'</b></span><i aria-hidden="true"></i></button>'+
+    return '<div class="l4b"><button class="l4-sel glass" data-l4="panel" aria-haspopup="dialog">'+(window.SB?'':'<span class="l4-im"'+(c.img?' style="background-image:url(&quot;'+e(c.img)+'&quot;)"':'')+'></span>')+'<span class="l4-tx"><small>Booster</small><b>'+e(c.n)+'</b></span><i aria-hidden="true"></i></button>'+
       '<button class="l4-g" data-l4="odds" style="--p:'+g.p.toFixed(3)+';--rc:'+((R[4]||{}).c||'#ff5f86')+'"><span><b>'+(R[4]?R[4].n:'Mythique')+' garanti</b> dans '+g.left+' drop'+(g.left>1?'s':'')+'</span><i aria-hidden="true"></i><em>Chances</em></button></div>';
   }
   function panel(){
     if(typeof closeMenu==='function')closeMenu();menuPage='l4';
-    var L=list(),grp=function(g,t){var x=L.filter(function(b){return b.g===g});return x.length?'<h3 class="l4-h">'+t+'</h3><div class="l4-gr'+(g!=='une'?' l4-ch':'')+'">'+x.map(function(b){return '<button class="l4-o'+(b.k===cur().k?' on':'')+'" data-l4b="'+e(b.k)+'" aria-pressed="'+(b.k===cur().k)+'">'+(g==='une'?'<span class="l4-im"'+(b.img?' style="background-image:url(&quot;'+e(b.img)+'&quot;)"':'')+'></span>':'')+'<span><b>'+e(b.n)+'</b><small>'+e(b.s)+'</small></span></button>'}).join('')+'</div>':''};
+    var L=list(),grp=function(g,t){var x=L.filter(function(b){return b.g===g});return x.length?'<h3 class="l4-h">'+t+'</h3><div class="l4-gr'+(g!=='une'?' l4-ch':'')+'">'+x.map(function(b){return '<button class="l4-o'+(window.SB?' l4-pk':'')+(b.k===cur().k?' on':'')+'" data-l4b="'+e(b.k)+'" aria-pressed="'+(b.k===cur().k)+'">'+(window.SB?SB.dpk(b.k,{u:b.img}):g==='une'?'<span class="l4-im"'+(b.img?' style="background-image:url(&quot;'+e(b.img)+'&quot;)"':'')+'></span>':'')+'<span><b>'+e(b.n)+'</b><small>'+e(b.s)+'</small></span></button>'}).join('')+'</div>':''};
     sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass l4-sh" role="dialog" aria-label="Choisir un booster"><div class="grab"></div><div class="shh"><h2>Choisir un booster</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div>'+
       '<p class="cap" style="text-align:left">Même prix, mêmes chances de rareté. Le booster choisit seulement d’où viennent les sons.</p>'+grp('une','À la une')+grp('st','Styles')+grp('era','Époques')+'</div>';
   }
@@ -50,7 +51,7 @@
 
   /* ---------- page Aujourd'hui : boosters du jour ---------- */
   L4.jour=function(){if(!on())return '';var L=list().filter(function(b){return b.g==='une'&&b.k});if(!L.length)return '';
-    return '<section class="hj-c glass"><div class="hj-h"><div><b>Boosters du jour</b><small>Même prix qu’un drop normal, ou avec un drop gratuit</small></div></div><div class="l4-gr">'+L.map(function(b){return '<button class="l4-o" data-l4b="'+e(b.k)+'" data-l4go="1"><span class="l4-im"'+(b.img?' style="background-image:url(&quot;'+e(b.img)+'&quot;)"':'')+'></span><span><b>'+e(b.n)+'</b><small>'+e(b.s)+'</small></span></button>'}).join('')+'</div></section>'};
+    return '<section class="hj-c glass"><div class="hj-h"><div><b>Boosters du jour</b><small>Même prix qu’un drop normal, ou avec un drop gratuit</small></div></div><div class="l4-gr">'+L.map(function(b){return '<button class="l4-o" data-l4b="'+e(b.k)+'" data-l4go="1">'+(window.SB?SB.dpk(b.k,{u:b.img,cls:'dpk-xs'}):'<span class="l4-im"'+(b.img?' style="background-image:url(&quot;'+e(b.img)+'&quot;)"':'')+'></span>')+'<span><b>'+e(b.n)+'</b><small>'+e(b.s)+'</small></span></button>'}).join('')+'</div></section>'};
 
   /* ---------- parrainage : paliers à badge, filleuls en cours ---------- */
   var REF=window.REF4={d:null,ok:null,t:0};
