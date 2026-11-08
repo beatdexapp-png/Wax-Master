@@ -107,9 +107,9 @@
       try{document.querySelectorAll('#main [style*="background-image"],#gate [style*="background-image"]').forEach(function(x){var m=/url\(["']?([^"')]+)/.exec(x.style.backgroundImage);if(m)add(m[1])})}catch(e){}
       try{if(window.SB&&window.L4&&L4.cur){var c=L4.cur();add(c.img||SB.src(SB.key(c.k),1));}}catch(e){}
       try{if(window.L4&&L4.list)L4.list().forEach(function(b){add(b.img)})}catch(e){}
-      var U=Object.keys(L),player=!document.getElementById('gate')||document.getElementById('gate').hidden,U2=[];
+      var U=Object.keys(L),player=!document.documentElement.classList.contains('wdl-dk'),U2=[];
       if(player&&!slow()){var seen={};U.forEach(function(u){seen[u]=1});drops().concat(mine(80)).forEach(function(u){if(!seen[u]){seen[u]=1;U2.push(u)}})}
-      var all=U.length+U2.length;if(!all){W.set('img',1);return}
+      var all=U.length+U2.length;W.i={u:U.length,u2:U2.length,t:Math.round(performance.now())};if(!all){W.set('img',1);return}
       function fin(){if(ok1>=U.length&&(ok>=all||Date.now()-t1>2200))W.set('img',1)}
       var stop=setTimeout(function(){W.set('img',1)},4200);setTimeout(fin,2250);
       U.forEach(function(u){if(!grab(u,function(){ok1++;ok++;W.set('img',Math.min(.99,ok/all));fin()})){ok1++;ok++}});
