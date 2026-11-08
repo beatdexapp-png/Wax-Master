@@ -75,13 +75,13 @@
   /* paiements Stripe (liens de paiement, crédités par le serveur après confirmation de Stripe) */
   var PAY={pass:'https://buy.stripe.com/3cIcN433ge1g02Ibqh5AQ05',c500:'https://buy.stripe.com/6oU9ASfQ2bT86r6bqh5AQ06',c1200:'https://buy.stripe.com/9B67sKdHU9L0cPu8e55AQ07',c3000:'https://buy.stripe.com/eVqbJ047k2iy16Mamd5AQ08',c7000:'https://buy.stripe.com/5kQ5kCdHUg9og1G7a15AQ09',
     /* lot 6 : à remplir avec les vrais liens de paiement Stripe (voir CONTEXTE.md). Vide = offre cachée. */
-    proan:'https://buy.stripe.com/cNiaEW33g7CS9Di3XP5AQ0a',coffret:'https://buy.stripe.com/6oUbJ0gU6g9o6r60LD5AQ0b'};
+    proan:'https://buy.stripe.com/6oUcN4gU68GW8ze7a15AQ0c',coffret:'https://buy.stripe.com/6oUbJ0gU6g9o6r60LD5AQ0b'};
   ECO.canPay=function(k){return !!PAY[k]};
   window.buyFlow=function(k){
     if(!CL.user){toast('Connexion requise');return}
     if(!PAY[k]){toast('Bientôt disponible');return}
     if((k==='pass'||k==='proan')&&hasPass()){passSheet();return}
-    var item=k==='pass'?{n:'WaxDrop Pro',p:PASS_PRICE}:k==='proan'?{n:'WaxDrop Pro · 1 an',p:'49,90 € / an'}:k==='coffret'?{n:'Coffret WaxDrop',p:'9,99 €'}:(function(){var s=SHOP.find(function(x){return x.k===k});return{n:s.n.toLocaleString('fr-FR')+' wax coins',p:s.p}})();
+    var item=k==='pass'?{n:'WaxDrop Pro',p:PASS_PRICE}:k==='proan'?{n:'WaxDrop Pro · 1 an',p:'39,90 € / an'}:k==='coffret'?{n:'Coffret WaxDrop',p:'9,99 €'}:(function(){var s=SHOP.find(function(x){return x.k===k});return{n:s.n.toLocaleString('fr-FR')+' wax coins',p:s.p}})();
     var url=PAY[k]+'?client_reference_id='+encodeURIComponent(CL.user.id)+(CL.user.email?'&prefilled_email='+encodeURIComponent(CL.user.email):'')+'&locale=fr';
     closeMenu();
     dd.innerHTML=popHTML('<div class="card2 glass paysh"><span class="lbl">Paiement sécurisé · Stripe</span><h2>'+esc(item.n)+'</h2><p class="price2">'+item.p+'</p><p class="cap">Tu vas payer sur la page Stripe, puis revenir dans l’app. '+(k==='pass'||k==='proan'?'WaxDrop Pro s’active':k==='coffret'?'Les wax coins, les Drops Or et les drops arrivent':'Les wax coins arrivent')+' en quelques secondes.</p><div class="row"><button class="gbtn" data-act="ddclose">Annuler</button><a class="pbtn" href="'+esc(url)+'" rel="noopener">Payer '+item.p.replace(' / mois','').replace(' / an','')+'</a></div></div>');

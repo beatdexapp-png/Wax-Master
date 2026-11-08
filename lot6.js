@@ -1,6 +1,6 @@
 /* WaxDrop : lot 6 « Argent » (08/11/2026).
    - Coffret à 9,99 € : 5 000 wax coins + 2 Drops Or + 10 drops (crédité par le serveur, stripe_apply).
-   - WaxDrop Pro à l'année : 49,90 € (2 mois offerts par rapport au mensuel à 4,99 €).
+   - WaxDrop Pro à l'année : 39,90 € (4 mois offerts par rapport au mensuel à 4,99 €).
      Les deux offres restent CACHÉES tant que leur lien de paiement Stripe n'est pas renseigné dans eco.js (PAY.proan, PAY.coffret).
    - Page « Gratuit ou Pro » (Disquaire > Pro > Tout comparer).
    - Avantages Pro visibles : badge Pro à côté du pseudo (profil, classement, amis, profils publics, grâce à pro_flags),
@@ -8,7 +8,7 @@
    Sans la migration du lot 6 : pro_flags répond 404, seul le badge des autres joueurs manque. Rien d'autre ne change. */
 (function(){
   if(typeof S==='undefined')return;
-  var L6=window.L6={YEAR:'49,90 €',MONTH:'4,99 €',COF:{p:'9,99 €',coins:5000,gold:2,drops:10}};
+  var L6=window.L6={YEAR:'39,90 €',MONTH:'4,99 €',COF:{p:'9,99 €',coins:5000,gold:2,drops:10}};
   function n(v){return (v||0).toLocaleString('fr-FR')}
   L6.on=function(k){return !!(window.ECO&&ECO.canPay&&ECO.canPay(k))};
   /* valeur du coffret en wax coins, aux prix du jeu (Drop Or 900, drop 100) */
@@ -23,7 +23,7 @@
     if(!an)return '<button class="pbtn pscta" data-act="buy" data-k="pass">S’abonner · '+L6.MONTH+' / mois</button>';
     return '<div class="l6pl" role="group" aria-label="Formules WaxDrop Pro">'+
       '<button class="l6p" data-act="buy" data-k="pass"><b>Au mois</b><span><em>'+L6.MONTH+'</em> / mois</span><small>Sans engagement</small></button>'+
-      '<button class="l6p on" data-act="buy" data-k="proan"><i class="l6tag">2 mois offerts</i><b>À l’année</b><span><em>'+L6.YEAR+'</em> / an</span><small>Soit 4,16 € par mois</small></button></div>'};
+      '<button class="l6p on" data-act="buy" data-k="proan"><i class="l6tag">4 mois offerts</i><b>À l’année</b><span><em>'+L6.YEAR+'</em> / an</span><small>Soit 3,33 € par mois</small></button></div>'};
 
   /* ---------- comparatif Gratuit / Pro ---------- */
   var ROWS=[['Drop gratuit','Toutes les 10 min','Toutes les 5 min'],['Drop offert chaque jour','–','1 par jour'],['Drop Or chaque lundi','–','1, Légendaire garanti'],
