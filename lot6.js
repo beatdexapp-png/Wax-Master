@@ -1,5 +1,5 @@
 /* WaxDrop : lot 6 « Argent » (08/11/2026).
-   - Coffret à 9,99 € : 3 000 wax coins + 2 Drops Or + 10 drops (5 000 avant le 08/11 au soir) (crédité par le serveur, stripe_apply).
+   - Coffret à 9,99 € : 4 500 wax coins + 2 Drops Or + 10 drops (5 000 avant le 08/11 au soir) (crédité par le serveur, stripe_apply).
    - WaxDrop Pro à l'année : 39,90 € (4 mois offerts par rapport au mensuel à 4,99 €).
      Les deux offres restent CACHÉES tant que leur lien de paiement Stripe n'est pas renseigné dans eco.js (PAY.proan, PAY.coffret).
    - Page « Gratuit ou Pro » (Disquaire > Pro > Tout comparer).
@@ -8,7 +8,7 @@
    Sans la migration du lot 6 : pro_flags répond 404, seul le badge des autres joueurs manque. Rien d'autre ne change. */
 (function(){
   if(typeof S==='undefined')return;
-  var L6=window.L6={YEAR:'39,90 €',MONTH:'4,99 €',COF:{p:'9,99 €',coins:3000,gold:2,drops:10}};
+  var L6=window.L6={YEAR:'39,90 €',MONTH:'4,99 €',COF:{p:'9,99 €',coins:4500,gold:2,drops:10}};
   function n(v){return (v||0).toLocaleString('fr-FR')}
   L6.on=function(k){return !!(window.ECO&&ECO.canPay&&ECO.canPay(k))};
   /* valeur du coffret en wax coins, aux prix du jeu (Drop Or 900, drop 150) */
