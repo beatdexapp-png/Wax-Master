@@ -77,12 +77,15 @@
     /* lot 6 : à remplir avec les vrais liens de paiement Stripe (voir CONTEXTE.md). Vide = offre cachée. */
     proan:'https://buy.stripe.com/6oUcN4gU68GW8ze7a15AQ0c',coffret:'https://buy.stripe.com/6oUbJ0gU6g9o6r60LD5AQ0b'};
   ECO.canPay=function(k){return !!PAY[k]};
+  ECO.payUrl=function(k){if(!PAY[k]||!(window.CL&&CL.user))return null;return PAY[k]+'?client_reference_id='+encodeURIComponent(CL.user.id)+(CL.user.email?'&prefilled_email='+encodeURIComponent(CL.user.email):'')+'&locale=fr'};
   window.buyFlow=function(k){
     if(!CL.user){toast('Connexion requise');return}
     if(!PAY[k]){toast('Bientôt disponible');return}
     if((k==='pass'||k==='proan')&&hasPass()){passSheet();return}
     var item=k==='pass'?{n:'WaxDrop Pro',p:PASS_PRICE}:k==='proan'?{n:'WaxDrop Pro · 1 an',p:'39,90 € / an'}:k==='coffret'?{n:'Coffret WaxDrop',p:'9,99 €'}:(function(){var s=SHOP.find(function(x){return x.k===k});return{n:s.n.toLocaleString('fr-FR')+' wax coins',p:s.p}})();
-    var url=PAY[k]+'?client_reference_id='+encodeURIComponent(CL.user.id)+(CL.user.email?'&prefilled_email='+encodeURIComponent(CL.user.email):'')+'&locale=fr';
+    var url=ECO.payUrl(k);
+    /* retouches 08/11 : Pro (mois ou année) va droit à la page de paiement Stripe, sans fenêtre de confirmation en plus */
+    if(k==='pass'||k==='proan'){closeMenu();closeDD();location.href=url;return}
     closeMenu();
     dd.innerHTML=popHTML('<div class="card2 glass paysh"><span class="lbl">Paiement sécurisé · Stripe</span><h2>'+esc(item.n)+'</h2><p class="price2">'+item.p+'</p><p class="cap">Tu vas payer sur la page Stripe, puis revenir dans l’app. '+(k==='pass'||k==='proan'?'WaxDrop Pro s’active':k==='coffret'?'Les wax coins, les Drops Or et les drops arrivent':'Les wax coins arrivent')+' en quelques secondes.</p><div class="row"><button class="gbtn" data-act="ddclose">Annuler</button><a class="pbtn" href="'+esc(url)+'" rel="noopener">Payer '+item.p.replace(' / mois','').replace(' / an','')+'</a></div></div>');
   };

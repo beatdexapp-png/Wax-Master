@@ -175,7 +175,7 @@
     if(tab==='collection'||document.querySelector('.v-col')){var vh=document.querySelector('.v-col .vh');if(vh&&!document.querySelector('.v-col .l5cb'))vh.insertAdjacentHTML('afterend','<div class="l5cb"><button class="gbtn sm" data-l5="pl">★ Favoris et playlists</button>'+(on()?'<button class="gbtn sm" data-l5="fuse">Fusion</button>':'')+'</div>')}
     var j=document.querySelector('.v-jour');if(j&&!j.querySelector('.l5ds')){var col=j.querySelectorAll('.hj-col')[1];if(col)col.insertAdjacentHTML('afterbegin',discHTML());dsLoad()}
     if(on()){edMine();
-      if(!reveal&&ED.n1.length){var id=ED.n1.shift(),c=CC()[id];ED.n1=[];if(c)toast('N°001 : tu as le tout premier exemplaire numéroté de '+c.t)}
+      /* retouches 08/11 : plus de message « N°001 » après Continuer (2 tirages sur 3 sont des N°001, il gênait le drop suivant) ; le numéro reste dans la fiche du son */ED.n1=[];
       if(S.l5.wh>0&&!once.wh){once.wh=true;toast(S.l5.wh+' son'+(S.l5.wh>1?'s':'')+' de ta liste de souhaits revendu'+(S.l5.wh>1?'s':'')+' à la Bourse')}}
   }
   var r0=window.render;if(typeof r0==='function')window.render=function(){var x=r0.apply(this,arguments);try{after()}catch(er){}return x};

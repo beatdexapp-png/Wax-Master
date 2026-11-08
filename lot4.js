@@ -29,14 +29,15 @@
   /* ---------- écran Ouvrir : choix du booster + garantie ---------- */
   function pity(){var o=S.l4;return{left:Math.max(1,(o.every||60)-(o.pity|0)),p:Math.min(1,(o.pity|0)/(o.every||60))}}
   function openBar(){
-    var c=cur(),g=pity(),R=typeof RAR!=='undefined'?RAR:[];
-    return '<div class="l4b"><button class="l4-sel glass" data-l4="panel" aria-haspopup="dialog">'+(window.SB?'':'<span class="l4-im"'+(c.img?' style="background-image:url(&quot;'+e(c.img)+'&quot;)"':'')+'></span>')+'<span class="l4-tx"><small>Booster</small><b>'+e(c.n)+'</b></span><i aria-hidden="true"></i></button>'+
-      '<button class="l4-g" data-l4="odds" style="--p:'+g.p.toFixed(3)+';--rc:'+((R[4]||{}).c||'#ff5f86')+'"><span><b>'+(R[4]?R[4].n:'Mythique')+' garanti</b> dans '+g.left+' drop'+(g.left>1?'s':'')+'</span><i aria-hidden="true"></i><em>Chances</em></button></div>';
+    var c=cur(),g=pity(),R=typeof RAR!=='undefined'?RAR:[],n=list().length,rc=(R[4]||{}).c||'#ff5f86',nm=R[4]?R[4].n:'Mythique',near=g.left<=5;
+    /* retouches 08/11 : bouton « Tous les drops » explicite (avant : « Booster ⌄ ») et garantie en carte visuelle (avant : une ligne de texte) */
+    return '<div class="l4b"><button class="l4-sel l4-all glass" data-l4="panel" aria-haspopup="dialog" aria-label="Voir tous les drops ('+n+'), drop choisi : '+e(c.n)+'"><span class="l4-tx"><small>Drop choisi</small><b>'+e(c.n)+'</b></span><span class="l4-cta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>Tous les drops<em>'+n+'</em></span></button>'+
+      '<button class="l4-g l4-gx'+(near?' near':'')+'" data-l4="odds" style="--p:'+g.p.toFixed(3)+';--rc:'+rc+'" aria-label="'+nm+' garanti dans '+g.left+' drop'+(g.left>1?'s':'')+', voir les chances"><span class="l4-ring" aria-hidden="true"><span class="l4-gem"></span></span><span class="l4-gt"><small>Garanti</small><b>'+nm+'</b></span><span class="l4-gn"><b>'+g.left+'</b><small>drop'+(g.left>1?'s':'')+'</small></span><span class="l4-gk" aria-hidden="true">Chances ›</span></button></div>';
   }
   function panel(){
     if(typeof closeMenu==='function')closeMenu();menuPage='l4';
     var L=list(),grp=function(g,t){var x=L.filter(function(b){return b.g===g});return x.length?'<h3 class="l4-h">'+t+'</h3><div class="l4-gr'+(g!=='une'?' l4-ch':'')+'">'+x.map(function(b){return '<button class="l4-o'+(window.SB?' l4-pk':'')+(b.k===cur().k?' on':'')+'" data-l4b="'+e(b.k)+'" aria-pressed="'+(b.k===cur().k)+'">'+(window.SB?SB.dpk(b.k,{u:b.img}):g==='une'?'<span class="l4-im"'+(b.img?' style="background-image:url(&quot;'+e(b.img)+'&quot;)"':'')+'></span>':'')+'<span><b>'+e(b.n)+'</b><small>'+e(b.s)+'</small></span></button>'}).join('')+'</div>':''};
-    sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass l4-sh" role="dialog" aria-label="Choisir un booster"><div class="grab"></div><div class="shh"><h2>Choisir un booster</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div>'+
+    sh.innerHTML='<div class="scrim" data-act="mclose"></div><div class="sheet glass l4-sh" role="dialog" aria-label="Choisir un drop"><div class="grab"></div><div class="shh"><h2>Choisir un drop</h2><button class="gbtn sq" data-act="mclose" aria-label="Fermer">'+ICON.x+'</button></div>'+
       '<p class="cap" style="text-align:left">Même prix, mêmes chances de rareté. Le booster choisit seulement d’où viennent les sons.</p>'+grp('une','À la une')+grp('st','Styles')+grp('era','Époques')+'</div>';
   }
   function odds(){

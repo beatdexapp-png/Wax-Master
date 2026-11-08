@@ -1,16 +1,34 @@
-// WaxDrop : envoi des notifications web push (lot 3, 07/11/2026). NON DÉPLOYÉE.
-// Appelée toutes les 15 min par pg_cron (voir la fin de A-COLLER-SUPABASE-lot3.sql), avec l'en-tête x-cron = PUSH_CRON_SECRET.
-// Secrets à créer dans Supabase (Edge Functions > Secrets) : VAPID_PUBLIC, VAPID_PRIVATE, VAPID_SUBJECT, PUSH_CRON_SECRET.
-// Déploiement : supabase functions deploy push --no-verify-jwt
+// WaxDrop : envoi des notifications web push (lot 3, mise en service le 08/11/2026 avec les retouches).
+// Appelée toutes les 10 min par pg_cron (tâche « waxdrop-push », migration 20261108230000_notifications.sql),
+// avec l'en-tête x-cron égal à push_cfg.cron (secret créé au hasard dans la base, jamais affiché).
+// Clés VAPID : créées ici au premier passage et rangées dans push_cfg (vapid_pub, vapid_priv). Le jeu lit la clé publique avec push_key().
+// Déployée sans vérification JWT (verify_jwt false) : la protection est l'en-tête x-cron.
 import webpush from "npm:web-push@3.6.7";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const env = (k: string) => Deno.env.get(k) ?? "";
-webpush.setVapidDetails(env("VAPID_SUBJECT"), env("VAPID_PUBLIC"), env("VAPID_PRIVATE"));
 const sb = createClient(env("SUPABASE_URL"), env("SUPABASE_SERVICE_ROLE_KEY"), { auth: { persistSession: false } });
 
+async function cfg(k: string): Promise<string> {
+  const { data } = await sb.from("push_cfg").select("v").eq("k", k).maybeSingle();
+  return (data?.v as string) ?? "";
+}
+async function keys() {
+  let pub = await cfg("vapid_pub"), priv = await cfg("vapid_priv");
+  if (!pub || !priv) {
+    const k = webpush.generateVAPIDKeys();
+    await sb.from("push_cfg").upsert([{ k: "vapid_pub", v: k.publicKey }, { k: "vapid_priv", v: k.privateKey }], { onConflict: "k", ignoreDuplicates: true });
+    pub = await cfg("vapid_pub"); priv = await cfg("vapid_priv");
+  }
+  return { pub, priv };
+}
+
 Deno.serve(async (req) => {
-  if (!env("PUSH_CRON_SECRET") || req.headers.get("x-cron") !== env("PUSH_CRON_SECRET")) return new Response("non", { status: 401 });
+  const sec = await cfg("cron");
+  if (!sec || req.headers.get("x-cron") !== sec) return new Response("non", { status: 401 });
+  const { pub, priv } = await keys();
+  if (!pub || !priv) return new Response("clés absentes", { status: 500 });
+  webpush.setVapidDetails("mailto:atlasandcogroup@gmail.com", pub, priv);
   const { data, error } = await sb.rpc("push_due");
   if (error) return new Response(error.message, { status: 500 });
   let ok = 0, gone = 0, ko = 0;
@@ -21,7 +39,7 @@ Deno.serve(async (req) => {
       ok++;
     } catch (e) {
       const code = (e as { statusCode?: number }).statusCode;
-      if (code === 404 || code === 410) { await sb.from("push_subs").delete().eq("endpoint", r.endpoint); gone++; } else ko++;
+      if (code === 404 || code === 410 || code === 403) { await sb.from("push_subs").delete().eq("endpoint", r.endpoint); gone++; } else ko++;
     }
   }
   return Response.json({ ok, gone, ko });

@@ -1,5 +1,5 @@
 -- Likes sur les sons (demande de @felix.s6trn) : un like par joueur et par son, retirable, compteur visible.
--- NE PAS APPLIQUER sans le oui d'Alexi.
+-- NON APPLIQUÉE : le 08/11/2026 la confirmation de l'outil Supabase s'est annulée seule (rien exécuté). À appliquer par Jarvis ou dans le SQL Editor.
 -- Écriture uniquement par la fonction song_like_toggle (aucune policy INSERT/UPDATE/DELETE).
 -- Lecture directe : chaque joueur ne voit que ses propres likes. Les compteurs passent par song_likes_get,
 -- qui ne renvoie que des nombres (jamais qui a liké).

@@ -19,11 +19,27 @@
     return '<div class="l6cof glass">'+(window.SB?SB.dpk('or',{cls:'l6cofp'}):'')+'<div class="l6cofb"><span class="lbl">Coffret WaxDrop</span><b>'+n(C.coins)+' wax coins<br>+ '+C.gold+' Drops Or + '+C.drops+' drops</b><small>Vaut '+n(L6.cofValue())+' wax coins au prix du jeu</small></div><button class="pbtn" data-act="buy" data-k="coffret">'+C.p+'</button></div>'};
 
   /* ---------- formules Pro (page Pro, joueur non abonné) ---------- */
+  /* retouches 08/11 : les deux formules sont des liens directs vers Stripe (un seul toucher jusqu'au paiement) */
+  function lk(k,cls,inner){var u=window.ECO&&ECO.payUrl&&ECO.payUrl(k);return u?'<a class="'+cls+'" href="'+u.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" rel="noopener" data-paylink="'+k+'">'+inner+'</a>':'<button class="'+cls+'" data-act="buy" data-k="'+k+'">'+inner+'</button>'}
   L6.plans=function(){var an=L6.on('proan');
-    if(!an)return '<button class="pbtn pscta" data-act="buy" data-k="pass">S’abonner · '+L6.MONTH+' / mois</button>';
+    if(!an)return lk('pass','pbtn pscta','S’abonner · '+L6.MONTH+' / mois');
     return '<div class="l6pl" role="group" aria-label="Formules WaxDrop Pro">'+
-      '<button class="l6p" data-act="buy" data-k="pass"><b>Au mois</b><span><em>'+L6.MONTH+'</em> / mois</span><small>Sans engagement</small></button>'+
-      '<button class="l6p on" data-act="buy" data-k="proan"><i class="l6tag">4 mois offerts</i><b>À l’année</b><span><em>'+L6.YEAR+'</em> / an</span><small>Soit 3,33 € par mois</small></button></div>'};
+      lk('pass','l6p','<b>Au mois</b><span><em>'+L6.MONTH+'</em> / mois</span><small>Sans engagement</small>')+
+      lk('proan','l6p on','<i class="l6tag">4 mois offerts</i><b>À l’année</b><span><em>'+L6.YEAR+'</em> / an</span><small>Soit 3,33 € par mois</small>')+'</div>'};
+  /* fenêtre courte ouverte par tous les boutons « Pro » (menu, barre latérale, Disquaire, avantage réservé) : les deux formules, puis Stripe */
+  L6.quick=function(why){if(!(window.CL&&CL.user)||hasPass()||typeof popHTML!=='function'||!window.dd)return false;
+    if(typeof closeMenu==='function')closeMenu();
+    dd.innerHTML=popHTML('<div class="card2 glass l6q" role="dialog" aria-label="WaxDrop Pro"><span class="lbl">WaxDrop Pro</span><h2>'+(why?e(why)+' : réservé à Pro':'Plus de drops, la Bourse en détail')+'</h2>'+L6.plans()+
+      '<p class="cap">Paiement sécurisé par Stripe. Sans engagement, résiliable à tout moment.</p><div class="row"><button class="gbtn" data-act="ddclose">Plus tard</button><button class="gbtn" data-act="l6more">Voir les avantages</button></div></div>');
+    return true};
+  function e(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  document.addEventListener('click',function(ev){
+    var t=ev.target.closest('[data-act="gopass"],[data-act="needpass"],[data-act="sbgo"][data-v="pass"],[data-act="shs"][data-v="pass"],[data-act="l6more"]');if(!t)return;
+    if(t.dataset.act==='l6more'){ev.stopPropagation();if(typeof closeDD==='function')closeDD();if(typeof closeStack==='function')closeStack();shopSub='pass';setTab('shop');return}
+    /* déjà sur la page Pro : on laisse faire */
+    if(t.dataset.act==='shs'&&typeof shopSub!=='undefined'&&shopSub==='pass')return;
+    if(L6.quick(t.dataset.act==='needpass'?(t.dataset.why||''):'')){ev.stopPropagation();ev.preventDefault()}
+  },true);
 
   /* ---------- comparatif Gratuit / Pro ---------- */
   var ROWS=[['Drop gratuit','Toutes les 10 min','Toutes les 5 min'],['Drop offert chaque jour','–','1 par jour'],['Drop Or chaque lundi','–','1, Légendaire garanti'],

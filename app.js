@@ -297,7 +297,7 @@ function vProfil(){
   const t=tierNow();const nm=(window.CL&&CL.pseudo)||'Ton profil';const nf=window.SOC?SOC.friends().length:0,pend=window.SOC?SOC.pending():0;const x=(S.xp||0)%TIER_XP;
   return `<div class="view v-prof vs"><div class="phero"><button class="avb" data-act="pedit" aria-label="Modifier le profil">${avHTML('tbig')}<i class="ped">${ICON.pen}</i></button><div class="pn"><b>${esc(nm)}</b><span>Niveau ${t} · ${score().toLocaleString('fr-FR')} pts</span><span class="plv" style="--p:${t>=TIERS?100:x}%"><i></i></span></div><button class="gbtn sq ghost" data-act="menu" aria-label="Réglages">${ICON.gear}</button></div>
    ${window.ECO?ECO.topHTML():''}
-   <div class="stys"><span class="styk">Tes styles <small>×2,5 de chances</small></span><div class="styl">${STYLES.slice(1).filter(([g])=>STY_SRV.includes(g)).map(([g,n])=>`<button class="chip" data-act="sty" data-v="${g}" aria-pressed="${(S.styles||[]).includes(g)}">${n}</button>`).join('')}</div></div>
+   
    <div class="pq"><button class="pqa pq-fr" data-act="gofriends"><span class="pqi">${ICON.users}</span><b>Amis</b><small>${nf?nf+' ami'+(nf>1?'s':''):'Aucun'}${pend?' · '+pend+' nouveau'+(pend>1?'x':''):''}</small></button><button class="pqa pq-inv" data-act="invite"><span class="pqi">${ICON.gift}</span><b>Parrainer</b><small>+2 drops chacun</small></button><button class="pqa pq-top" data-act="prs" data-v="${profSub==='top'?'vitrine':'top'}" aria-pressed="${profSub==='top'}"><span class="pqi">${profSub==='top'?ICON.grid:ICON.star}</span><b>${profSub==='top'?'Vitrines':'Classement'}</b><small>${profSub==='top'?'Retour':'Top joueurs'}</small></button></div>
    <button class="statb glass" data-act="mystats"><span class="pqi">${ICON.gem}</span><span><b>Mes stats</b><small>Drops ouverts, chance, meilleur tirage…</small></span><i>›</i></button>${window.LABEL&&LABEL.sub&&LABEL.sub()?`
    <button class="statb glass lblb" data-act="label"><span class="pqi" style="background:#7c5cff;color:#fff">${ICON.users}</span><span><b>Mon label</b><small>${esc(LABEL.sub())}</small></span><i>›</i></button>`:''}
@@ -388,7 +388,7 @@ function render(){
 function layout(){
   const h=$('pgr');
   if(tab==='collection'){if($('bub'))initBub();if(h)pager(h,colList(),artistRow,{cellH:66,minW:320,gap:8,empty:'Ouvre un drop pour commencer'});const hs=$('pgs');if(hs)pager(hs,sonsList(),tileBtn,{ratio:4/3,minT:100,empty:sonsF==='dup'?'Aucun double':'Aucun son'});const ha=$('pga');if(ha)pager(ha,albList(),albBig,{minT:150,minCols:2,extra:58,empty:albF==='done'?'Aucun album complet pour l’instant':albF==='todo'?'Tous tes albums sont complets':'Ouvre un drop pour commencer'})}
-  if(tab==='shop'&&h){if(shopSub==='encheres')mkLayout();else if(shopSub==='echanges'){if(window.SOC)SOC.layout(h)}else if(shopSub==='jetons')pager(h,shopItems(),x=>x,{cellH:jetSub==='packs'?190:188,cols:2,gap:10})}
+  if(tab==='shop'&&h){if(shopSub==='encheres')mkLayout();else if(shopSub==='echanges'){if(window.SOC)SOC.layout(h)}else if(shopSub==='jetons'){/* retouches 08/11 : toute la page défile (bannière comprise), les offres ne sont plus dans une petite boîte */const vv=h.closest('.view');if(vv)vv.classList.add('vs','vjet');pager(h,shopItems(),x=>x,{cellH:jetSub==='packs'?190:188,cols:2,gap:10,flow:true})}}
   
   if(tab==='shop'&&shopSub==='saison'&&seaSub!=='missions'){const tk=$('trk'),v=tk&&tk.closest('.view');const t=tierNow();if(v&&!v._same&&t>2&&t<TIERS){const c=tk.children[t-2];if(c)v.scrollTop=Math.max(0,c.offsetTop-v.clientHeight*.35)}}
   if(stack.length)renderStack(true);

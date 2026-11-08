@@ -1,5 +1,5 @@
 -- Profil public d'un joueur (demande de @felix.s6trn) : ouvrir le profil des autres et voir leurs vitrines.
--- NE PAS APPLIQUER sans le oui d'Alexi.
+-- Appliquée le 08/11/2026 (retouches, demande d'Alexi). Niveau lu dans wallets.sxp (XP du serveur), comme dans le jeu.
 -- La table profiles garde sa RLS stricte (chaque joueur ne lit que sa ligne) : rien n'est ouvert en lecture directe.
 -- La lecture publique passe uniquement par cette fonction, qui ne renvoie qu'une liste fermée de champs :
 --   pseudo, photo, score, niveau, date d'arrivée (déjà visible dans les stats), vitrines, nombre de sons et de divins,
@@ -29,7 +29,7 @@ begin
   if v_uid is null then raise exception 'Connexion requise'; end if;
   if p_pseudo is null or length(trim(p_pseudo)) < 1 or length(p_pseudo) > 40 then return null; end if;
 
-  select p.id, p.pseudo, p.avatar_url, p.score, p.created_at, p.state, coalesce(w.owned, '{}'::jsonb) owned
+  select p.id, p.pseudo, p.avatar_url, p.score, p.created_at, p.state, coalesce(w.owned, '{}'::jsonb) owned, w.sxp
     into r
     from public.profiles p left join public.wallets w on w.uid = p.id
    where lower(p.pseudo) = lower(trim(p_pseudo)) and p.pseudo is not null;
@@ -72,7 +72,7 @@ begin
     'pseudo', r.pseudo,
     'avatar', r.avatar_url,
     'score', coalesce(r.score, 0),
-    'level', least(30, greatest(0, coalesce(case when (r.state->>'xp') ~ '^[0-9]+$' then (r.state->>'xp')::bigint end, 0) / 100)),
+    'level', least(30, greatest(0, coalesce(r.sxp::bigint, case when (r.state->>'xp') ~ '^[0-9]+$' then (r.state->>'xp')::bigint end, 0) / 100)),
     'since', r.created_at,
     'sons', v_sons,
     'divins', v_div,

@@ -72,7 +72,10 @@
   };
 
   /* ---------- notifications (web push) ---------- */
-  var VAPID='BIkpldyMJ6rrkiAlavhA9yP4vrbSUonzPFqxZY8dXfrvJerI_RwH4t6SBkU0HQeTWfGVbC3zx6f0inFeOoClUCI';
+  /* retouches 08/11 : la clé publique vient du serveur (push_key), les clés sont créées par la fonction push ; un ancien abonnement est refait sans redemander */
+  var VAPID=null;
+  async function key(){if(VAPID)return VAPID;var r=await CL.sb.rpc('push_key');if(r.error||!r.data)throw new Error('cle');VAPID=r.data;return VAPID}
+  function same(s,k){try{var a=new Uint8Array(s.options.applicationServerKey),b=u8(k);if(a.length!==b.length)return false;for(var i=0;i<a.length;i++)if(a[i]!==b[i])return false;return true}catch(x){return true}}
   var ua=navigator.userAgent,isIOS=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   var standalone=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
   function pushOk(){return 'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window}
@@ -81,19 +84,20 @@
   var NOTIF=window.NOTIF={busy:false};
   NOTIF.row=function(){
     if(!on())return '';var sub,ctl;
-    if(isIOS&&!standalone){sub='Sur iPhone, elles marchent seulement quand WaxDrop est installé sur l’écran d’accueil.';ctl='<button class="gbtn" style="height:38px" data-ntf="inst">Installer</button>'}
+    if(isIOS&&!standalone){sub='Sur iPhone : dans Safari, Partager puis « Sur l’écran d’accueil ». Ouvre ensuite WaxDrop depuis son icône et active-les ici (iOS 16.4 ou plus).';ctl='<button class="gbtn" style="height:38px" data-ntf="inst">Installer</button>'}
     else if(!pushOk()){sub='Ce navigateur ne les reçoit pas. Les pastilles dans le jeu restent actives.';ctl=''}
     else if(Notification.permission==='denied'){sub='Bloquées dans les réglages du navigateur. Les pastilles dans le jeu restent actives.';ctl=''}
-    else{var v=lsg('wd-push')==='1';sub='Réserve pleine, ami qui te propose un échange, série en danger. Jamais de pub.';ctl='<button class="sw" role="switch" aria-checked="'+v+'" data-ntf="sw" aria-label="Notifications"'+(NOTIF.busy?' disabled':'')+'></button>'}
+    else{var v=lsg('wd-push')==='1';sub='Drops prêts, baisse de prix d’un son de ta liste de souhaits, nouvel événement. 3 par jour au plus, jamais la nuit, jamais de pub.';ctl='<button class="sw" role="switch" aria-checked="'+v+'" data-ntf="sw" aria-label="Notifications"'+(NOTIF.busy?' disabled':'')+'></button>'}
     return '<div class="set"><b>Notifications<small>'+sub+'</small></b>'+ctl+'</div>';
   };
-  async function pushOn(){
-    var p=await Notification.requestPermission();if(p!=='granted'){toast('Notifications refusées');return}
-    var reg=await navigator.serviceWorker.ready;var s=await reg.pushManager.getSubscription();
-    if(!s)s=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8(VAPID)});
+  async function pushOn(quiet){
+    var p=await Notification.requestPermission();if(p!=='granted'){if(!quiet)toast('Notifications refusées');return}
+    var k=await key();var reg=await navigator.serviceWorker.ready;var s=await reg.pushManager.getSubscription();
+    if(s&&!same(s,k)){try{await s.unsubscribe()}catch(x){}s=null}
+    if(!s)s=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8(k)});
     var j=s.toJSON();var r=await CL.sb.rpc('push_save',{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth});
     if(r.error){try{await s.unsubscribe()}catch(x){}toast(niceErr(r.error.message));return}
-    lss('wd-push','1');toast('Notifications activées');
+    lss('wd-push','1');if(!quiet)toast('Notifications activées');
   }
   async function pushOff(){
     try{var reg=await navigator.serviceWorker.ready;var s=await reg.pushManager.getSubscription();if(s){await CL.sb.rpc('push_del',{p_endpoint:s.endpoint});await s.unsubscribe()}}catch(x){}
@@ -101,6 +105,11 @@
   }
   function instWin(){var b=document.getElementById('inst');if(!b)return;var h=document.getElementById('ith'),t=document.getElementById('itx'),i=document.getElementById('iios');
     if(h)h.textContent='Installe WaxDrop pour les notifications';if(t)t.textContent='Sur iPhone, Apple n’envoie les notifications qu’aux sites installés sur l’écran d’accueil (iOS 16.4 ou plus récent). Trois gestes dans Safari :';if(i)i.hidden=false;b.hidden=false}
+
+  /* joueur déjà abonné (ancienne clé du lot 3) : on refait l'abonnement en silence, la permission est déjà donnée */
+  setTimeout(function(){if(!on()||lsg('wd-push')!=='1'||!pushOk()||Notification.permission!=='granted')return;
+    key().then(function(k){return navigator.serviceWorker.ready.then(function(reg){return reg.pushManager.getSubscription().then(function(s){
+      if(s&&same(s,k))return;return pushOn(true)})})}).catch(function(){})},8000);
 
   /* ---------- clics ---------- */
   document.addEventListener('click',function(ev){

@@ -59,7 +59,8 @@
 /* Écran de chargement (08/11/2026). Le disque tourne plus vite à mesure que le vrai chargement avance :
    catalogue (octets lus, catalog.js), scripts du jeu (un par un, catalog.js), puis images de l'écran d'arrivée (ici).
    Aucun chiffre affiché. « Passer » au bout de 4 s. Mouvement réduit : pas de rotation, seulement l'anneau.
-   Une fois entré, le reste des images du jeu se charge en arrière-plan (mis en cache par sw.js), avec des limites. */
+   Avant d'entrer : images de l'écran d'arrivée, puis le maximum des autres images en 2,2 s au plus (retouches 08/11) ;
+   le reste se charge en arrière-plan (mis en cache par sw.js), avec des limites. */
 (function(){
   var el=document.getElementById('wdl');if(!el)return;
   var v=el.querySelector('.wdl-v'),ring=el.querySelector('.wdl-p'),msg=document.getElementById('wdlm'),skip=document.getElementById('wdlx');
@@ -78,35 +79,51 @@
     requestAnimationFrame(tick)}
   requestAnimationFrame(tick);
   function check(){if(ended||T.cat.f<1||T.js.f<1||T.img.f<1)return;ended=true;setTimeout(leave,RM?0:Math.max(260,500-(Date.now()-t0)))}
-  function leave(){if(gone||el.classList.contains('out'))return;el.classList.add('out');setTimeout(function(){gone=true;if(el.parentNode)el.parentNode.removeChild(el);later()},RM?220:480)}
+  function leave(){if(gone||el.classList.contains('out'))return;W.t=Math.round(performance.now());el.classList.add('out');setTimeout(function(){gone=true;if(el.parentNode)el.parentNode.removeChild(el);later()},RM?220:480)}
   setTimeout(function(){if(!ended)skip.classList.add('on')},4000);
   skip.addEventListener('click',leave);
   /* filet de sécurité : jamais bloqué plus de 20 s */
   setTimeout(leave,20000);
   function slow(){var c=navigator.connection;return !!(c&&(c.saveData||/(^|-)2g$/.test(c.effectiveType||'')))}
-  /* images de l'écran d'arrivée : celles déjà dans la page, la pochette du booster choisi, les pochettes des boosters du jour */
+  /* images : 1) celles de l'écran d'arrivée (déjà dans la page, pochette du drop choisi, drops du jour), on les attend toujours ;
+     2) retouches 08/11 : le maximum du reste (pochettes de drops et illustrations du jeu, pochettes des meilleurs sons de la collection,
+     photos des artistes de la collection), attendu au plus 2,2 s de plus ; ce qui n'est pas fini continue en arrière-plan.
+     Rien de la partie 2 si l'appareil demande d'économiser les données ou est en 2G. */
+  var REQ={},HOLD=[];
+  function drops(){var D=['sp-tout','sp-or','sp-diamant','sp-ultra','st-rap','st-pop','st-rock','st-electro','st-afro','st-latino','st-kpop','st-jazz','st-chanson','st-rnb','st-soul','st-reggae','st-rai','era-1960','era-1990','era-2000','era-2010','era-2020'],
+      I=['il-jour','il-missions','il-succes','il-amis','il-boutique','il-coins','il-classement','il-pro','il-bourse','il-vide','il-vitrine'],big=innerWidth>=1024,Q=[];
+    D.forEach(function(k){Q.push('/img/drops/'+k+'-480.webp','/img/drops/'+k+'-240.webp')});
+    I.forEach(function(k){Q.push('/img/il/'+k+(big?'-960':'-480')+'.webp')});
+    if(big)['il-boutique','il-coins','il-missions','il-amis'].forEach(function(k){Q.push('/img/il/'+k+'-w.webp')});
+    return Q}
+  function mine(n){var Q=[];try{if(window.CARDS&&window.S&&S.owned)CARDS.filter(function(c){return c.img&&S.owned[c.id]>0}).sort(function(a,b){return b.r-a.r||(b.s||0)-(a.s||0)}).slice(0,n).forEach(function(c){Q.push(c.img)})}catch(e){}
+    try{if(typeof ownedArtists==='function')ownedArtists().slice(0,30).forEach(function(A){if(A.img)Q.push(A.img)})}catch(e){}return Q}
+  function grab(u,cb){if(!u||REQ[u]){if(cb)cb();return false}REQ[u]=1;var i=new Image();i.decoding='async';i.onload=i.onerror=function(){if(cb)cb()};i.src=u;HOLD.push(i);return true}
   function imgs(){if(imgOn)return;imgOn=true;W.say('Pochettes et cartes');
-    setTimeout(function(){var L={},n=0,ok=0;
+    setTimeout(function(){var L={},n=0,ok=0,ok1=0,t1=Date.now();
       function add(u){if(u&&!L[u]&&n<40){L[u]=1;n++}}
       /* écran visible : jeu (#main) ou porte d'entrée des visiteurs (#gate), images et fonds d'images */
       try{document.querySelectorAll('#main img,#gate img').forEach(function(i){if(i.getBoundingClientRect().top<innerHeight*1.5)add(i.currentSrc||i.src)})}catch(e){}
       try{document.querySelectorAll('#main [style*="background-image"],#gate [style*="background-image"]').forEach(function(x){var m=/url\(["']?([^"')]+)/.exec(x.style.backgroundImage);if(m)add(m[1])})}catch(e){}
       try{if(window.SB&&window.L4&&L4.cur){var c=L4.cur();add(c.img||SB.src(SB.key(c.k),1));}}catch(e){}
       try{if(window.L4&&L4.list)L4.list().forEach(function(b){add(b.img)})}catch(e){}
-      var U=Object.keys(L);if(!U.length){W.set('img',1);return}
-      var stop=setTimeout(function(){W.set('img',1)},3500);
-      U.forEach(function(u){var i=new Image();i.decoding='async';i.onload=i.onerror=function(){ok++;W.set('img',ok/U.length);if(ok>=U.length)clearTimeout(stop)};i.src=u})},60)}
-  /* arrière-plan, une fois dans le jeu : toutes les pochettes de drops et illustrations (≈ 1,5 Mo, mises en cache par sw.js),
-     puis les pochettes des 24 meilleurs sons de la collection. Rien si l'appareil demande d'économiser les données. */
+      var U=Object.keys(L),player=!document.getElementById('gate')||document.getElementById('gate').hidden,U2=[];
+      if(player&&!slow()){var seen={};U.forEach(function(u){seen[u]=1});drops().concat(mine(80)).forEach(function(u){if(!seen[u]){seen[u]=1;U2.push(u)}})}
+      var all=U.length+U2.length;if(!all){W.set('img',1);return}
+      function fin(){if(ok1>=U.length&&(ok>=all||Date.now()-t1>2200))W.set('img',1)}
+      var stop=setTimeout(function(){W.set('img',1)},4200);setTimeout(fin,2250);
+      U.forEach(function(u){if(!grab(u,function(){ok1++;ok++;W.set('img',Math.min(.99,ok/all));fin()})){ok1++;ok++}});
+      /* partie 2 : 8 à la fois */
+      var k=0;function next(){if(k>=U2.length)return;var u=U2[k++];if(!grab(u,function(){ok++;W.set('img',Math.min(.99,ok/all));fin();next()})){ok++;next()}}
+      for(var j=0;j<8;j++)next();fin()},60)}
+  /* arrière-plan, une fois dans le jeu : ce qui reste (les deux tailles des illustrations, plus de pochettes de la collection),
+     une image à la fois, mises en cache par sw.js pour /img/. Rien si l'appareil demande d'économiser les données. */
   function later(){if(slow())return;setTimeout(function(){
-    var D=['sp-tout','sp-or','sp-diamant','sp-ultra','st-rap','st-pop','st-rock','st-electro','st-afro','st-latino','st-kpop','st-jazz','st-chanson','st-rnb','st-soul','st-reggae','st-rai','era-1960','era-1990','era-2000','era-2010','era-2020'],
-      I=['il-jour','il-missions','il-succes','il-amis','il-boutique','il-coins','il-classement','il-pro','il-bourse','il-vide','il-vitrine'],big=innerWidth>=1024,Q=[];
-    D.forEach(function(k){Q.push('/img/drops/'+k+'-240.webp','/img/drops/'+k+'-480.webp')});
+    var I=['il-jour','il-missions','il-succes','il-amis','il-boutique','il-coins','il-classement','il-pro','il-bourse','il-vide','il-vitrine'],Q=drops();
     I.forEach(function(k){Q.push('/img/il/'+k+'-480.webp','/img/il/'+k+'-960.webp')});
-    if(big)['il-boutique','il-coins','il-missions','il-amis'].forEach(function(k){Q.push('/img/il/'+k+'-w.webp')});
-    try{if(window.CARDS&&window.S&&S.owned)CARDS.filter(function(c){return c.img&&S.owned[c.id]}).sort(function(a,b){return b.r-a.r}).slice(0,24).forEach(function(c){Q.push(c.img)})}catch(e){}
-    var k=0;(function next(){if(k>=Q.length||slow())return;var i=new Image();i.onload=i.onerror=function(){setTimeout(next,40)};i.src=Q[k++]})();
-  },1500)}
+    Q=Q.concat(mine(160));
+    var k=0;(function next(){if(k>=Q.length||slow())return;var u=Q[k++];if(!grab(u,function(){setTimeout(next,30)}))next()})();
+  },1200)}
 })();
 </script>
 

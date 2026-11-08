@@ -2935,3 +2935,116 @@ html.weak .dpk,body.lite .dpk{transform:none!important}
 /* visiteur sans compte : l'écran suivant est la porte d'entrée sombre, on prend le même fond */
 html.wdl-dk #wdl{background:radial-gradient(70% 60% at 18% 8%,rgba(255,194,61,.16),transparent 60%),radial-gradient(60% 55% at 95% 90%,rgba(90,110,190,.28),transparent 65%),radial-gradient(50% 50% at 60% 40%,rgba(150,80,120,.16),transparent 70%),#0b0c10;color:#f1f2f6}
 html.wdl-dk #wdl .wdl-t{stroke:rgba(255,255,255,.1)}html.wdl-dk #wdl small{color:#979dab}html.wdl-dk #wdl button{background:rgba(255,255,255,.1);color:#f1f2f6}
+
+/* ================= RETOUCHES 08/11/2026 (lot de 14, sw v72) ================= */
+/* 3. thèmes : la rangée était écrasée à 40 px par la colonne flex du menu ; grille qui montre tous les thèmes */
+.sheet .skrow{flex:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:12px 8px;overflow:visible;margin:0;padding:6px 2px 4px}
+.skin2{width:auto;min-width:0}
+.skin2 .pv{flex:none;width:56px;height:56px}
+/* 11. Bourse : les têtes de l'événement étaient prises par « .bxev span » (colonne) ; on les remet de gauche à droite, en plus compact */
+.bxev .evav{flex:none;display:inline-flex;flex-direction:row;align-items:center;min-width:0}
+.bxev .evav i{width:26px;height:26px;margin-left:-8px}.bxev .evav i:first-child{margin-left:0}
+.bxev .evav i:nth-child(n+5){display:none}
+.bxev{padding:9px 14px;min-height:0}
+
+/* 2. Ouvrir allégé : petite flamme de série + missions à gauche (à côté de l'événement), classement à droite */
+.v-open .otop{display:flex;flex-wrap:nowrap;justify-content:space-between;align-items:center;gap:6px;width:100%;max-width:560px;margin:0 auto}
+.v-open .otop .hml,.v-open .otop .hmr{display:flex;gap:6px;flex:none}
+.v-open .otop>.evp{flex:0 1 auto;min-width:0;max-width:none;height:44px;flex-wrap:nowrap;padding:0 12px 0 8px;gap:6px;margin:0 auto}
+.v-open .otop>.evp .evk{display:none}
+.v-open .otop>.evp .evav i:nth-child(n+3){display:none}
+.v-open .otop>.evp b{min-width:0;font-size:13px}
+.v-open .otop>.evp span[data-until]{font-size:11.5px}
+.hm{display:inline-flex;align-items:center;gap:5px;height:44px;min-width:44px;padding:0 11px 0 9px;border-radius:999px;border:1px solid var(--gb);background:linear-gradient(180deg,var(--gl),var(--gl2));-webkit-backdrop-filter:blur(20px) saturate(170%);backdrop-filter:blur(20px) saturate(170%);box-shadow:inset 0 1px 0 var(--hl),0 6px 16px -10px rgba(0,0,0,.35);color:var(--fg);cursor:pointer;transition:transform .45s var(--spring)}
+.hm:active{transform:scale(.94)}
+.hm>svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hm b{font:800 15px var(--disp);font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:nowrap}
+.hm-stk .hm-f{width:20px;height:20px;stroke:none;overflow:visible}
+.hm-f .f1{fill:#ff7a3d;transform-origin:50% 92%;animation:hmfl 2.4s ease-in-out infinite}
+.hm-f .f2{fill:#ffd36b;transform-origin:50% 95%;animation:hmfl 1.7s ease-in-out infinite reverse}
+.hm-stk.off .hm-f .f1{fill:var(--fg2);opacity:.45;animation:none}.hm-stk.off .hm-f .f2{fill:var(--fg2);opacity:.3;animation:none}
+.hm-stk.hot .hm-f{filter:drop-shadow(0 0 5px rgba(255,138,61,.75))}
+.hm-stk.warn{box-shadow:inset 0 0 0 1.5px #ff7a3d,0 6px 16px -10px rgba(0,0,0,.35)}
+.hm.hot{position:relative}.hm.hot::after{content:"";position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:#ff4f72;box-shadow:0 0 0 2px var(--bg)}
+@keyframes hmfl{0%,100%{transform:scale(1,1) skewX(0)}35%{transform:scale(.95,1.06) skewX(-3deg)}70%{transform:scale(1.03,.96) skewX(2deg)}}
+.v-open.hasmini .hub{display:none}
+
+/* 9. Pochette d'Ouvrir plus grande, lumière douce et léger mouvement tout seul */
+@media (max-width:1023px){.v-open .mbox .maxi{width:min(86cqw,90cqh,470px)}}
+@media (min-width:1024px){.v-open .mbox .maxi{width:min(66cqw,86cqh,520px)}}
+.mbox .dpk-hero{animation:dpkfl 6.4s ease-in-out infinite}
+.mbox .dpk-hero::before{content:"";position:absolute;z-index:0;inset:-6% 2% -10% -6%;border-radius:50%;background:radial-gradient(closest-side,var(--dc),transparent);opacity:.32;filter:blur(26px);animation:dpkgl 6.4s ease-in-out infinite;pointer-events:none}
+.mbox .dpk-hero .dpk-v{animation:dpkvn 6.4s ease-in-out infinite}
+.mbox .dpk-hero .dpk-s::after{content:"";position:absolute;inset:0;z-index:3;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.3) 47%,rgba(255,255,255,.06) 55%,transparent 66%);transform:translateX(-130%);animation:dpksw 7s cubic-bezier(.45,0,.2,1) 1.2s infinite;pointer-events:none}
+@keyframes dpkfl{0%,100%{translate:0 0;rotate:0deg}50%{translate:0 -7px;rotate:-1.2deg}}
+@keyframes dpkvn{0%,100%{translate:0 0}50%{translate:6% 0}}
+@keyframes dpkgl{0%,100%{opacity:.26;scale:1}50%{opacity:.42;scale:1.06}}
+@keyframes dpksw{0%{transform:translateX(-130%)}22%,100%{transform:translateX(130%)}}
+html.weak .mbox .dpk-hero,html.weak .mbox .dpk-hero .dpk-v,html.weak .mbox .dpk-hero::before,html.weak .mbox .dpk-hero .dpk-s::after,body.lite .mbox .dpk-hero,body.lite .mbox .dpk-hero .dpk-v,body.lite .mbox .dpk-hero::before,body.lite .mbox .dpk-hero .dpk-s::after{animation:none}
+@media (prefers-reduced-motion:reduce){.mbox .dpk-hero,.mbox .dpk-hero .dpk-v,.mbox .dpk-hero::before,.mbox .dpk-hero .dpk-s::after,.hm-f .f1,.hm-f .f2{animation:none}}
+/* zoom vers l'écran d'ouverture */
+#ozm{position:fixed;inset:0;z-index:59;pointer-events:none}
+#ozm .oz-bg{position:absolute;inset:0;background:radial-gradient(80% 60% at 50% 42%,#17181e,#06070a);opacity:0}
+#ozm .oz-s{border-radius:5px;overflow:hidden;box-shadow:0 30px 60px -20px rgba(0,0,0,.6)}
+#ozm .oz-v{position:absolute!important;inset:0!important;top:0!important;right:auto!important;width:100%!important;transform:none;translate:none!important;animation:none}
+.op.oz .slv{display:none}
+
+/* 14. « Tous les drops » : bouton évident (avant : « Booster ⌄ ») */
+.v-open .l4-sel.l4-all{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;max-width:400px;height:58px;margin:0 auto;padding:0 7px 0 16px;border-radius:20px;background:linear-gradient(180deg,var(--gl),var(--gl2));box-shadow:inset 0 1px 0 var(--hl),0 10px 24px -16px rgba(0,0,0,.4)}
+.v-open .l4-sel.l4-all .l4-tx{display:flex;flex-direction:column;align-items:flex-start;gap:1px;min-width:0}
+.v-open .l4-sel.l4-all .l4-tx small{font:700 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--fg2)}
+.v-open .l4-sel.l4-all .l4-tx b{font:800 17px/1.15 var(--disp);max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.l4-cta{flex:none;display:inline-flex;align-items:center;gap:7px;height:44px;padding:0 10px 0 13px;border-radius:15px;background:var(--fg);color:var(--bg);font:700 14px var(--disp);white-space:nowrap}
+.l4-cta svg{width:16px;height:16px;fill:currentColor}
+.l4-cta em{font:700 11.5px var(--mono);font-style:normal;padding:2px 7px;border-radius:99px;background:color-mix(in srgb,var(--bg) 22%,transparent)}
+
+/* 10. Garantie : carte visuelle (anneau qui se remplit, gemme de la rareté) au lieu d'une ligne de texte */
+.l4-g.l4-gx{display:grid;grid-template-columns:48px 1fr auto auto;grid-template-rows:auto;align-items:center;gap:0 12px;width:100%;max-width:400px;min-height:64px;padding:8px 14px 8px 10px;border-radius:20px;background:var(--soft);background:linear-gradient(100deg,color-mix(in srgb,var(--rc) 16%,transparent),transparent 62%),var(--soft);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--rc) 24%,transparent);color:var(--fg);text-align:left;overflow:hidden;position:relative}
+.l4-ring{position:relative;width:48px;height:48px;border-radius:50%;display:grid;place-items:center}
+.l4-ring::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(var(--rc) calc(var(--p)*360deg),rgba(128,128,128,.22) 0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4.5px));mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4.5px))}
+.l4-gem{width:17px;height:17px;border-radius:4px;transform:rotate(45deg);background:linear-gradient(135deg,#fff 0%,var(--rc) 55%,color-mix(in srgb,var(--rc) 60%,#000));box-shadow:0 0 14px var(--rc),inset 0 1px 1px rgba(255,255,255,.8);animation:l4gem 2.8s ease-in-out infinite}
+@keyframes l4gem{0%,100%{transform:rotate(45deg) scale(1)}50%{transform:rotate(45deg) scale(1.14)}}
+.l4-gt{display:flex;flex-direction:column;min-width:0;line-height:1.15}
+.l4-gt small{font:700 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--fg2)}
+.l4-gt b{font:800 18px var(--disp);letter-spacing:-.01em;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.l4-gn{display:flex;flex-direction:column;align-items:flex-end;line-height:1}
+.l4-gn b{font:800 24px var(--disp);font-variant-numeric:tabular-nums;color:var(--fg)}
+.l4-gn small{font:600 11px var(--body);color:var(--fg2);margin-top:2px}
+.l4-g.l4-gx .l4-gk{font:600 11.5px var(--mono);color:var(--fg2);white-space:nowrap}
+.l4-g.l4-gx::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.22) 50%,transparent 65%);transform:translateX(-120%);animation:dpksw 6s cubic-bezier(.45,0,.2,1) 2.4s infinite;pointer-events:none}
+.l4-g.l4-gx.near{box-shadow:inset 0 0 0 1.5px var(--rc),0 0 22px -6px var(--rc)}
+.l4-g.l4-gx.near .l4-gn b{color:var(--rc)}
+@media (max-width:370px){.l4-g.l4-gx .l4-gk{display:none}.l4-g.l4-gx{grid-template-columns:48px 1fr auto}}
+@media (prefers-reduced-motion:reduce){.l4-gem,.l4-g.l4-gx::after{animation:none}}
+body.lite .l4-gem,body.lite .l4-g.l4-gx::after,html.weak .l4-g.l4-gx::after{animation:none}
+@media (max-width:419px){.v-open .otop>.evp .evav{display:none}.v-open .otop>.evp{padding:0 12px}}
+.mbox .maxi:has(.dpk-hero){display:flex;align-items:center}
+
+/* 13. Image principale (chargement et écran « Installe WaxDrop ») : un Wax coin doré dessiné en code, à la place du vinyle noir et orange.
+   Tranche crénelée (on voit la pièce tourner), face gravée, reflet fixe par-dessus (la lumière reste quand la pièce tourne). */
+#wdl .wdl-v,#inst .ivn{border-radius:50%;background:radial-gradient(circle,transparent 90%,rgba(110,64,0,.3) 100%),repeating-conic-gradient(from 0deg,#cf9c33 0 1.1deg,#efc762 1.1deg 2.2deg);box-shadow:inset 0 0 0 1px rgba(255,236,170,.6),0 26px 50px -20px rgba(120,72,0,.55),0 8px 16px -8px rgba(0,0,0,.35)}
+#wdl .wdl-v::before,#inst .ivn::before{content:"";position:absolute;inset:5.5%;border-radius:50%;background:radial-gradient(circle,#fbe6a4 0 7%,rgba(150,96,10,.55) 7.6% 8.6%,transparent 9.2%),radial-gradient(circle,transparent 70%,rgba(255,244,205,.6) 70.8% 71.6%,rgba(140,88,8,.35) 72.2% 73%,transparent 73.6%),repeating-radial-gradient(circle,rgba(255,240,190,.16) 0 1.6%,rgba(120,72,0,.1) 1.8% 3.2%),linear-gradient(150deg,#ffe7a0 0%,#efbd4c 40%,#d49b2c 70%,#b07a1b 100%);box-shadow:inset 0 2px 2px rgba(255,248,214,.8),inset 0 -3px 7px rgba(110,64,0,.45),0 0 0 1px rgba(110,64,0,.3)}
+#wdl .wdl-v i{display:none}
+#wdl .wdl-s,#inst .ivn::after{border-radius:50%;background:conic-gradient(from 200deg,rgba(255,255,255,0),rgba(255,255,255,.34) 6%,rgba(255,255,255,0) 13%,rgba(255,255,255,0) 52%,rgba(255,255,255,.16) 58%,rgba(255,255,255,0) 65%),radial-gradient(circle at 30% 24%,rgba(255,255,255,.4),rgba(255,255,255,0) 36%)!important}
+#wdl .wdl-s{inset:9%}
+#wdl .wdl-w::before{content:"";position:absolute;inset:4%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,194,61,.45),transparent);filter:blur(22px);opacity:.75}
+#wdl .wdl-p{stroke:#e5a92c}
+#inst .ivn{position:relative;box-shadow:inset 0 0 0 1px rgba(255,236,170,.55),0 0 0 10px rgba(255,255,255,.04),0 24px 60px rgba(0,0,0,.6),0 0 90px rgba(255,194,61,.22)}
+#inst .ivn::after{content:"";position:absolute;inset:0}
+#inst .ivn{animation:none}
+@media (prefers-reduced-motion:no-preference){#inst .ivn{animation:ivnsp 9s linear infinite}#inst .ivn::after{animation:ivnsp 9s linear infinite reverse}}
+@keyframes ivnsp{to{transform:rotate(360deg)}}
+
+/* 4. Pro : liens directs vers Stripe, fenêtre courte avec les deux formules */
+a.l6p{text-decoration:none}
+a.pbtn.pscta{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.l6q{display:flex;flex-direction:column;gap:14px;width:min(420px,100%)}
+.l6q h2{font:800 22px/1.15 var(--disp);letter-spacing:-.02em;margin:0}
+.l6q .l6pl{margin-top:8px}
+.l6q .l6p{min-height:96px}
+.l6q .cap{margin:0}
+.l6q .row{display:flex;gap:8px;justify-content:space-between}.l6q .row .gbtn{flex:1}
+
+/* 5. Boutique (Drops, Wax coins) : la page entière défile, bannière comprise */
+.view.vjet .pgr{flex:none;min-height:0}
+.view.vjet .pgv{position:static;overflow:visible;padding:2px 0 8px;contain:none}

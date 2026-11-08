@@ -1,5 +1,5 @@
 /* WaxDrop : hub « Aujourd'hui » du joueur connecté (08/11/2026).
-   En haut de l'écran Ouvrir : une rangée de tuiles (réserve, série, missions, classement, Première soirée, tout voir).
+   En haut de l'écran Ouvrir (retouches 08/11) : petite flamme de série + missions à gauche, classement à droite (avant : une rangée de grosses tuiles).
    Page complète « Aujourd'hui » : Disquaire > Aujourd'hui sur téléphone (et la tuile « Tout voir »), entrée en tête de la barre latérale sur ordinateur.
    Avec la migration du lot 3 (S.l3) : vraie réserve, série et classement de la semaine du serveur.
    Sans elle : version simple, toujours vraie (drop gratuit, jours joués d'affilée sur cet appareil, classement général). Aucun bouton mort. */
@@ -52,6 +52,19 @@
     h+='<button class="hb-t hb-all" data-hub="jour"><span class="hb-i">'+IC.all+'</span><span class="hb-x"><b>Tout voir</b><em>Ta journée</em></span></button>';
     return '<nav class="hub" aria-label="Aujourd’hui">'+h+'</nav>';
   }
+
+  /* ---------- retouches 08/11 : Ouvrir allégé. Série = petite flamme + nombre de jours, missions en petit (en haut à gauche, à côté de l'événement), classement en petit en haut à droite ---------- */
+  var FLAME='<svg class="hm-f" viewBox="0 0 24 24" aria-hidden="true"><path class="f1" d="M12 2.5c1.2 3.6 5.6 5.7 5.6 10.6A5.6 5.6 0 0 1 6.4 13c0-2.3 1.1-4 2.3-5.1.3 1.8 1.3 2.9 2.5 3.4C10.6 8.2 11 5.1 12 2.5z"/><path class="f2" d="M12 11.2c.6 1.7 2.7 2.7 2.7 5a2.7 2.7 0 0 1-5.4 0c0-1.1.5-1.9 1.1-2.4.2.9.6 1.4 1.2 1.6-.3-1.6-.1-3 .4-4.2z"/></svg>';
+  function mini(){
+    var k=stk(),m=mis(),t=rank(),n=parseInt(k.v,10)||0;
+    var l='<button class="hm hm-stk'+(k.hot?' hot':'')+(k.warn?' warn':'')+(n?'':' off')+'" data-hub="stk" aria-label="'+e(k.t+' : '+n+' jour'+(n>1?'s':'')+'. '+k.s)+'">'+FLAME+'<b>'+n+'</b></button>'+
+      '<button class="hm hm-mis'+(m.hot?' hot':'')+'" data-hub="mis" aria-label="'+e('Missions '+m.v+'. '+m.s)+'">'+IC.mis+'<b>'+e(m.v)+'</b></button>';
+    var r='<button class="hm hm-top" data-hub="top" aria-label="'+e(t.t+' : '+t.v+'. '+t.s)+'">'+IC.top+'<b>'+e(t.v)+'</b></button>';
+    return {l:l,r:r};
+  }
+  function miniPut(v){var t=v.querySelector('.otop');if(!t)return;var o=mini(),L=t.querySelector('.hml'),R=t.querySelector('.hmr');
+    if(!L){L=document.createElement('div');L.className='hml';t.prepend(L)}if(!R){R=document.createElement('div');R.className='hmr';t.appendChild(R)}
+    if(L.innerHTML!==o.l)L.innerHTML=o.l;if(R.innerHTML!==o.r)R.innerHTML=o.r;v.classList.add('hashub','hasmini')}
 
   /* ---------- page complète ---------- */
   function hello(){var h=new Date().getHours();return (h<5||h>=18?'Bonsoir':'Bonjour')+(CL.pseudo?', '+CL.pseudo:'')}
@@ -108,11 +121,10 @@
   function inject(){
     noteDay();if(!on())return;sideEntry();
     var sb=document.querySelector('#sbx [data-v="jour"]');if(sb){var d=sb.querySelector('.dot');if(d)d.hidden=!(rsv().full||stk().hot||mis().hot)}
-    if(tab==='ouvrir'){var v=document.querySelector('#main .v-open');if(v&&!v.querySelector('.hub')){var t=v.querySelector('.otop'),w=document.createElement('div');w.innerHTML=rail();if(t)t.insertAdjacentElement('afterend',w.firstChild);else v.prepend(w.firstChild);v.classList.add('hashub')}}
+    if(tab==='ouvrir'){var v=document.querySelector('#main .v-open');if(v)miniPut(v)}
     if(tab==='shop'&&shopSub==='jour'){var ht=document.getElementById('hdt');if(ht)ht.textContent='Aujourd’hui'}
   }
   var r0=render;window.render=function(){var r=r0.apply(this,arguments);try{inject()}catch(x){}return r};
-  setInterval(function(){if(document.hidden||!on()||typeof tab==='undefined')return;var h=document.querySelector('#main .hub');if(!h||document.querySelector('#ov .ov'))return;
-    var w=document.createElement('div');w.innerHTML=rail();if(w.firstChild&&w.firstChild.innerHTML!==h.innerHTML)h.innerHTML=w.firstChild.innerHTML},15e3);
+  setInterval(function(){if(document.hidden||!on()||typeof tab==='undefined'||tab!=='ouvrir'||document.querySelector('#ov .ov'))return;var v=document.querySelector('#main .v-open');if(v)miniPut(v)},15e3);
   try{inject()}catch(x){}
 })();
