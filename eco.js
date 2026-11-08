@@ -73,15 +73,18 @@
     toast(k==='gold'?'Drop Or ajouté':k==='lot5'?'5 drops ajoutés':'+200 poussière');render();
   };
   /* paiements Stripe (liens de paiement, crédités par le serveur après confirmation de Stripe) */
-  var PAY={pass:'https://buy.stripe.com/3cIcN433ge1g02Ibqh5AQ05',c500:'https://buy.stripe.com/6oU9ASfQ2bT86r6bqh5AQ06',c1200:'https://buy.stripe.com/9B67sKdHU9L0cPu8e55AQ07',c3000:'https://buy.stripe.com/eVqbJ047k2iy16Mamd5AQ08',c7000:'https://buy.stripe.com/5kQ5kCdHUg9og1G7a15AQ09'};
+  var PAY={pass:'https://buy.stripe.com/3cIcN433ge1g02Ibqh5AQ05',c500:'https://buy.stripe.com/6oU9ASfQ2bT86r6bqh5AQ06',c1200:'https://buy.stripe.com/9B67sKdHU9L0cPu8e55AQ07',c3000:'https://buy.stripe.com/eVqbJ047k2iy16Mamd5AQ08',c7000:'https://buy.stripe.com/5kQ5kCdHUg9og1G7a15AQ09',
+    /* lot 6 : à remplir avec les vrais liens de paiement Stripe (voir CONTEXTE.md). Vide = offre cachée. */
+    proan:'',coffret:''};
+  ECO.canPay=function(k){return !!PAY[k]};
   window.buyFlow=function(k){
     if(!CL.user){toast('Connexion requise');return}
     if(!PAY[k]){toast('Bientôt disponible');return}
-    if(k==='pass'&&hasPass()){passSheet();return}
-    var item=k==='pass'?{n:'WaxDrop Pro',p:PASS_PRICE}:(function(){var s=SHOP.find(function(x){return x.k===k});return{n:s.n.toLocaleString('fr-FR')+' wax coins',p:s.p}})();
+    if((k==='pass'||k==='proan')&&hasPass()){passSheet();return}
+    var item=k==='pass'?{n:'WaxDrop Pro',p:PASS_PRICE}:k==='proan'?{n:'WaxDrop Pro · 1 an',p:'49,90 € / an'}:k==='coffret'?{n:'Coffret WaxDrop',p:'9,99 €'}:(function(){var s=SHOP.find(function(x){return x.k===k});return{n:s.n.toLocaleString('fr-FR')+' wax coins',p:s.p}})();
     var url=PAY[k]+'?client_reference_id='+encodeURIComponent(CL.user.id)+(CL.user.email?'&prefilled_email='+encodeURIComponent(CL.user.email):'')+'&locale=fr';
     closeMenu();
-    dd.innerHTML=popHTML('<div class="card2 glass paysh"><span class="lbl">Paiement sécurisé · Stripe</span><h2>'+esc(item.n)+'</h2><p class="price2">'+item.p+'</p><p class="cap">Tu vas payer sur la page Stripe, puis revenir dans l’app. '+(k==='pass'?'WaxDrop Pro s’active':'Les wax coins arrivent')+' en quelques secondes.</p><div class="row"><button class="gbtn" data-act="ddclose">Annuler</button><a class="pbtn" href="'+esc(url)+'" rel="noopener">Payer '+item.p.replace(' / mois','')+'</a></div></div>');
+    dd.innerHTML=popHTML('<div class="card2 glass paysh"><span class="lbl">Paiement sécurisé · Stripe</span><h2>'+esc(item.n)+'</h2><p class="price2">'+item.p+'</p><p class="cap">Tu vas payer sur la page Stripe, puis revenir dans l’app. '+(k==='pass'||k==='proan'?'WaxDrop Pro s’active':k==='coffret'?'Les wax coins, les Drops Or et les drops arrivent':'Les wax coins arrivent')+' en quelques secondes.</p><div class="row"><button class="gbtn" data-act="ddclose">Annuler</button><a class="pbtn" href="'+esc(url)+'" rel="noopener">Payer '+item.p.replace(' / mois','').replace(' / an','')+'</a></div></div>');
   };
   window.buyOk=function(k){buyFlow(k)};
   window.claim=async function(){var r=await ECO.op('pass_daily');if(!r)return;toast('+1 drop'+(new Date().getDay()===1?' et 1 Drop Or':''));closeMenu();render()};
@@ -91,7 +94,7 @@
     if(!paid)return;var k=paid,c0=S.coins,p0=hasPass(),n=0;paid=null;
     toast('Paiement reçu, merci !');
     (function poll(){n++;ECO.sync().then(function(){
-      if(k==='pass'?hasPass()&&!p0:S.coins>c0){toast(k==='pass'?'WaxDrop Pro activé':'+'+(S.coins-c0).toLocaleString('fr-FR')+' wax coins');return}
+      var pro=k==='pass'||k==='proan';if(pro?hasPass()&&!p0:S.coins>c0){toast(pro?'WaxDrop Pro activé':'+'+(S.coins-c0).toLocaleString('fr-FR')+' wax coins');return}
       if(n<10)setTimeout(poll,3000);else toast('Paiement en cours de validation, tes achats arrivent bientôt');
     })})();
   };

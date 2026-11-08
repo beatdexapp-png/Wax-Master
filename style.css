@@ -2871,3 +2871,45 @@ html.weak .dpk,body.lite .dpk{transform:none!important}
 .v-bx .empty{color:rgba(255,255,255,.72)}
 .hb:has(.hph) .hbn,.hb:has(.hph) .hbref{position:absolute;top:12px;right:12px;left:auto;bottom:auto;z-index:3}
 .hb:has(.hph) .hbn~.hbref{right:auto;left:12px}
+
+/* ===== LOT 6 « ARGENT » 08/11/2026 : Coffret 9,99 €, Pro à l'année, comparatif Gratuit / Pro, signes Pro ===== */
+.l6cof{display:grid;grid-template-columns:76px 1fr auto;align-items:center;gap:14px;padding:14px 16px;border-radius:20px;margin:4px 0 14px}
+.l6cof>.dpk{width:76px}
+.l6cofb{display:flex;flex-direction:column;gap:4px;min-width:0}
+.l6cofb b{font:700 15px/1.3 var(--disp)}
+.l6cofb small{font-size:12.5px;color:var(--fg2)}
+.l6cof .pbtn{min-height:48px;padding:0 18px;white-space:nowrap}
+@media (max-width:420px){.l6cof{grid-template-columns:64px 1fr}.l6cof>.dpk{width:64px}.l6cof .pbtn{grid-column:1/-1}}
+.l6pl{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+.psbar>.l6pl{height:auto}
+.l6p{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:88px;padding:14px;border-radius:18px;border:1.5px solid var(--gb);background:var(--solid);color:var(--fg);text-align:left;cursor:pointer;font:inherit;transition:transform .3s var(--ez),border-color .3s var(--ez)}
+.l6p b{font:700 14px var(--disp)}
+.l6p span{font-size:13px;color:var(--fg2)}
+.l6p span em{font:800 20px var(--disp);font-style:normal;color:var(--fg)}
+.l6p small{font-size:12px;color:var(--fg2)}
+.l6p.on{border-color:#e7b649;box-shadow:0 10px 28px rgba(231,182,73,.22)}
+.l6p:active{transform:scale(.98)}
+.l6tag{position:absolute;top:-9px;right:12px;font:800 11px/1 var(--mono);font-style:normal;padding:4px 8px;border-radius:999px;background:linear-gradient(135deg,#f8e19a,#d2a03a);color:#2b1d02}
+.l6all{width:100%;min-height:48px;margin-top:6px}
+.l6page{gap:16px}
+.l6lead{margin:0;font-size:15px;line-height:1.45;color:var(--fg2)}
+.l6cmp{border-radius:18px;overflow:hidden;background:var(--soft)}
+.l6r{display:grid;grid-template-columns:1.25fr 1fr 1fr;align-items:center;gap:8px;padding:12px 14px;border-top:1px solid rgba(127,127,127,.15);font-size:13.5px;line-height:1.35}
+.l6r:first-child{border-top:0}
+.l6r em{font-style:normal;font-size:13px;color:var(--fg2)}
+.l6r .pp{color:var(--fg);font-weight:600}
+.l6h{font:700 12px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--fg2)}
+.l6h b.pp{color:#c7901d}
+:root[data-theme="dark"] .l6h b.pp{color:#f2cb6b}
+.l6price{font-weight:700}
+.l6price .pp{font:800 14px var(--disp)}
+/* signes Pro visibles */
+.l6b{margin-left:6px;vertical-align:2px}
+.av.l6av{box-shadow:0 0 0 2px #e7b649,0 0 0 4px rgba(231,182,73,.25)}
+.pbtn.l6gold{background:linear-gradient(120deg,#f8e19a,#e7b649 55%,#d2a03a);color:#2b1d02;border-color:transparent;box-shadow:0 10px 26px rgba(210,160,58,.35)}
+.pbtn.l6gold:disabled{opacity:.55}
+@media (min-width:1024px){.l6cmp{max-width:760px}.l6r{padding:14px 18px;font-size:14.5px}}
+/* la pastille Pro du Menu porte aussi la classe .big (déjà utilisée pour les grandes cartes) : on la garde petite */
+.mhero .pro.big{display:inline-block;width:auto;height:auto;flex:none;aspect-ratio:auto;margin:0;transform:none}
+.l6page .psbar{position:static}
+.l6cmp,.l6pl,.l6cof,.l6lead,.l6all{flex:none}
