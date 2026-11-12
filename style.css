@@ -3123,3 +3123,9 @@ body.lite .v-open .obar .pbtn[data-act=open],body.lite .v-open .obar .pbtn[data-
 @keyframes r2inl{from{transform:translateX(-36px);opacity:0}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){.r2in-r,.r2in-l{animation:none}}
 .v-open .l4b.l4-duo{align-items:stretch}.v-open .l4-duo>.l4-sq{height:auto;margin:0}
+/* Archives (12/11/2026) : sons absents de Deezer, lus par le lecteur YouTube officiel intégré */
+.archb{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:2px 9px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.ytgo{align-self:center;gap:8px}
+.ytw{width:100%;margin:4px 0 2px}
+.ytw iframe{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:14px;background:#000}
+.ytw p{margin:6px 0 0;font-size:11px;opacity:.55;text-align:center}
